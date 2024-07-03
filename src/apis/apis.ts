@@ -11,6 +11,7 @@ const authorization = (accessToken: string) => {
 
 const POST_FESTIVAL_LIST_URL = (date: string) => `${API_DOMAIN}/festival/saveFestivalList?eventStartDate=${date}`;
 const GET_FESTIVAL_LIST_URL = () => `${API_DOMAIN}/festival/getFestivalList`;
+const GET_SEARCH_FESTIVAL_LIST_URL = (areaCode: string) => `${API_DOMAIN}/festival/searchFestivalList?areaCode=${areaCode}`;
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
@@ -27,6 +28,19 @@ export const PostFestivalListRequest = async (date: string) => {
 
 export const GetFestivalListRequest = async () => {
     const result = await axios.get(GET_FESTIVAL_LIST_URL())
+        .then(response => {
+            const responseBody: PostFestivalResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetSearchFestivalListRequest = async (areaCode: string) => {
+    const result = await axios.get(GET_SEARCH_FESTIVAL_LIST_URL(areaCode))
         .then(response => {
             const responseBody: PostFestivalResponseDto = response.data;
             return responseBody;

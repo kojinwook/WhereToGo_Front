@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { GetFestivalListRequest, PostFestivalListRequest } from '../apis/apis';
-import Festival from '../types/interface/festival.interface';
+import { Festival } from 'types/interface/interface';
 
 const SaveFestivalList = () => {
-    const [festivalList, setFestivalList] = useState<Festival[]>();
 
     useEffect(() => {
         const getCurrentDate = () => {
@@ -25,27 +24,8 @@ const SaveFestivalList = () => {
         saveFestivalList(currentDate);
     }, []);
 
-    useEffect(() => {
-        const getFestivalList = async () => {
-            const response = await GetFestivalListRequest();
-            if (response.code === 'SU' && response.festivalList) {
-                setFestivalList(response.festivalList);
-            }
-            // console.log(response);
-        };
-
-        getFestivalList();
-    }, []);
-
-    if(!festivalList) return null;
     return (
-        <div>
-            {festivalList.map((festival, index) => (
-                <div key={index}>
-                    {festival.title}
-                </div>
-            ))}
-        </div>
+        <></>
     );
 };
 
