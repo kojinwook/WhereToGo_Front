@@ -12,4 +12,5 @@ export interface Festival {
     sigunguCode: string;
     contentId: string;
     contentTypeId: string;
+    homepage: string;
 }

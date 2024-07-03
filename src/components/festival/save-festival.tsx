@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { GetFestivalListRequest, PostFestivalListRequest } from '../apis/apis';
+import { GetFestivalListRequest, PostFestivalListRequest } from '../../apis/apis';
 import { Festival } from 'types/interface/interface';
 
 const SaveFestivalList = () => {
