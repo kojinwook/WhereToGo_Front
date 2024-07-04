@@ -21,6 +21,7 @@ export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
         .then(response => {
             const responseBody: PostFestivalResponseDto = response.data;
+            console.log(responseBody);
             return responseBody;
         })
         .catch(error => {

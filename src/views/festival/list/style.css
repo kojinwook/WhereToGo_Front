@@ -1,0 +1,32 @@
+#festival-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.festival-list-filter-container{
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.festival-list-filter {
+    cursor: pointer;
+}
+
+.festival-list-content-container {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.festival-list-content {
+    width: 70%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}

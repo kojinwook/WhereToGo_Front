@@ -23,6 +23,8 @@ const FestivalAdmin: React.FC = () => {
         contentId: '',
         contentTypeId: '',
         homepage: '',
+        rates: 0,
+        tags: [],
     });
     const [cookies, setCookies] = useCookies();
 
@@ -63,6 +65,8 @@ const FestivalAdmin: React.FC = () => {
             contentId: '',
             contentTypeId: '',
             homepage: '',
+            rates: 0,
+            tags: [],
         });
         setModalOpen(false); // 모달 닫기
     };
@@ -92,6 +96,8 @@ const FestivalAdmin: React.FC = () => {
                         contentId: '',
                         contentTypeId: '',
                         homepage: '',
+                        rates: 0,
+                        tags: [],
                     });
                     setModalOpen(false); // 모달 닫기
                 } else {
@@ -116,19 +122,14 @@ const FestivalAdmin: React.FC = () => {
                 <div key={index} style={{ display: 'flex', marginBottom: '20px', border: '1px solid black', padding: '10px' }}>
                     <div style={{ flex: '1' }}>
                         <p><strong>Title:</strong> {festival.title}</p>
-                        <p><strong>Start Date:</strong> {festival.startDate}</p>
-                        <p><strong>End Date:</strong> {festival.endDate}</p>
                         <p><strong>Address:</strong> {festival.address1}</p>
                         <p><strong>First Image:</strong> <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /></p>
+                        <p><strong>Start Date:</strong> {festival.startDate}</p>
+                        <p><strong>End Date:</strong> {festival.endDate}</p>
                         <p><strong>Telephone:</strong> {festival.tel}</p>
-                        <p><strong>Map X:</strong> {festival.mapX}</p>
-                        <p><strong>Map Y:</strong> {festival.mapY}</p>
-                        <p><strong>Modify Date:</strong> {festival.modifyDate}</p>
-                        <p><strong>Area Code:</strong> {festival.areaCode}</p>
-                        <p><strong>Sigungu Code:</strong> {festival.sigunguCode}</p>
                         <p><strong>Content ID:</strong> {festival.contentId}</p>
-                        <p><strong>Content Type ID:</strong> {festival.contentTypeId}</p>
                         <p><strong>Homepage:</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
+                        <p><strong>Tags:</strong> {festival.tags}</p>
                         <div className='festival-admin-edit' onClick={() => handleEdit(festival)}>수정</div>
                     </div>
                 </div>
@@ -140,32 +141,22 @@ const FestivalAdmin: React.FC = () => {
                         <form className="festival-admin-modal-form" onSubmit={handleSave}>
                             <label>Title:</label>
                             <input type="text" name="title" value={formData?.title || ''} onChange={handleChange} />
-                            <label>Start Date:</label>
-                            <input type="text" name="startDate" value={formData?.startDate || ''} onChange={handleChange} />
-                            <label>End Date:</label>
-                            <input type="text" name="endDate" value={formData?.endDate || ''} onChange={handleChange} />
                             <label>Address:</label>
                             <input type="text" name="address1" value={formData?.address1 || ''} onChange={handleChange} />
                             <label>First Image:</label>
                             <input type="text" name="firstImage" value={formData?.firstImage || ''} onChange={handleChange} />
+                            <label>Start Date:</label>
+                            <input type="text" name="startDate" value={formData?.startDate || ''} onChange={handleChange} />
+                            <label>End Date:</label>
+                            <input type="text" name="endDate" value={formData?.endDate || ''} onChange={handleChange} />
                             <label>Telephone:</label>
                             <input type="text" name="tel" value={formData?.tel || ''} onChange={handleChange} />
-                            <label>Map X:</label>
-                            <input type="text" name="mapX" value={formData?.mapX || ''} onChange={handleChange} />
-                            <label>Map Y:</label>
-                            <input type="text" name="mapY" value={formData?.mapY || ''} onChange={handleChange} />
-                            <label>Modify Date:</label>
-                            <input type="text" name="modifyDate" value={formData?.modifyDate || ''} onChange={handleChange} />
-                            <label>Area Code:</label>
-                            <input type="text" name="areaCode" value={formData?.areaCode || ''} onChange={handleChange} />
-                            <label>Sigungu Code:</label>
-                            <input type="text" name="sigunguCode" value={formData?.sigunguCode || ''} onChange={handleChange} />
                             <label>Content ID:</label>
                             <input type="text" name="contentId" value={formData?.contentId || ''} onChange={handleChange} />
-                            <label>Content Type ID:</label>
-                            <input type="text" name="contentTypeId" value={formData?.contentTypeId || ''} onChange={handleChange} />
                             <label>Homepage:</label>
                             <input type="text" name="homepage" value={formData?.homepage || ''} onChange={handleChange} />
+                            <label>Tags:</label>
+                            <input type="text" name="tags" value={formData?.tags?.join('# ') || ''} onChange={handleChange} />
                             <div style={{ marginTop: '10px', textAlign: 'center' }}>
                                 <button type="submit">Save</button>
                                 <button type="button" onClick={handleCancelEdit}>Cancel</button>

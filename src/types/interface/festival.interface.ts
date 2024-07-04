@@ -13,4 +13,6 @@ export interface Festival {
     contentId: string;
     contentTypeId: string;
     homepage: string;
+    rates: number;
+    tags: string[];
 }

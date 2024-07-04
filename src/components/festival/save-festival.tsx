@@ -17,8 +17,17 @@ const SaveFestivalList = () => {
         const currentDate = getCurrentDate();
 
         const saveFestivalList = async (date: string) => {
-            const response = await PostFestivalListRequest(date);
-            console.log(response);
+            try {
+                const response = await PostFestivalListRequest(date);
+                console.log(response);
+                if (response.code === 'SU') {
+                    console.log("성공 응답을 받았습니다.");
+                    return;
+                }
+            } catch (error) {
+                console.error("요청에 실패했습니다. 다시 시도합니다...", error);
+            }
+            setTimeout(() => saveFestivalList(date), 5000);
         };
 
         saveFestivalList(currentDate);
