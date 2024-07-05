@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { GetFestivalListRequest, GetSearchFestivalListRequest } from '../../../apis/apis';
+import { GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest } from '../../../apis/apis';
 import { Festival } from 'types/interface/interface';
 import './style.css'
 import { useParams } from 'react-router-dom';
@@ -8,8 +8,8 @@ import ResponseDto from 'apis/response/response.dto';
 
 export default function FestivalPage() {
     // const {loginUser} = useLoginUserStore();
-    const { contentId } = useParams();
     const [searchFestivalList, setSearchFestivalList] = useState<Festival[]>();
+    const [averageRates, setAverageRates] = useState<{ [key: string]: number }>({});
     const [isFavorite, setFavorite] = useState<boolean>(false);
     // const [favoriteList, setFavoriteList] = useState<Favorite[]>([]);
     const [cookies, setCookies] = useCookies();
@@ -37,7 +37,7 @@ export default function FestivalPage() {
 
     const getFestivalList = async () => {
         const response = await GetFestivalListRequest();
-        console.log(response);
+        // console.log(response);
         if (response.code === 'SU') {
             setSearchFestivalList(response.festivalList);
         }
@@ -47,9 +47,32 @@ export default function FestivalPage() {
         getFestivalList();
     }, []);
 
+    useEffect(() => {
+        const fetchAverageRates = async (festivalList: Festival[]) => {
+            const rates: { [key: string]: number } = {};
+            for (const festival of festivalList) {
+                const response = await GetAverageRateRequest(festival.contentId);
+                console.log(response);
+                if (response.code === 'SU') {
+                    const averageRates = response.average;
+                    for (const [id, rate] of Object.entries(averageRates)) {
+                        rates[id] = rate;
+                    }
+                } else {
+                    rates[festival.contentId] = 0;
+                }
+            }
+            setAverageRates(rates);
+        };
+        if (searchFestivalList) {
+            fetchAverageRates(searchFestivalList);
+        }
+    }, [searchFestivalList]);
+
     const searchFestivalByAreaCode = async (areaCode: string) => {
         if (areaCode === '') {
             getFestivalList();
+            return;
         }
         const response = await GetSearchFestivalListRequest(areaCode);
         if (response.code === 'SU') {
@@ -118,7 +141,7 @@ export default function FestivalPage() {
                 {searchFestivalList.map((festival, index) => (
                     <div key={index} className='festival-list-content'>
                         <div>{festival.title}</div>
-                        <div>{festival.rates}</div>
+                        <div>{averageRates[festival.contentId]}</div>
                         <div>{festival.startDate} ~ {festival.endDate}</div>
                         {/* <div className="icon-button" onClick={onFavoriteClickHandler}>
                         {isFavorite ?

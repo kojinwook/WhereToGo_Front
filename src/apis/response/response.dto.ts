@@ -6,4 +6,5 @@ export default interface ResponseDto{
     message: ResponseMessage;
     success: boolean;
     festivalList:Festival[];
+    average: number;
 }

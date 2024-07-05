@@ -3,6 +3,7 @@ import PostFestivalResponseDto from "./response/festival/post-festival-list.resp
 import { ResponseDto } from "./response/response";
 import { PatchFestivalRequestDto } from "./request/festival/festival";
 import { Festival } from "types/interface/festival.interface";
+import GetAverageRateResponseDto from "./response/rate/get-average-rate.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -16,6 +17,8 @@ const GET_FESTIVAL_LIST_URL = () => `${API_DOMAIN}/festival/getFestivalList`;
 const GET_SEARCH_FESTIVAL_LIST_URL = (areaCode: string) => `${API_DOMAIN}/festival/searchFestivalList?areaCode=${areaCode}`;
 const GET_FESTIVAL_URL = (contentId: string) => `${API_DOMAIN}/festival/getFestival?contentId=${contentId}`;
 const PATCH_FESTIVAL_URL = (contentId: string) => `${API_DOMAIN}/festival/patchFestival?contentId=${contentId}`;
+const POST_RATE_URL = () => `${API_DOMAIN}/rate/postRate`;
+const GET_RATE_AVERAGE_RATE_URL = (contentId: string) => `${API_DOMAIN}/rate/getAverageRate?contentId=${contentId}`;
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
@@ -74,6 +77,32 @@ export const PatchFestivalRequest = async (requestBody: Festival, accessToken: s
     const result = await axios.patch(PATCH_FESTIVAL_URL(requestBody.contentId), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: ResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const PostRateRequest = async (contentId: number, rate: number, accessToken: string) => {
+    const result = await axios.post(POST_RATE_URL(), { contentId, rate }, authorization(accessToken))
+        .then(response => {
+            const responseBody: ResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetAverageRateRequest = async (contentId: string) => {
+    const result = await axios.get(GET_RATE_AVERAGE_RATE_URL(contentId))
+        .then(response => {
+            const responseBody: GetAverageRateResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
