@@ -27,9 +27,8 @@ const SaveFestivalList = () => {
             } catch (error) {
                 console.error("요청에 실패했습니다. 다시 시도합니다...", error);
             }
-            setTimeout(() => saveFestivalList(date), 5000);
+            setTimeout(() => saveFestivalList(date), 2000);
         };
-
         saveFestivalList(currentDate);
     }, []);
 

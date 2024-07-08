@@ -45,7 +45,7 @@ const FestivalAdmin: React.FC = () => {
     const handleEdit = (festival: Festival) => {
         setEditingFestival(festival);
         setFormData({ ...festival });
-        setModalOpen(true); // 모달 열기
+        setModalOpen(true);
     };
 
     const handleCancelEdit = () => {
@@ -68,7 +68,7 @@ const FestivalAdmin: React.FC = () => {
             rates: 0,
             tags: [],
         });
-        setModalOpen(false); // 모달 닫기
+        setModalOpen(false);
     };
 
     const handleSave = async (e: React.FormEvent) => {
@@ -99,7 +99,7 @@ const FestivalAdmin: React.FC = () => {
                         rates: 0,
                         tags: [],
                     });
-                    setModalOpen(false); // 모달 닫기
+                    setModalOpen(false);
                 } else {
                     console.error('Failed to update festival:', response.message);
                 }
