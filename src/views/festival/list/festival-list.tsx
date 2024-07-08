@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest } from '../../../apis/apis';
 import { Festival } from 'types/interface/interface';
 import './style.css'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import ResponseDto from 'apis/response/response.dto';
 
@@ -13,6 +13,7 @@ export default function FestivalPage() {
     const [isFavorite, setFavorite] = useState<boolean>(false);
     // const [favoriteList, setFavoriteList] = useState<Favorite[]>([]);
     const [cookies, setCookies] = useCookies();
+    const navigate = useNavigate();
 
     const areas = [
         { name: '전체', code: '' },
@@ -35,11 +36,22 @@ export default function FestivalPage() {
         { name: '제주', code: '39' }
     ];
 
+    const formatDate = (dateStr: string) => {
+        const year = dateStr.substring(0, 4);
+        const month = dateStr.substring(4, 6);
+        const day = dateStr.substring(6, 8);
+        return `${year}년 ${month}월 ${day}일`;
+    };
+
     const getFestivalList = async () => {
         const response = await GetFestivalListRequest();
-        // console.log(response);
         if (response.code === 'SU') {
-            setSearchFestivalList(response.festivalList);
+            const formattedFestivals = response.festivalList.map(festival => ({
+                ...festival,
+                startDate: formatDate(festival.startDate),
+                endDate: formatDate(festival.endDate)
+            }));
+            setSearchFestivalList(formattedFestivals);
         }
     };
 
@@ -49,19 +61,19 @@ export default function FestivalPage() {
 
     useEffect(() => {
         const fetchAverageRates = async (festivalList: Festival[]) => {
+            const requests = festivalList.map(festival => GetAverageRateRequest(festival.contentId));
+            const responses = await Promise.all(requests);
             const rates: { [key: string]: number } = {};
-            for (const festival of festivalList) {
-                const response = await GetAverageRateRequest(festival.contentId);
-                console.log(response);
+            responses.forEach((response, index) => {
                 if (response.code === 'SU') {
                     const averageRates = response.average;
                     for (const [id, rate] of Object.entries(averageRates)) {
                         rates[id] = rate;
                     }
                 } else {
-                    rates[festival.contentId] = 0;
+                    rates[festivalList[index].contentId] = 0;
                 }
-            }
+            });
             setAverageRates(rates);
         };
         if (searchFestivalList) {
@@ -76,7 +88,12 @@ export default function FestivalPage() {
         }
         const response = await GetSearchFestivalListRequest(areaCode);
         if (response.code === 'SU') {
-            setSearchFestivalList(response.festivalList);
+            const formattedFestivals = response.festivalList.map(festival => ({
+                ...festival,
+                startDate: formatDate(festival.startDate),
+                endDate: formatDate(festival.endDate)
+            }));
+            setSearchFestivalList(formattedFestivals);
         }
     };
 
@@ -129,6 +146,10 @@ export default function FestivalPage() {
     //     GetFavoriteListRequest(contentId).then(getFavoriteListResponse);
     // }, [contentId]);
 
+    const handleTitleClick = (contentId: string) => {
+        navigate(`/festival/detail?contentId=${contentId}`);
+    };
+
     if (!searchFestivalList) return null;
     return (
         <div id='festival-list-wrapper'>
@@ -140,7 +161,7 @@ export default function FestivalPage() {
             <div className='festival-list-content-container'>
                 {searchFestivalList.map((festival, index) => (
                     <div key={index} className='festival-list-content'>
-                        <div>{festival.title}</div>
+                        <div onClick={() => handleTitleClick(festival.contentId)}>{festival.title}</div>
                         <div>{averageRates[festival.contentId]}</div>
                         <div>{festival.startDate} ~ {festival.endDate}</div>
                         {/* <div className="icon-button" onClick={onFavoriteClickHandler}>
