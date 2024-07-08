@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest } from '../../../apis/apis';
 import { Festival } from 'types/interface/interface';
 import './style.css'
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import ResponseDto from 'apis/response/response.dto';
 
@@ -14,6 +14,7 @@ export default function FestivalPage() {
     // const [favoriteList, setFavoriteList] = useState<Favorite[]>([]);
     const [cookies, setCookies] = useCookies();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const areas = [
         { name: '전체', code: '' },
@@ -56,8 +57,14 @@ export default function FestivalPage() {
     };
 
     useEffect(() => {
-        getFestivalList();
-    }, []);
+        const query = new URLSearchParams(location.search);
+        const areaCode = query.get('areaCode') || '';
+        if (areaCode) {
+            getSearchFestivalList(areaCode);
+        } else {
+            getFestivalList();
+        }
+    }, [location.search]);
 
     useEffect(() => {
         const fetchAverageRates = async (festivalList: Festival[]) => {
@@ -81,11 +88,13 @@ export default function FestivalPage() {
         }
     }, [searchFestivalList]);
 
-    const searchFestivalByAreaCode = async (areaCode: string) => {
-        if (areaCode === '') {
-            getFestivalList();
-            return;
-        }
+    const searchFestivalByAreaCode = (areaCode: string) => {
+        const query = new URLSearchParams(location.search);
+        query.set('areaCode', areaCode);
+        navigate(`?${query.toString()}`);
+    };
+
+    const getSearchFestivalList = async (areaCode: string) => {
         const response = await GetSearchFestivalListRequest(areaCode);
         if (response.code === 'SU') {
             const formattedFestivals = response.festivalList.map(festival => ({
@@ -147,7 +156,7 @@ export default function FestivalPage() {
     // }, [contentId]);
 
     const handleTitleClick = (contentId: string) => {
-        navigate(`/festival/detail?contentId=${contentId}`);
+        navigate(`/festival/detail?contentId=${contentId}`, { state: { from: location } });
     };
 
     const renderStars = (rating: number) => {
