@@ -8,6 +8,10 @@ import GetAverageRateResponseDto from "./response/rate/get-average-rate.response
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
+const FILE_DOMAIN = `${DOMAIN}/file`;
+const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
+const multipartFormData = { headers: { 'Url-Type': 'multipart/form-data' } };
+
 const authorization = (accessToken: string) => {
     return { headers: { Authorization: `Bearer ${accessToken}` } }
 };
@@ -86,8 +90,8 @@ export const PatchFestivalRequest = async (requestBody: Festival, accessToken: s
     return result;
 };
 
-export const PostRateRequest = async (contentId: number, rate: number, accessToken: string) => {
-    const result = await axios.post(POST_RATE_URL(), { contentId, rate }, authorization(accessToken))
+export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: string[], accessToken: string) => {
+    const result = await axios.post(POST_RATE_URL(), { contentId, rate, review, imageList }, authorization(accessToken))
         .then(response => {
             const responseBody: ResponseDto = response.data;
             return responseBody;
@@ -108,6 +112,18 @@ export const GetAverageRateRequest = async (contentId: string) => {
         .catch(error => {
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
+        })
+    return result;
+};
+
+export const fileUploadRequest = async (data: FormData) => {
+    const result = await axios.post(FILE_UPLOAD_URL(), data, multipartFormData)
+        .then(response => {
+            const responseBody: string = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            return null;
         })
     return result;
 };

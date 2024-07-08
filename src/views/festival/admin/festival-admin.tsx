@@ -3,29 +3,13 @@ import { GetFestivalListRequest, PatchFestivalRequest } from 'apis/apis';
 import { useCookies } from 'react-cookie';
 import { Festival } from 'types/interface/festival.interface';
 import './style.css';
+import useFestivalStore from 'store/festival.store';
 
 const FestivalAdmin: React.FC = () => {
     const [festivalList, setFestivalList] = useState<Festival[]>([]);
     const [editingFestival, setEditingFestival] = useState<Festival | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
-    const [formData, setFormData] = useState<Festival>({
-        title: '',
-        startDate: '',
-        endDate: '',
-        address1: '',
-        firstImage: '',
-        tel: '',
-        mapX: '',
-        mapY: '',
-        modifyDate: '',
-        areaCode: '',
-        sigunguCode: '',
-        contentId: '',
-        contentTypeId: '',
-        homepage: '',
-        rates: 0,
-        tags: [],
-    });
+    const { formData, setFormData, resetFormData } = useFestivalStore();
     const [cookies, setCookies] = useCookies();
 
     useEffect(() => {
@@ -44,34 +28,17 @@ const FestivalAdmin: React.FC = () => {
 
     const handleEdit = (festival: Festival) => {
         setEditingFestival(festival);
-        setFormData({ ...festival });
+        setFormData(festival);
         setModalOpen(true);
     };
 
     const handleCancelEdit = () => {
         setEditingFestival(null);
-        setFormData({
-            title: '',
-            startDate: '',
-            endDate: '',
-            address1: '',
-            firstImage: '',
-            tel: '',
-            mapX: '',
-            mapY: '',
-            modifyDate: '',
-            areaCode: '',
-            sigunguCode: '',
-            contentId: '',
-            contentTypeId: '',
-            homepage: '',
-            rates: 0,
-            tags: [],
-        });
+        resetFormData();
         setModalOpen(false);
     };
 
-    const handleSave = async (e: React.FormEvent) => {
+    const handleSave = async (e: FormEvent) => {
         e.preventDefault();
         if (formData) {
             try {
@@ -81,24 +48,7 @@ const FestivalAdmin: React.FC = () => {
                         festival.contentId === formData.contentId ? formData : festival
                     ));
                     setEditingFestival(null);
-                    setFormData({
-                        title: '',
-                        startDate: '',
-                        endDate: '',
-                        address1: '',
-                        firstImage: '',
-                        tel: '',
-                        mapX: '',
-                        mapY: '',
-                        modifyDate: '',
-                        areaCode: '',
-                        sigunguCode: '',
-                        contentId: '',
-                        contentTypeId: '',
-                        homepage: '',
-                        rates: 0,
-                        tags: [],
-                    });
+                    resetFormData();
                     setModalOpen(false);
                 } else {
                     console.error('Failed to update festival:', response.message);
@@ -111,10 +61,11 @@ const FestivalAdmin: React.FC = () => {
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prevData => ({ ...prevData, [name]: value }));
+        setFormData({ [name]: value });
     };
 
     if (!festivalList) return null;
+
 
     return (
         <div>

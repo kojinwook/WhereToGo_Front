@@ -30,3 +30,12 @@
     flex-wrap: wrap;
     justify-content: space-between;
 }
+
+.festival-list-content-title {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.festival-list-content-title:hover {
+    text-decoration: underline;
+}
