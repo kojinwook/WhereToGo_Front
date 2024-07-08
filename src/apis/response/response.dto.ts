@@ -7,5 +7,5 @@ export default interface ResponseDto{
     success: boolean;
     festivalList:Festival[];
     festival: Festival;
-    average: number;
+    average: Record<string, number>;
 }

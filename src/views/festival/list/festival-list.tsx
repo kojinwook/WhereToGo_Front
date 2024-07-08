@@ -150,6 +150,20 @@ export default function FestivalPage() {
         navigate(`/festival/detail?contentId=${contentId}`);
     };
 
+    const renderStars = (rating: number) => {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars.push(<i key={i} className="fas fa-star" style={{ color: 'gold' }}></i>);
+            } else if (i - 0.5 <= rating) {
+                stars.push(<i key={i} className="fas fa-star-half-alt" style={{ color: 'gold' }}></i>);
+            } else {
+                stars.push(<i key={i} className="far fa-star" style={{ color: 'gold' }}></i>);
+            }
+        }
+        return stars;
+    };
+
     if (!searchFestivalList) return null;
     return (
         <div id='festival-list-wrapper'>
@@ -161,8 +175,9 @@ export default function FestivalPage() {
             <div className='festival-list-content-container'>
                 {searchFestivalList.map((festival, index) => (
                     <div key={index} className='festival-list-content'>
-                        <div onClick={() => handleTitleClick(festival.contentId)}>{festival.title}</div>
-                        <div>{averageRates[festival.contentId]}</div>
+                        <div className='festival-list-content-title' onClick={() => handleTitleClick(festival.contentId)}>{festival.title}</div>
+                        <div>{festival.address1}</div>
+                        <div>{renderStars(averageRates[festival.contentId] || 0)}</div>
                         <div>{festival.startDate} ~ {festival.endDate}</div>
                         {/* <div className="icon-button" onClick={onFavoriteClickHandler}>
                         {isFavorite ?
