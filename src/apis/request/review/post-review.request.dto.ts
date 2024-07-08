@@ -1,4 +1,4 @@
-export default interface PostRateRequestDto {
+export default interface PostReviewRequestDto {
     imageList: string[];
     contentId: number;
     review: string;

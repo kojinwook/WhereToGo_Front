@@ -3,7 +3,9 @@ import PostFestivalResponseDto from "./response/festival/post-festival-list.resp
 import { ResponseDto } from "./response/response";
 import { PatchFestivalRequestDto } from "./request/festival/festival";
 import { Festival } from "types/interface/festival.interface";
-import GetAverageRateResponseDto from "./response/rate/get-average-rate.response.dto";
+import GetAverageRateResponseDto from "./response/review/get-average-rate.response.dto";
+import PatchReviewRequestDto from "./request/review/patch-review.request.dto";
+import GetReviewResponseDto from "./response/review/get-review.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -19,10 +21,13 @@ const authorization = (accessToken: string) => {
 const POST_FESTIVAL_LIST_URL = (date: string) => `${API_DOMAIN}/festival/saveFestivalList?eventStartDate=${date}`;
 const GET_FESTIVAL_LIST_URL = () => `${API_DOMAIN}/festival/getFestivalList`;
 const GET_SEARCH_FESTIVAL_LIST_URL = (areaCode: string) => `${API_DOMAIN}/festival/searchFestivalList?areaCode=${areaCode}`;
-const GET_FESTIVAL_URL = (contentId: string) => `${API_DOMAIN}/festival/getFestival?contentId=${contentId}`;
-const PATCH_FESTIVAL_URL = (contentId: string) => `${API_DOMAIN}/festival/patchFestival?contentId=${contentId}`;
-const POST_RATE_URL = () => `${API_DOMAIN}/rate/postRate`;
-const GET_RATE_AVERAGE_RATE_URL = (contentId: string) => `${API_DOMAIN}/rate/getAverageRate?contentId=${contentId}`;
+const GET_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/getFestival?contentId=${contentId}`;
+const PATCH_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/patchFestival?contentId=${contentId}`;
+const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
+const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
+const GET_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/getReview?reviewId=${reviewId}`;
+const PATCH_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/patchReview?reviewId=${reviewId}`;
+const GET_REVIEW_LIST_URL = (contentId: string | number) => `${API_DOMAIN}/review/getReviewList?contentId=${contentId}`;
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
@@ -91,7 +96,7 @@ export const PatchFestivalRequest = async (requestBody: Festival, accessToken: s
 };
 
 export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: string[], accessToken: string) => {
-    const result = await axios.post(POST_RATE_URL(), { contentId, rate, review, imageList }, authorization(accessToken))
+    const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList }, authorization(accessToken))
         .then(response => {
             const responseBody: ResponseDto = response.data;
             return responseBody;
@@ -124,6 +129,45 @@ export const fileUploadRequest = async (data: FormData) => {
         })
         .catch(error => {
             return null;
+        })
+    return result;
+};
+
+export const GetReviewRequest = async (reviewId: string | number) => {
+    const result = await axios.get(GET_REVIEW_URL(reviewId))
+        .then(response => {
+            const responseBody: GetReviewResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const PatchReviewRequest = async (reviewId: string | number, requestBody: PatchReviewRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_REVIEW_URL(reviewId), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: ResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetReviewListRequest = async (contentId: string | number) => {
+    const result = await axios.get(GET_REVIEW_LIST_URL(contentId))
+        .then(response => {
+            const responseBody: GetReviewResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
         })
     return result;
 };
