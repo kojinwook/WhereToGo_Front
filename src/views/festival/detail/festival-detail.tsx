@@ -1,7 +1,8 @@
-import { GetAverageRateRequest, GetFestivalRequest } from 'apis/apis';
+import { GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
+import { Review } from 'types/interface/review.interface';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -13,6 +14,9 @@ export default function FestivalDetail() {
     const contentId = query.get('contentId');
     const [festival, setFestival] = useState<Festival>();
     const [averageRate, setAverageRate] = useState<number>(0);
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [showMap, setShowMap] = useState<boolean>(true);
+    const [showReviews, setShowReviews] = useState<boolean>(false);
 
     const formatDate = (dateStr: string) => {
         const year = dateStr.substring(0, 4);
@@ -34,7 +38,6 @@ export default function FestivalDetail() {
                 } else {
                     console.error('Failed to fetch festival:', festivalResponse.message);
                 }
-
                 const averageRateResponse = await GetAverageRateRequest(contentId);
                 if (averageRateResponse.code === 'SU') {
                     const { average } = averageRateResponse;
@@ -47,10 +50,22 @@ export default function FestivalDetail() {
                 console.error('Error fetching festival data:', error);
             }
         };
-
         fetchFestivalData();
     }, [contentId]);
-    
+
+    useEffect(() => {
+        const fetchReviewList = async () => {
+            if (!contentId) return;
+            const response = await GetReviewListRequest(contentId);
+            if (response.code === 'SU') {
+                setReviews(response.reviews);
+            } else {
+                return;
+            }
+        };
+        fetchReviewList();
+    }, [contentId]);
+
     useEffect(() => {
         // HTML에서 주소를 가져와서 지도를 표시하는 함수 정의
         const getAddressFromHTML = () => {
@@ -96,19 +111,19 @@ export default function FestivalDetail() {
 
         // 축제 정보가 업데이트될 때마다 주소를 가져와서 지도를 표시하는 함수 호출
         getAddressFromHTML();
-    }, [festival]); // useEffect는 festival이 변경될 때마다 호출됩니다.
+    }, [festival, showMap, showReviews]); // useEffect는 festival이 변경될 때마다 호출됩니다.
 
     const handleNavigateClick = () => {
         if (!festival) return;
-    
+
         // 축제의 좌표를 URI 인코딩합니다.
         const lat = festival.mapY;
         const lng = festival.mapX;
         console.log(`Latitude: ${lat}, Longitude: ${lng}`);
-    
+
         // Kakao 맵 링크 생성
         const kakaoLink = `https://map.kakao.com/link/to/${festival.title},${lat},${lng}`;
-    
+
         // 새 창에서 Kakao 맵 링크를 엽니다.
         window.open(kakaoLink);
     };
@@ -133,14 +148,37 @@ export default function FestivalDetail() {
             <p><strong>First Image:</strong> <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /></p>
             <p><strong>Title:</strong> {festival.title}</p>
             <div>{renderStars(averageRate)}</div>
-            <p><strong>주소:</strong> {festival.address1}</p>
-            <p><strong>기간:</strong> {festival.startDate} ~ {festival.endDate}</p>
-            <p><strong>번호:</strong> {festival.tel}</p>
-            <p><strong>웹사이트:</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
-            <p><strong>태그:</strong> {festival.tags}</p>
-            {/* <p><strong>First Image:</strong> <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /></p> */}
-            <button onClick={handleNavigateClick}>길찾기</button>
-            <div id="map" style={{ width: '50%', height: '400px' }}></div>
+            <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+                <button onClick={() => { setShowMap(true); setShowReviews(false); }}>정보</button>
+                <button onClick={() => { setShowMap(false); setShowReviews(true); }}>후기</button>
+            </div>
+            {showMap && (
+                <div>
+                    <p><strong>주소:</strong> {festival.address1}</p>
+                    <p><strong>기간:</strong> {festival.startDate} ~ {festival.endDate}</p>
+                    <p><strong>번호:</strong> {festival.tel}</p>
+                    <p><strong>웹사이트:</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
+                    <p><strong>태그:</strong> {festival.tags}</p>
+                    <button onClick={handleNavigateClick}>길찾기</button>
+                    <div id="map" style={{ width: '50%', height: '400px' }}></div>
+                </div>
+            )}
+            {showReviews && (
+                <div>
+                    <h2>리뷰 리스트</h2>
+                    {reviews.length > 0 ? (
+                        reviews.map((review, index) => (
+                            <div key={index}>
+                                <p><strong>Rate:</strong> {renderStars(review.rate)}</p>
+                                <p><strong>Review:</strong> {review.review}</p>
+                                <p><strong>작성일:</strong> {review.writeDatetime}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>리뷰가 없습니다.</p>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
