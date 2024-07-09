@@ -1,6 +1,7 @@
 import { Festival } from "types/interface/interface";
 import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
 import { Review } from "types/interface/review.interface";
+import { ChatMessage } from "types/interface/chat-message.interface";
 
 export default interface ResponseDto{
     code: ResponseCode;
@@ -11,4 +12,5 @@ export default interface ResponseDto{
     review: Review;
     reviews: Review[];
     average: Record<string, number>;
+    chatMessageList: ChatMessage[];
 }

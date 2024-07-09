@@ -7,6 +7,7 @@ import SaveFestivalList from 'components/festival/save-festival';
 import FestivalDetail from 'views/festival/detail/festival-detail';
 import ReviewWritePage from 'views/festival/review/write/write';
 import ReviewUpdatePage from 'views/festival/review/update/update';
+import ChatRoom from 'components/chat/chat';
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="review/write" element={<ReviewWritePage />} />
         <Route path="review/update" element={<ReviewUpdatePage />} />
       </Route>
+      <Route path='chat' element={<ChatRoom/>}/>
     </Routes>
   );
 }
