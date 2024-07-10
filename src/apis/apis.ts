@@ -40,7 +40,8 @@ const POST_CHAT_MESSAGE_URL = () => `${API_DOMAIN}/chat/message`;
 const GET_CHAT_MESSAGE_LIST_URL = (roomId: string) => `${API_DOMAIN}/chat/messages/by-room?roomId=${roomId}`;
 const GET_CHAT_MESSAGE = (messageId: string) => `${API_DOMAIN}/chat/message/by-id?messageId=${messageId}`;
 const POST_CHAT_ROOM_URL = () => `${API_DOMAIN}/chat/rooms`;
-const GET_CHAT_ROOM_URL = () => `${API_DOMAIN}/chat/rooms`;
+const GET_CHAT_ROOM_URL = (userId: string) => `${API_DOMAIN}/chat/room?userId=${userId}`;
+const GET_CHAT_ROOM_LIST_URL = () => `${API_DOMAIN}/chat/rooms`;
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
@@ -237,8 +238,21 @@ export const PostChatRoomRequest = async (requestBody: PostChatRoomRequestDto,ac
     return result;
 };
 
-export const GetChatRoomRequest = async () => {
-    const result = await axios.get(GET_CHAT_ROOM_URL())
+export const GetChatRoomRequest = async (userId: string) => {
+    const result = await axios.get(GET_CHAT_ROOM_URL(userId))
+        .then(response => {
+            const responseBody: PostChatRoomResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetChatRoomListRequest = async () => {
+    const result = await axios.get(GET_CHAT_ROOM_LIST_URL())
         .then(response => {
             const responseBody: GetChatRoomListResponseDto = response.data;
             return responseBody;
