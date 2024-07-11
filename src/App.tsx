@@ -21,6 +21,7 @@ function App() {
         <Route path="review/update" element={<ReviewUpdatePage />} />
       </Route>
     </Routes>
+    
   );
 }
 

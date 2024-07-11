@@ -3,9 +3,9 @@
     "version": "2.2.13",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -421,
-    "scrollLeft": 0,
-    "zoomLevel": 1,
+    "scrollTop": -858,
+    "scrollLeft": -522,
+    "zoomLevel": 0.9,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -209,6 +209,29 @@
             }
           },
           {
+            "id": "4c1ea410-d6ee-4ba2-9103-0d5fbf473179",
+            "name": "nickname",
+            "comment": "닉네임",
+            "dataType": "VARCHAR(10)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 82.1328125,
+              "widthDefault": 60
+            }
+          },
+          {
             "id": "d753269a-9a6f-4887-9fd6-51f5997d32a1",
             "name": "modify_date",
             "comment": "수정 일자",
@@ -236,7 +259,7 @@
           "active": false,
           "left": 714,
           "top": 328,
-          "zIndex": 19,
+          "zIndex": 12,
           "widthName": 60,
           "widthComment": 71.5703125,
           "color": "#F44336"
@@ -621,7 +644,7 @@
           "active": false,
           "left": 86.6667,
           "top": 1015.8337,
-          "zIndex": 13,
+          "zIndex": 11,
           "widthName": 60,
           "widthComment": 71.5703125
         },
@@ -752,7 +775,7 @@
           "active": false,
           "left": 114.3332,
           "top": 444.3333,
-          "zIndex": 18,
+          "zIndex": 2,
           "widthName": 60,
           "widthComment": 71.5703125
         },
@@ -906,7 +929,7 @@
           "active": false,
           "left": 695.8335,
           "top": 32.5,
-          "zIndex": 8,
+          "zIndex": 7,
           "widthName": 60,
           "widthComment": 84.5703125
         },
@@ -1099,7 +1122,7 @@
           "active": false,
           "left": 1295,
           "top": 45,
-          "zIndex": 9,
+          "zIndex": 8,
           "widthName": 78.12744140625,
           "widthComment": 71.5703125
         },
@@ -1407,7 +1430,7 @@
           "active": false,
           "left": 104,
           "top": 184,
-          "zIndex": 11,
+          "zIndex": 10,
           "widthName": 60,
           "widthComment": 71.5703125
         },
@@ -1577,7 +1600,7 @@
           "active": false,
           "left": 719.9008,
           "top": 740,
-          "zIndex": 6,
+          "zIndex": 5,
           "widthName": 60,
           "widthComment": 71.5703125
         },
@@ -1708,7 +1731,7 @@
           "active": false,
           "left": 720.9006,
           "top": 1004.3333,
-          "zIndex": 10,
+          "zIndex": 9,
           "widthName": 79.06689453125,
           "widthComment": 102.140625
         },
@@ -1814,9 +1837,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1282.667,
-          "top": 516.333,
-          "zIndex": 5,
+          "left": 1277.1114,
+          "top": 519.6663,
+          "zIndex": 13,
           "widthName": 83.6435546875,
           "widthComment": 115.140625
         },
@@ -2016,7 +2039,7 @@
           "active": false,
           "left": 1286.6668,
           "top": 756.726,
-          "zIndex": 7,
+          "zIndex": 6,
           "widthName": 77.2958984375,
           "widthComment": 115.140625
         },
@@ -2067,7 +2090,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 919.82958984375,
-          "y": 561,
+          "y": 581.5,
           "direction": "bottom"
         },
         "end": {
@@ -2119,7 +2142,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 415.375,
+          "y": 423.0625,
           "direction": "left"
         },
         "end": {
@@ -2223,7 +2246,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 357.125,
+          "y": 359.6875,
           "direction": "left"
         },
         "end": {
@@ -2249,7 +2272,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 1125.6591796875,
-          "y": 366.83333333333337,
+          "y": 370.25,
           "direction": "right"
         },
         "end": {
@@ -2275,7 +2298,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 473.625,
+          "y": 486.4375,
           "direction": "left"
         },
         "end": {
@@ -2309,8 +2332,8 @@
           "columnIds": [
             "f4596fae-b750-4502-b621-c6599ec1b90d"
           ],
-          "x": 1465.829841796875,
-          "y": 516.333,
+          "x": 1460.274241796875,
+          "y": 519.6663,
           "direction": "top"
         },
         "constraintName": "fk_chat_room_to_chat_message",
@@ -2327,7 +2350,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 1125.6591796875,
-          "y": 444.50000000000006,
+          "y": 454.75,
           "direction": "right"
         },
         "end": {
@@ -2335,8 +2358,8 @@
           "columnIds": [
             "03bc90d4-5682-49fd-96d2-13613fd710b2"
           ],
-          "x": 1282.667,
-          "y": 591.833,
+          "x": 1277.1114,
+          "y": 595.1663,
           "direction": "left"
         },
         "constraintName": "fk_member_to_chat_message",
@@ -2379,7 +2402,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 1125.6591796875,
-          "y": 522.1666666666667,
+          "y": 539.25,
           "direction": "right"
         },
         "end": {
@@ -2405,7 +2428,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 531.875,
+          "y": 549.8125,
           "direction": "left"
         },
         "end": {
