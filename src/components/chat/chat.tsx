@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { GetChatMessageListRequest } from 'apis/apis';
+import './style.css';
 
 interface Message {
     sender: string;
@@ -82,12 +83,30 @@ const ChatRoom: React.FC = () => {
         }
     };
 
+    const formatTimestamp = (timestamp: string): string => {
+        const date = new Date(timestamp);
+        const options: Intl.DateTimeFormatOptions = {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+        };
+        return date.toLocaleString('ko-KR', options);
+    };
+
     return (
         <div className="chat-room">
             <div className="messages">
                 {messages.map((msg, index) => (
-                    <div key={index} className="message">
-                        <strong>{msg.sender}: </strong>{msg.message} <em>{msg.timestamp}</em>
+                    <div
+                        key={index}
+                        className={`message ${msg.sender === username ? 'sender' : 'receiver'}`}
+                    >
+                        <div className="message-container">
+                            <div className="message-content">
+                                <div className="text">{msg.message}</div>
+                            </div>
+                            <div className="timestamp">{formatTimestamp(msg.timestamp)}</div>
+                        </div>
                     </div>
                 ))}
             </div>

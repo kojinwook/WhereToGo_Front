@@ -1,47 +1,47 @@
-body {
-    font-family: Arial, sans-serif;
-}
-
-.App-header {
-    background-color: #282c34;
-    min-height: 10vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
+/* chatRoom.css */
 .chat-room {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    height: 100vh;
+    justify-content: space-between;
 }
 
 .messages {
-    width: 100%;
-    max-width: 600px;
-    height: 400px;
-    border: 1px solid #ccc;
-    overflow-y: scroll;
-    margin-bottom: 20px;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .message {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-input[type="text"] {
-    width: 100%;
-    max-width: 600px;
-    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
     margin-bottom: 10px;
 }
 
-button {
-    padding: 10px 20px;
+.message-container {
+    display: flex;
+    align-items: flex-start; /* 메시지와 타임스탬프를 수직으로 정렬합니다 */
+}
+
+.message-content {
+    max-width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    background-color: #dcf8c6; /* 발신자의 메시지 배경색 */
+}
+
+.message.receiver .message-content {
+    background-color: #f1f0f0; /* 수신자의 메시지 배경색 */
+}
+
+.message .message-content .text {
+    word-wrap: break-word;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: gray;
+    align-self: flex-start; /* 타임스탬프를 왼쪽 정렬합니다 */
+    margin-top: 5px; /* 위쪽 여백 추가 */
+    margin-left: 10px; /* 왼쪽 여백 설정 */
 }
