@@ -335,8 +335,8 @@ export const getAnswerRequest = async (questionId: number | string) => {
         });
     return result;
 };
-export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: string[], accessToken: string) => {
-    const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList }, authorization(accessToken))
+export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: string[], nickname: string, accessToken: string) => {
+    const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList, nickname }, authorization(accessToken))
         .then(response => {
             const responseBody: ResponseDto = response.data;
             return responseBody;
