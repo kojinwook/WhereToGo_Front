@@ -244,8 +244,8 @@ export const GetChatMessageRequest = async (messageId: string) => {
     return result;
 };
 
-export const PostChatRoomRequest = async (requestBody: PostChatRoomRequestDto,accessToken: string) => {
-    const result = await axios.post(POST_CHAT_ROOM_URL(), requestBody, authorization(accessToken))
+export const PostChatRoomRequest = async (requestBody: PostChatRoomRequestDto) => {
+    const result = await axios.post(POST_CHAT_ROOM_URL(), requestBody)
         .then(response => {
             const responseBody: PostChatRoomResponseDto = response.data;
             return responseBody;
