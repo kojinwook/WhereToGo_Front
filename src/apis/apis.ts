@@ -2,7 +2,7 @@ import axios from "axios";
 import PostFestivalResponseDto from "./response/festival/post-festival-list.response.dto";
 import { ResponseDto } from "./response/response";
 import { PatchFestivalRequestDto } from "./request/festival/festival";
-import { Festival } from "types/interface/festival.interface";
+import Festival from "types/interface/festival.interface";
 import GetAverageRateResponseDto from "./response/review/get-average-rate.response.dto";
 import PatchReviewRequestDto from "./request/review/patch-review.request.dto";
 import GetReviewResponseDto from "./response/review/get-review.response.dto";

@@ -2,7 +2,7 @@ import { GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest } from 
 import React, { useEffect, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
-import { Review } from 'types/interface/review.interface';
+import Review from 'types/interface/review.interface';
 import './style.css'
 
 function useQuery() {
@@ -130,7 +130,7 @@ export default function FestivalDetail() {
         window.open(kakaoLink);
     };
 
-    const renderStars = (rating: number) => {
+    const renderStars = (rating: number, displayRatingValue?: boolean) => {
         const stars = [];
         for (let i = 1; i <= 5; i++) {
             if (i <= rating) {
@@ -141,7 +141,12 @@ export default function FestivalDetail() {
                 stars.push(<i key={i} className="far fa-star" style={{ color: 'gold' }}></i>);
             }
         }
-        return <div className="star-container">{stars}</div>;
+        return (
+            <div className="star-container">
+                {stars}
+                {displayRatingValue && <span className="rating-value"> {rating.toFixed(1)}</span>}
+            </div>
+        );
     };
 
     const reviewWriteButtonClickHandler = (contentId: string) => {
@@ -157,7 +162,7 @@ export default function FestivalDetail() {
                 </div>
 
                 <div className="festival-title">{festival.title}</div>
-                <div>{renderStars(averageRate)}</div>
+                <div><strong>{renderStars(averageRate, true)}</strong></div> 
             </div>
 
             <div className='festival-btn'>
