@@ -2,7 +2,7 @@ import axios from "axios";
 import PostFestivalResponseDto from "./response/festival/post-festival-list.response.dto";
 import { ResponseDto } from "./response/response";
 import { PatchFestivalRequestDto } from "./request/festival/festival";
-import { Festival } from "types/interface/festival.interface";
+import Festival from "types/interface/festival.interface";
 import GetAverageRateResponseDto from "./response/review/get-average-rate.response.dto";
 import PatchReviewRequestDto from "./request/review/patch-review.request.dto";
 import GetReviewResponseDto from "./response/review/get-review.response.dto";
@@ -42,6 +42,25 @@ const GET_CHAT_MESSAGE = (messageId: string) => `${API_DOMAIN}/chat/message/by-i
 const POST_CHAT_ROOM_URL = () => `${API_DOMAIN}/chat/rooms`;
 const GET_CHAT_ROOM_URL = (userId: string) => `${API_DOMAIN}/chat/room?userId=${userId}`;
 const GET_CHAT_ROOM_LIST_URL = () => `${API_DOMAIN}/chat/rooms`;
+
+const ADMIN_SIGN_IN_URL = () => `${API_DOMAIN}/auth/admin-sign-in`;
+const ADMIN_SIGN_UP_URL = () => `${API_DOMAIN}/auth/admin-sign-up`;
+const SIGN_IN_URL = () => `${API_DOMAIN}/auth/sign-in`;
+const SIGN_UP_URL = () => `${API_DOMAIN}/auth/sign-up`;
+const ID_CHECK_URL = () => `${API_DOMAIN}/auth/userId-check`;
+const NICKNAME_CHECK_URL = () => `${API_DOMAIN}/auth/nickname-check`;
+const EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/email-certification`;
+const CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/check-certification`;
+
+const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
+const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
+const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
+const PATCH_PASSWORD_URL = (userId: string) => `${API_DOMAIN}/user/change-password/${userId}`;
+const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
+const WIDTHDRAWAL_USER_URL = (userId: string) => `${API_DOMAIN}/user/withdrawal/${userId}`;
+
+
+
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)

@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 import { fileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/apis';
 import { useLocation } from 'react-router-dom';
 import PatchReviewRequestDto from 'apis/request/review/patch-review.request.dto';
-import { Review } from 'types/interface/review.interface';
+import Review from 'types/interface/review.interface';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
