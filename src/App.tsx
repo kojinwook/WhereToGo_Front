@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import FestivalPage from 'views/festival/list/festival-list';
@@ -9,8 +9,40 @@ import ReviewWritePage from 'views/festival/review/write/write';
 import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
 import ChatRoomCreate from 'components/chat/create';
+import SignUp from 'components/signup';
+import SignIn from 'components/signin';
+import useLoginUserStore from 'store/login-user.store';
+import { useCookies } from 'react-cookie';
+import { GetSignInUserResponseDto } from 'apis/response/user';
+import { ResponseDto } from 'apis/response/response';
+import User from 'types/interface/user.interface';
+import { GetSignInUserRequest } from 'apis/apis';
 
 function App() {
+
+  const { setLoginUser, resetLoginUser } = useLoginUserStore();
+  const [cookies, setCookies] = useCookies();
+
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
+
+    if (!responseBody) return;
+    const { code } = responseBody;
+
+    if (code === 'DBE') {
+      resetLoginUser();
+      return;
+    }
+    const loginUser: User = { ...responseBody as GetSignInUserResponseDto };
+    setLoginUser(loginUser);
+  }
+
+  useEffect(() => {
+    if (!cookies.accessToken) {
+      resetLoginUser();
+      return;
+    }
+    GetSignInUserRequest(cookies.accessToken).then(getSignInUserResponse)
+  }, [cookies.accessToken]);
 
   return (
     <Routes>
@@ -26,6 +58,8 @@ function App() {
         <Route path="create" element={<ChatRoomCreate />} />
         <Route path="" element={<ChatRoom />} />
       </Route>
+      <Route path='/signup' element={<SignUp/>}></Route>
+      <Route path='/signin' element={<SignIn/>}></Route>
     </Routes>
   );
 }
