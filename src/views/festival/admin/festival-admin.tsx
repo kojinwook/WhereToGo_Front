@@ -12,6 +12,13 @@ const FestivalAdmin: React.FC = () => {
     const { formData, setFormData, resetFormData } = useFestivalStore();
     const [cookies, setCookies] = useCookies();
 
+    const formatDate = (dateStr: string) => {
+        const year = dateStr.substring(0, 4);
+        const month = dateStr.substring(4, 6);
+        const day = dateStr.substring(6, 8);
+        return `${year}년 ${month}월 ${day}일`;
+    }
+
     useEffect(() => {
         const fetchFestivalList = async () => {
             try {
@@ -66,7 +73,6 @@ const FestivalAdmin: React.FC = () => {
 
     if (!festivalList) return null;
 
-
     return (
         <div>
             {festivalList.map((festival, index) => (
@@ -75,8 +81,8 @@ const FestivalAdmin: React.FC = () => {
                         <p><strong>Title:</strong> {festival.title}</p>
                         <p><strong>Address:</strong> {festival.address1}</p>
                         <p><strong>First Image:</strong> <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /></p>
-                        <p><strong>Start Date:</strong> {festival.startDate}</p>
-                        <p><strong>End Date:</strong> {festival.endDate}</p>
+                        <p><strong>Start Date:</strong> {formatDate(festival.startDate)}</p>
+                        <p><strong>End Date:</strong> {formatDate(festival.endDate)}</p>
                         <p><strong>Telephone:</strong> {festival.tel}</p>
                         <p><strong>Content ID:</strong> {festival.contentId}</p>
                         <p><strong>Homepage:</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
@@ -97,9 +103,9 @@ const FestivalAdmin: React.FC = () => {
                             <label>First Image:</label>
                             <input type="text" name="firstImage" value={formData?.firstImage || ''} onChange={handleChange} />
                             <label>Start Date:</label>
-                            <input type="text" name="startDate" value={formData?.startDate || ''} onChange={handleChange} />
+                            <input type="text" name="startDate" value={formatDate(formData?.startDate || '')} onChange={handleChange} />
                             <label>End Date:</label>
-                            <input type="text" name="endDate" value={formData?.endDate || ''} onChange={handleChange} />
+                            <input type="text" name="endDate" value={formatDate(formData?.endDate || '')} onChange={handleChange} />
                             <label>Telephone:</label>
                             <input type="text" name="tel" value={formData?.tel || ''} onChange={handleChange} />
                             <label>Content ID:</label>

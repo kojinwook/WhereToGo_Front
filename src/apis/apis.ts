@@ -6,6 +6,12 @@ import { Festival } from "types/interface/festival.interface";
 import GetAverageRateResponseDto from "./response/review/get-average-rate.response.dto";
 import PatchReviewRequestDto from "./request/review/patch-review.request.dto";
 import GetReviewResponseDto from "./response/review/get-review.response.dto";
+import PostChatMessageRequestDto from "./request/chat/post-chat-message.request.dto";
+import PostChatRoomRequestDto from "./request/chat/post-chat-room.request.dto";
+import GetChatMessageListResponseDto from "./response/chat/get-chat-message-list.response.dto";
+import GetChatMessageResponseDto from "./response/chat/get-chat-message.response.dto";
+import PostChatRoomResponseDto from "./response/chat/post-chat-room.response.to";
+import GetChatRoomListResponseDto from "./response/chat/get-chat-room-list.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -23,11 +29,19 @@ const GET_FESTIVAL_LIST_URL = () => `${API_DOMAIN}/festival/getFestivalList`;
 const GET_SEARCH_FESTIVAL_LIST_URL = (areaCode: string) => `${API_DOMAIN}/festival/searchFestivalList?areaCode=${areaCode}`;
 const GET_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/getFestival?contentId=${contentId}`;
 const PATCH_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/patchFestival?contentId=${contentId}`;
+
 const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
 const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
 const GET_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/getReview?reviewId=${reviewId}`;
 const PATCH_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/patchReview?reviewId=${reviewId}`;
 const GET_REVIEW_LIST_URL = (contentId: string | number) => `${API_DOMAIN}/review/getReviewList?contentId=${contentId}`;
+
+const POST_CHAT_MESSAGE_URL = () => `${API_DOMAIN}/chat/message`;
+const GET_CHAT_MESSAGE_LIST_URL = (roomId: string) => `${API_DOMAIN}/chat/messages/by-room?roomId=${roomId}`;
+const GET_CHAT_MESSAGE = (messageId: string) => `${API_DOMAIN}/chat/message/by-id?messageId=${messageId}`;
+const POST_CHAT_ROOM_URL = () => `${API_DOMAIN}/chat/rooms`;
+const GET_CHAT_ROOM_URL = (userId: string) => `${API_DOMAIN}/chat/room?userId=${userId}`;
+const GET_CHAT_ROOM_LIST_URL = () => `${API_DOMAIN}/chat/rooms`;
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
@@ -163,6 +177,84 @@ export const GetReviewListRequest = async (contentId: string | number) => {
     const result = await axios.get(GET_REVIEW_LIST_URL(contentId))
         .then(response => {
             const responseBody: GetReviewResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const PostChatMessageRequest = async (requestBody: PostChatMessageRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_CHAT_MESSAGE_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: ResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetChatMessageListRequest = async (roomId: string) => {
+    const result = await axios.get(GET_CHAT_MESSAGE_LIST_URL(roomId))
+        .then(response => {
+            const responseBody: GetChatMessageListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetChatMessageRequest = async (messageId: string) => {
+    const result = await axios.get(GET_CHAT_MESSAGE(messageId))
+        .then(response => {
+            const responseBody: GetChatMessageResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const PostChatRoomRequest = async (requestBody: PostChatRoomRequestDto,accessToken: string) => {
+    const result = await axios.post(POST_CHAT_ROOM_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PostChatRoomResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetChatRoomRequest = async (userId: string) => {
+    const result = await axios.get(GET_CHAT_ROOM_URL(userId))
+        .then(response => {
+            const responseBody: PostChatRoomResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetChatRoomListRequest = async () => {
+    const result = await axios.get(GET_CHAT_ROOM_LIST_URL())
+        .then(response => {
+            const responseBody: GetChatRoomListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
