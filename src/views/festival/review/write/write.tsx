@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { fileUploadRequest, PostReviewRequest } from 'apis/apis';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -11,6 +11,7 @@ export default function ReviewWritePage() {
     const query = useQuery();
     const contentId = query.get('contentId');
     let contentIds = Number(contentId);
+    const navigate = useNavigate();
     const [rate, setRate] = useState<number>(0);
     const [review, setReview] = useState<string>('');
     const [imageFileList, setImageFileList] = useState<File[]>([]);
@@ -68,7 +69,6 @@ export default function ReviewWritePage() {
         const response = await PostReviewRequest(contentIds, rate, review, ImageList, cookies.accessToken);
         if (response.code === 'SU') {
             alert('리뷰가 성공적으로 등록되었습니다.');
-            // 리뷰 등록 성공 후 추가적으로 필요한 처리
         } else {
             alert('리뷰 등록에 실패했습니다.');
         }
