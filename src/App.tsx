@@ -23,6 +23,7 @@ function App() {
       </Route>
       <Route path='chat' element={<ChatRoom/>}/>
     </Routes>
+    
   );
 }
 
