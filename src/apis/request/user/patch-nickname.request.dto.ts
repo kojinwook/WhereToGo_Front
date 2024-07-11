@@ -1,4 +1,4 @@
-export default interface PatchPasswordRequestDto {
+export default interface PatchNicknameRequestDto {
     password : string;
     nickname: string;
 }

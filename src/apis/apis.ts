@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import PostFestivalResponseDto from "./response/festival/post-festival-list.response.dto";
 import { ResponseDto } from "./response/response";
 import { PatchFestivalRequestDto } from "./request/festival/festival";
@@ -12,6 +12,18 @@ import GetChatMessageListResponseDto from "./response/chat/get-chat-message-list
 import GetChatMessageResponseDto from "./response/chat/get-chat-message.response.dto";
 import PostChatRoomResponseDto from "./response/chat/post-chat-room.response.to";
 import GetChatRoomListResponseDto from "./response/chat/get-chat-room-list.response.dto";
+import AdminSignUpRequsetDto from "./request/auth/admin-sign-up.request.dto";
+import { AdminSignInRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, nicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, userIdCheckRequestDto } from "./request/auth";
+import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
+import nicknameCheckResponseDto from "./response/auth/nickname-check.response.dto";
+import { GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
+import AdminSignUpRequestDto from "./request/auth/admin-sign-up.request.dto";
+import userIdCheckResponseDto from "./response/auth/userId-check.response.dto";
+import PatchNicknameRequestDto from "./request/user/patch-nickname.request.dto";
+import PatchPasswordRequestDto from "./request/user/patch-password.request.dto";
+import WithdrawalUserRequestDto from "./request/user/withdrawal-user.request.dto";
+import PasswordRecoveryRequestDto from "./request/user/password-recovery.request.dto";
+import { ResponseBody } from "types";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -22,6 +34,17 @@ const multipartFormData = { headers: { 'Url-Type': 'multipart/form-data' } };
 
 const authorization = (accessToken: string) => {
     return { headers: { Authorization: `Bearer ${accessToken}` } }
+};
+
+const responseHandler = <T>(response: AxiosResponse<any, any>) => {
+    const responseBody: T = response.data;
+    return responseBody;
+};
+
+const errorHandler = (error: any) => {
+    if (!error.response || !error.response.data) return null;
+    const responseBody: ResponseDto = error.response.data;
+    return responseBody;
 };
 
 const POST_FESTIVAL_LIST_URL = (date: string) => `${API_DOMAIN}/festival/saveFestivalList?eventStartDate=${date}`;
@@ -59,6 +82,152 @@ const PATCH_PASSWORD_URL = (userId: string) => `${API_DOMAIN}/user/change-passwo
 const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
 const WIDTHDRAWAL_USER_URL = (userId: string) => `${API_DOMAIN}/user/withdrawal/${userId}`;
 
+
+export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
+    const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
+        .then(responseHandler<AdminSignInResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const AdminSignUpRequest = async (requestBody: AdminSignUpRequestDto) => {
+    const result = await axios.post(ADMIN_SIGN_UP_URL(), requestBody)
+        .then(response => {
+            const responseBody: AdminSignUpResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const SignInRequest = async (requestBody: SignInRequestDto) => {
+    const result = await axios.post(SIGN_IN_URL(), requestBody)
+        .then(responseHandler<SignInResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const SignupRequest = async (requestBody: SignUpRequestDto) => {
+    const result = await axios.post(SIGN_UP_URL(), requestBody)
+        .then(responseHandler<SignUpResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const UserIdCheckRequest = async (requestBody: userIdCheckRequestDto) => {
+    const result = await axios.post(ID_CHECK_URL(), requestBody)
+        .then(responseHandler<userIdCheckResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const NicknameCheckRequest = async (requestBody: nicknameCheckRequestDto) => {
+    const result = await axios.post(NICKNAME_CHECK_URL(), requestBody)
+        .then(responseHandler<nicknameCheckResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const EmailCertificationRequest = async (requestBody: EmailCertificationRequestDto) => {
+    const result = await axios.post(EMAIL_CERTIFICATION_URL(), requestBody)
+        .then(responseHandler<EmailCertificationResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const CheckCertificationRequest = async (requestBody: CheckCertificationRequestDto) => {
+    const result = await axios.post(CHECK_CERTIFICATION_URL(), requestBody)
+        .then(responseHandler<CheckCertificationResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const GetSignInUserRequest = async (accessToken: string) => {
+    const result = await axios.get(GET_SIGN_IN_USER_URL(), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetSignInUserResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const PatchNicknameRequest = async (requestBody: PatchNicknameRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_NICKNAME_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchNicknameResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetUserRequest = async (userId: string, accessToken: string) => {
+    const result = await axios.get(GET_USER_URL(userId), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetUserResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+};
+
+export const PatchPasswordRequest = async (userId: string, requestBody: PatchPasswordRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_PASSWORD_URL(userId), requestBody, authorization(accessToken))
+        .then(Response => {
+            const responseBody: ResponseDto = Response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if(!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+};
+
+export const WithdrawUserRequest = async (userId: string, requestBody: WithdrawalUserRequestDto) => {
+    const config = { data: requestBody };
+    const result = await axios.delete(WIDTHDRAWAL_USER_URL(userId), config)
+        .then(response => {
+            const responseBody: ResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        });
+    return result;
+};
+
+export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryRequestDto): Promise<ResponseBody<PasswordRecoveryResponseDto>> => {
+    try {
+        const response = await axios.post(RECOVER_PASSWORD_URL(), requestBody);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return error.response.data;
+        }
+        throw error;
+    }
+};
 
 
 
