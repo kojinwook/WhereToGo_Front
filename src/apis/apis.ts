@@ -12,6 +12,8 @@ import GetChatMessageListResponseDto from "./response/chat/get-chat-message-list
 import GetChatMessageResponseDto from "./response/chat/get-chat-message.response.dto";
 import PostChatRoomResponseDto from "./response/chat/post-chat-room.response.to";
 import GetChatRoomListResponseDto from "./response/chat/get-chat-room-list.response.dto";
+import GetAllReviewResponseDto from "./response/review/get-all-review.response.dto";
+import GetReviewListResponseDto from "./response/review/get-review-list.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -34,7 +36,8 @@ const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
 const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
 const GET_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/getReview?reviewId=${reviewId}`;
 const PATCH_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/patchReview?reviewId=${reviewId}`;
-const GET_REVIEW_LIST_URL = (contentId: string | number) => `${API_DOMAIN}/review/getReviewList?contentId=${contentId}`;
+const GET_REVIEW_LIST_URL = (userId: string | number) => `${API_DOMAIN}/review/getReviewList?userId=${userId}`;
+const GET_ALL_REVIEW_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAllReview?contentId=${contentId}`;
 
 const POST_CHAT_MESSAGE_URL = () => `${API_DOMAIN}/chat/message`;
 const GET_CHAT_MESSAGE_LIST_URL = (roomId: string) => `${API_DOMAIN}/chat/messages/by-room?roomId=${roomId}`;
@@ -192,10 +195,10 @@ export const PatchReviewRequest = async (reviewId: string | number, requestBody:
     return result;
 };
 
-export const GetReviewListRequest = async (contentId: string | number) => {
-    const result = await axios.get(GET_REVIEW_LIST_URL(contentId))
+export const GetReviewListRequest = async (userId: string | number) => {
+    const result = await axios.get(GET_REVIEW_LIST_URL(userId))
         .then(response => {
-            const responseBody: GetReviewResponseDto = response.data;
+            const responseBody: GetReviewListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -204,6 +207,19 @@ export const GetReviewListRequest = async (contentId: string | number) => {
         })
     return result;
 };
+
+export const GetAllReviewRequest = async (contentId: string | number) => {
+    const result = await axios.get(GET_ALL_REVIEW_URL(contentId))
+        .then(response => {
+            const responseBody: GetAllReviewResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
 
 export const PostChatMessageRequest = async (requestBody: PostChatMessageRequestDto, accessToken: string) => {
     const result = await axios.post(POST_CHAT_MESSAGE_URL(), requestBody, authorization(accessToken))

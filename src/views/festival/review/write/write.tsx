@@ -50,6 +50,8 @@ export default function ReviewWritePage() {
         setImagePreviews(newImagePreviews);
     };
 
+    console.log(imageFileList)
+
     const handleSubmit = async () => {
         // if (!cookies.accessToken) {
         //     alert('로그인이 필요합니다.');
@@ -67,6 +69,10 @@ export default function ReviewWritePage() {
             }
         }
 
+        if (!rate || !review) {
+            alert('별점과 내용을 입력해주세요.');
+            return;
+        }
         const response = await PostReviewRequest(contentIds, rate, review, ImageList, cookies.accessToken);
         if (response.code === 'SU') {
             alert('리뷰가 성공적으로 등록되었습니다.');
@@ -76,8 +82,6 @@ export default function ReviewWritePage() {
             alert('리뷰 등록에 실패했습니다.');
         }
     };
-
-    console.log(rate)
 
     return (
         <div className='container'>
