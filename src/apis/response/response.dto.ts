@@ -11,6 +11,7 @@ export default interface ResponseDto{
     festival: Festival;
     review: Review;
     reviews: Review[];
+    roomId: string;
     average: Record<string, number>;
     chatMessageList: ChatMessage[];
 }
