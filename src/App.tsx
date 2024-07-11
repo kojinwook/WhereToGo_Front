@@ -8,6 +8,7 @@ import FestivalDetail from 'views/festival/detail/festival-detail';
 import ReviewWritePage from 'views/festival/review/write/write';
 import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
+import ChatRoomCreate from 'components/chat/create';
 
 function App() {
 
@@ -21,9 +22,11 @@ function App() {
         <Route path="review/write" element={<ReviewWritePage />} />
         <Route path="review/update" element={<ReviewUpdatePage />} />
       </Route>
-      <Route path='chat' element={<ChatRoom/>}/>
+      <Route path='/chat'>
+        <Route path="create" element={<ChatRoomCreate />} />
+        <Route path="" element={<ChatRoom />} />
+      </Route>
     </Routes>
-    
   );
 }
 
