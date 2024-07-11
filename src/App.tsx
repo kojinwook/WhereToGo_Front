@@ -9,6 +9,15 @@ import ReviewWritePage from 'views/festival/review/write/write';
 import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
 import ChatRoomCreate from 'components/chat/create';
+import InquireDetail from 'views/inquire/detail/inquire-detail';
+import InquireList from 'views/inquire/main/inquire-main';
+import InquireUpdate from 'views/inquire/update/inquire-update';
+import InquireWrite from 'views/inquire/write/inquire-write';
+import NoticeDetail from 'views/notice/detail/notice-detail';
+import NoticeWrite from 'views/notice/write/notice-write';
+import NoticeUpdate from 'views/notice/update/notice-update';
+import NoticeMain from 'views/notice/main/notice-main';
+
 
 function App() {
 
@@ -25,6 +34,19 @@ function App() {
       <Route path='/chat'>
         <Route path="create" element={<ChatRoomCreate />} />
         <Route path="" element={<ChatRoom />} />
+      </Route>
+      <Route path='/inquire'>
+      <Route path="main" element={<InquireList />} />
+      <Route path="detail" element={<InquireDetail />} />
+      <Route path="write" element={<InquireWrite />} />
+      <Route path="update" element={<InquireUpdate />} />
+      <Route path="list" element={<InquireList />} />
+      </Route>
+      <Route path='/notice'>
+      <Route path="main" element={<NoticeMain />} />
+      <Route path="detail" element={<NoticeDetail />} />
+      <Route path="write" element={<NoticeWrite />} />
+      <Route path="update" element={<NoticeUpdate />} />
       </Route>
     </Routes>
   );
