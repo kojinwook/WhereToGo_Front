@@ -1,8 +1,9 @@
 import { GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
 import { Review } from 'types/interface/review.interface';
+import './style.css'
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -12,6 +13,7 @@ export default function FestivalDetail() {
 
     const query = useQuery();
     const contentId = query.get('contentId');
+    const navigate = useNavigate();
     const [festival, setFestival] = useState<Festival>();
     const [averageRate, setAverageRate] = useState<number>(0);
     const [reviews, setReviews] = useState<Review[]>([]);
@@ -139,46 +141,67 @@ export default function FestivalDetail() {
                 stars.push(<i key={i} className="far fa-star" style={{ color: 'gold' }}></i>);
             }
         }
-        return stars;
+        return <div className="star-container">{stars}</div>;
     };
+
+    const reviewWriteButtonClickHandler = (contentId: string) => {
+        navigate(`/festival/review/write?contentId=${contentId}`)
+    }
 
     if (!festival) return null;
     return (
-        <div>
-            <p><strong>First Image:</strong> <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /></p>
-            <p><strong>Title:</strong> {festival.title}</p>
-            <div>{renderStars(averageRate)}</div>
-            <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+        <div className="festival-detail-container">
+            <div className='festival-main'>
+                <div className="festival-image">
+                    <img src={festival.firstImage} alt={festival.title}/>
+                </div>
+
+                <div className="festival-title">{festival.title}</div>
+                <div>{renderStars(averageRate)}</div>
+            </div>
+
+            <div className='festival-btn'>
                 <button onClick={() => { setShowMap(true); setShowReviews(false); }}>정보</button>
                 <button onClick={() => { setShowMap(false); setShowReviews(true); }}>후기</button>
             </div>
-            {showMap && (
-                <div>
-                    <p><strong>주소:</strong> {festival.address1}</p>
-                    <p><strong>기간:</strong> {festival.startDate} ~ {festival.endDate}</p>
-                    <p><strong>번호:</strong> {festival.tel}</p>
-                    <p><strong>웹사이트:</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
-                    <p><strong>태그:</strong> {festival.tags}</p>
-                    <button onClick={handleNavigateClick}>길찾기</button>
-                    <div id="map" style={{ width: '50%', height: '400px' }}></div>
-                </div>
-            )}
-            {showReviews && (
-                <div>
-                    <h2>리뷰 리스트</h2>
-                    {reviews.length > 0 ? (
-                        reviews.map((review, index) => (
-                            <div key={index}>
-                                <p><strong>Rate:</strong> {renderStars(review.rate)}</p>
-                                <p><strong>Review:</strong> {review.review}</p>
-                                <p><strong>작성일:</strong> {review.writeDatetime}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>리뷰가 없습니다.</p>
-                    )}
-                </div>
-            )}
+
+            <div className="festival-details">
+                {showMap && (
+                    <div>
+                        <div className='festival-information'>
+                            <p><strong>주소 | </strong>{festival.address1}</p>
+                            <p><strong>기간 | </strong>{festival.startDate} ~ {festival.endDate}</p>
+                            <p><strong>시간 | </strong></p>
+                            <p><strong>번호 | </strong>{festival.tel}</p>
+                            <p><strong>웹사이트 | </strong>{festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
+                            <p><strong>태그 | </strong> {festival.tags}</p>
+                        </div>
+                        <div className="map-container">
+                            <button onClick={handleNavigateClick}>길찾기</button>
+                            <div id="map"></div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <div className="festival-review">
+                {showReviews && (
+                    <div>
+                        <button className='review-btn' onClick={() => reviewWriteButtonClickHandler(festival.contentId)}>리뷰 작성</button>
+                        <h2>리뷰 리스트</h2>
+                        {reviews.length > 0 ? (
+                            reviews.map((review, index) => (
+                                <div key={index}>
+                                    <p>{renderStars(review.rate)} {review.writeDatetime}</p>
+                                    <p><strong>Review:</strong> {review.review}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>리뷰가 없습니다.</p>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     )
 }

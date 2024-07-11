@@ -1,7 +1,8 @@
+import { fileUploadRequest, PostReviewRequest } from 'apis/apis';
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { fileUploadRequest, PostReviewRequest } from 'apis/apis';
 import { useLocation, useNavigate } from 'react-router-dom';
+import './style.css';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -69,6 +70,8 @@ export default function ReviewWritePage() {
         const response = await PostReviewRequest(contentIds, rate, review, ImageList, cookies.accessToken);
         if (response.code === 'SU') {
             alert('리뷰가 성공적으로 등록되었습니다.');
+            navigate(`/festival/detail?contentId=${contentId}`)
+            // 리뷰 등록 성공 후 추가적으로 필요한 처리
         } else {
             alert('리뷰 등록에 실패했습니다.');
         }
@@ -77,9 +80,9 @@ export default function ReviewWritePage() {
     console.log(rate)
 
     return (
-        <div>
-            <h1>리뷰 작성 페이지</h1>
-            <label>별점:
+        <div className='container'>
+            <p><strong>별점</strong></p>
+            <label>
                 {[...Array(5)].map((_, index) => (
                     <i
                         key={index}
@@ -91,14 +94,14 @@ export default function ReviewWritePage() {
                 ))}
                 <span style={{ marginLeft: '10px', fontSize: '1.5rem' }}>{rate}</span>
             </label>
-            <br />
-            <label>리뷰 내용:
+            <hr />
+            <p><strong>내용</strong></p>
+            <label className='content'>
                 <textarea value={review} onChange={handleReviewChange} />
             </label>
-            <br />
+            <hr />
+            <p><strong>사진</strong></p>
             <input type="file" multiple onChange={handleImageChange} />
-            <br />
-            <br />
             <div style={{ display: 'flex', marginTop: '10px' }}>
                 {imagePreviews.map((preview, index) => (
                     <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
@@ -116,7 +119,7 @@ export default function ReviewWritePage() {
                     </div>
                 ))}
             </div>
-            <br />
+            <hr />
             <button onClick={handleSubmit}>리뷰 등록</button>
         </div>
     );
