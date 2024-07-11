@@ -1,7 +1,5 @@
 
-
-
-import { User } from "types/interface/interface";
+import User from "types/interface/user.interface";
 import { ResponseDto } from "../response";
 
 
