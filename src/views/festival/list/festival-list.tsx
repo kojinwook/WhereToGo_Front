@@ -182,6 +182,13 @@ export default function FestivalPage() {
                 ))}
             </div>
             <div className='festival-list-content-container'>
+                <div className='festival-list-header'>
+                    <div>축제명</div>
+                    <div>주소</div>
+                    <div>별점</div>
+                    <div>날짜</div>
+                    {/* <div>찜</div> */}
+                </div>
                 {searchFestivalList.map((festival, index) => (
                     <div key={index} className='festival-list-content'>
                         <div className='festival-list-content-title' onClick={() => handleTitleClick(festival.contentId)}>{festival.title}</div>
