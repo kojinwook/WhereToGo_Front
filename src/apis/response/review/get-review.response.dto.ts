@@ -1,4 +1,4 @@
-import { Review } from "types/interface/review.interface";
+import Review from "types/interface/review.interface";
 import { ResponseDto } from "../response";
 
 export default interface GetReviewResponseDto extends ResponseDto{

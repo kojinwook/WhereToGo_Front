@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { GetFestivalListRequest, PatchFestivalRequest } from 'apis/apis';
 import { useCookies } from 'react-cookie';
-import { Festival } from 'types/interface/festival.interface';
+import Festival from 'types/interface/festival.interface';
 import './style.css';
 import useFestivalStore from 'store/festival.store';
 

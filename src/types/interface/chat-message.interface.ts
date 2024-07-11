@@ -1,4 +1,4 @@
-export interface ChatMessage {
+export default interface ChatMessage {
     messageId: string;
     message: string;
     messageKey: string;

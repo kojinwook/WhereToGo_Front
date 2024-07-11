@@ -1,7 +1,7 @@
 import { Festival } from "types/interface/interface";
 import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
-import { Review } from "types/interface/review.interface";
-import { ChatMessage } from "types/interface/chat-message.interface";
+import Review from "types/interface/review.interface";
+import ChatMessage from "types/interface/chat-message.interface";
 
 export default interface ResponseDto{
     code: ResponseCode;

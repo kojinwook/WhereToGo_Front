@@ -2,7 +2,7 @@ import { GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest } from 
 import React, { useEffect, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
-import { Review } from 'types/interface/review.interface';
+import Review from 'types/interface/review.interface';
 import './style.css'
 
 function useQuery() {
