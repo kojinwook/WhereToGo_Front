@@ -12,6 +12,7 @@ import GetChatMessageListResponseDto from "./response/chat/get-chat-message-list
 import GetChatMessageResponseDto from "./response/chat/get-chat-message.response.dto";
 import PostChatRoomResponseDto from "./response/chat/post-chat-room.response.to";
 import GetChatRoomListResponseDto from "./response/chat/get-chat-room-list.response.dto";
+import { GetUserResponseDto } from "./response/user";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
