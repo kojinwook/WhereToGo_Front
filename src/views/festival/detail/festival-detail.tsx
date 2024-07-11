@@ -1,4 +1,4 @@
-import { GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest } from 'apis/apis';
+import { GetAllReviewRequest, GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
@@ -58,7 +58,8 @@ export default function FestivalDetail() {
     useEffect(() => {
         const fetchReviewList = async () => {
             if (!contentId) return;
-            const response = await GetReviewListRequest(contentId);
+            const response = await GetAllReviewRequest(contentId);
+            console.log(response);
             if (response.code === 'SU') {
                 setReviews(response.reviews);
             } else {
@@ -158,11 +159,11 @@ export default function FestivalDetail() {
         <div className="festival-detail-container">
             <div className='festival-main'>
                 <div className="festival-image">
-                    <img src={festival.firstImage} alt={festival.title}/>
+                    <img src={festival.firstImage} alt={festival.title} />
                 </div>
 
                 <div className="festival-title">{festival.title}</div>
-                <div><strong>{renderStars(averageRate, true)}</strong></div> 
+                <div><strong>{renderStars(averageRate, true)}</strong></div>
             </div>
 
             <div className='festival-btn'>
@@ -198,6 +199,16 @@ export default function FestivalDetail() {
                             reviews.map((review, index) => (
                                 <div key={index}>
                                     <p>{renderStars(review.rate)} {review.writeDatetime}</p>
+                                    <p><strong>작성자:</strong> {review.nickname}</p>
+                                    <div className="review-images">
+                                        {review.imageList && review.imageList.length > 0 ? (
+                                            review.imageList.map((imageUrl, idx) => (
+                                                <img key={idx} src={imageUrl} alt={`이미지 ${idx}`} className="review-image" />
+                                            ))
+                                        ) : (
+                                            <p><strong>사진:</strong> 없음</p>
+                                        )}
+                                    </div>
                                     <p><strong>Review:</strong> {review.review}</p>
                                 </div>
                             ))

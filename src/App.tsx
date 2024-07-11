@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import FestivalPage from 'views/festival/list/festival-list';
@@ -18,8 +18,40 @@ import NoticeWrite from 'views/notice/write/notice-write';
 import NoticeUpdate from 'views/notice/update/notice-update';
 import NoticeMain from 'views/notice/main/notice-main';
 
+import SignUp from 'components/signup';
+import SignIn from 'components/signin';
+import useLoginUserStore from 'store/login-user.store';
+import { useCookies } from 'react-cookie';
+import { GetSignInUserResponseDto } from 'apis/response/user';
+import { ResponseDto } from 'apis/response/response';
+import User from 'types/interface/user.interface';
+import { GetSignInUserRequest } from 'apis/apis';
 
 function App() {
+
+  const { setLoginUser, resetLoginUser } = useLoginUserStore();
+  const [cookies, setCookies] = useCookies();
+
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
+
+    if (!responseBody) return;
+    const { code } = responseBody;
+
+    if (code === 'DBE') {
+      resetLoginUser();
+      return;
+    }
+    const loginUser: User = { ...responseBody as GetSignInUserResponseDto };
+    setLoginUser(loginUser);
+  }
+
+  useEffect(() => {
+    if (!cookies.accessToken) {
+      resetLoginUser();
+      return;
+    }
+    GetSignInUserRequest(cookies.accessToken).then(getSignInUserResponse)
+  }, [cookies.accessToken]);
 
   return (
     <Routes>
@@ -48,6 +80,8 @@ function App() {
       <Route path="write" element={<NoticeWrite />} />
       <Route path="update" element={<NoticeUpdate />} />
       </Route>
+      <Route path='/signup' element={<SignUp/>}></Route>
+      <Route path='/signin' element={<SignIn/>}></Route>
     </Routes>
   );
 }
