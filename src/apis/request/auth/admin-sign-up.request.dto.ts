@@ -1,6 +1,6 @@
 import { StringLiteral } from "typescript";
 
-export default interface AdminSignUpRequsetDto {
+export default interface AdminSignUpRequestDto {
     userId: string;
     nickname: string;
     password: string;
