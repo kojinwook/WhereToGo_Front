@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -17,6 +18,10 @@
     "react-router-dom": "^6.24.0",
     "react-scripts": "5.0.1",
     "socketjs-client": "^1.0.2",
+<<<<<<< HEAD
+=======
+    "sockjs-client": "^1.6.1",
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4",
     "zustand": "^4.5.4"
@@ -44,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/sockjs-client": "^1.5.4"
   }
 }

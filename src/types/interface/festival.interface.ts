@@ -1,4 +1,4 @@
-export interface Festival {
+export default interface Festival {
     title: string;
     startDate: string;
     endDate: string;
@@ -13,4 +13,6 @@ export interface Festival {
     contentId: string;
     contentTypeId: string;
     homepage: string;
+    rates: number;
+    tags: string[];
 }

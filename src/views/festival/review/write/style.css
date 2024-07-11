@@ -1,0 +1,107 @@
+.container {
+    max-width: 50%;
+    width: 100%;
+    margin: 30px auto;
+    padding: 20px ;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-sizing: border-box; /* 패딩 포함한 크기 계산 */
+    text-align: center; /* 내부 텍스트 및 요소 가운데 정렬 */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+hr {
+    width: 100%;
+    border: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+p {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #555;
+}
+
+label {
+    display: block;
+    margin: 10px 0;
+}
+
+textarea {
+    width: 90%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="file"] {
+    margin: 10px 0;
+}
+
+img {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #fff;
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+button i {
+    font-size: 1.5rem;
+    color: gray;
+}
+
+button i:hover {
+    color: red;
+}
+
+.content textarea {
+    resize: vertical;
+}
+
+.image-preview {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-preview div {
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.image-preview button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.image-preview img {
+    width: 100px;
+    height: auto;
+    margin-right: 10px;
+}

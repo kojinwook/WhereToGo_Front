@@ -3,9 +3,15 @@
     "version": "2.2.13",
     "width": 2000,
     "height": 2000,
+<<<<<<< HEAD
     "scrollTop": -440,
     "scrollLeft": -236.74490000000003,
     "zoomLevel": 0.8,
+=======
+    "scrollTop": 0,
+    "scrollLeft": -62.98237367802601,
+    "zoomLevel": 0.9,
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -205,6 +211,29 @@
               "widthName": 70.66259765625,
               "widthComment": 60,
               "widthDataType": 66.7587890625,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "4c1ea410-d6ee-4ba2-9103-0d5fbf473179",
+            "name": "nickname",
+            "comment": "닉네임",
+            "dataType": "VARCHAR(10)",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 82.1328125,
               "widthDefault": 60
             }
           },
@@ -621,7 +650,11 @@
           "active": false,
           "left": 86.6667,
           "top": 1015.8337,
+<<<<<<< HEAD
           "zIndex": 12,
+=======
+          "zIndex": 11,
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
           "widthName": 60,
           "widthComment": 70.61181640625
         },
@@ -1100,8 +1133,13 @@
           "left": 1295,
           "top": 45,
           "zIndex": 8,
+<<<<<<< HEAD
           "widthName": 77.88623046875,
           "widthComment": 70.61181640625
+=======
+          "widthName": 78.12744140625,
+          "widthComment": 71.5703125
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
         },
         "visible": true
       },
@@ -1709,8 +1747,13 @@
           "left": 720.9006,
           "top": 1004.3333,
           "zIndex": 9,
+<<<<<<< HEAD
           "widthName": 77.88623046875,
           "widthComment": 100.2236328125
+=======
+          "widthName": 79.06689453125,
+          "widthComment": 102.140625
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
         },
         "visible": true
       },
@@ -1814,11 +1857,19 @@
         ],
         "ui": {
           "active": false,
+<<<<<<< HEAD
           "left": 1282.667,
           "top": 516.333,
           "zIndex": 4,
           "widthName": 86.55078125,
           "widthComment": 113.2236328125
+=======
+          "left": 1277.1114,
+          "top": 519.6663,
+          "zIndex": 13,
+          "widthName": 83.6435546875,
+          "widthComment": 115.140625
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
         },
         "visible": true
       },
@@ -2017,8 +2068,13 @@
           "left": 1286.6668,
           "top": 756.726,
           "zIndex": 6,
+<<<<<<< HEAD
           "widthName": 75.72802734375,
           "widthComment": 113.2236328125
+=======
+          "widthName": 77.2958984375,
+          "widthComment": 115.140625
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
         },
         "visible": true
       }
@@ -2066,8 +2122,13 @@
           "columnIds": [
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
+<<<<<<< HEAD
           "x": 921.394287109375,
           "y": 561,
+=======
+          "x": 919.82958984375,
+          "y": 581.5,
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
           "direction": "bottom"
         },
         "end": {
@@ -2119,7 +2180,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 415.375,
+          "y": 423.0625,
           "direction": "left"
         },
         "end": {
@@ -2223,7 +2284,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 357.125,
+          "y": 359.6875,
           "direction": "left"
         },
         "end": {
@@ -2248,8 +2309,13 @@
           "columnIds": [
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
+<<<<<<< HEAD
           "x": 1128.78857421875,
           "y": 366.83333333333337,
+=======
+          "x": 1125.6591796875,
+          "y": 370.25,
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
           "direction": "right"
         },
         "end": {
@@ -2275,7 +2341,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 473.625,
+          "y": 486.4375,
           "direction": "left"
         },
         "end": {
@@ -2309,8 +2375,13 @@
           "columnIds": [
             "f4596fae-b750-4502-b621-c6599ec1b90d"
           ],
+<<<<<<< HEAD
           "x": 1464.985603515625,
           "y": 516.333,
+=======
+          "x": 1460.274241796875,
+          "y": 519.6663,
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
           "direction": "top"
         },
         "constraintName": "fk_chat_room_to_chat_message",
@@ -2326,8 +2397,13 @@
           "columnIds": [
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
+<<<<<<< HEAD
           "x": 1128.78857421875,
           "y": 444.50000000000006,
+=======
+          "x": 1125.6591796875,
+          "y": 454.75,
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
           "direction": "right"
         },
         "end": {
@@ -2335,8 +2411,8 @@
           "columnIds": [
             "03bc90d4-5682-49fd-96d2-13613fd710b2"
           ],
-          "x": 1282.667,
-          "y": 591.833,
+          "x": 1277.1114,
+          "y": 595.1663,
           "direction": "left"
         },
         "constraintName": "fk_member_to_chat_message",
@@ -2378,8 +2454,13 @@
           "columnIds": [
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
+<<<<<<< HEAD
           "x": 1128.78857421875,
           "y": 522.1666666666667,
+=======
+          "x": 1125.6591796875,
+          "y": 539.25,
+>>>>>>> 00aed9276ad3fc48f16f8676d07b1db954575037
           "direction": "right"
         },
         "end": {
@@ -2405,7 +2486,7 @@
             "ef8a1f68-d9af-47f5-b80b-6e3d324e182c"
           ],
           "x": 714,
-          "y": 531.875,
+          "y": 549.8125,
           "direction": "left"
         },
         "end": {

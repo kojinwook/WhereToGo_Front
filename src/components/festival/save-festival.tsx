@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { GetFestivalListRequest, PostFestivalListRequest } from '../../apis/apis';
-import { Festival } from 'types/interface/interface';
+import React, { useEffect } from 'react';
+import { PostFestivalListRequest } from '../../apis/apis';
 
 const SaveFestivalList = () => {
 
@@ -13,14 +11,20 @@ const SaveFestivalList = () => {
             const day = ('0' + date.getDate()).slice(-2);
             return `${year}${month}${day}`;
         };
-
         const currentDate = getCurrentDate();
-
         const saveFestivalList = async (date: string) => {
-            const response = await PostFestivalListRequest(date);
-            console.log(response);
+            try {
+                const response = await PostFestivalListRequest(date);
+                console.log(response);
+                if (response.code === 'SU') {
+                    console.log("성공");
+                    return;
+                }
+            } catch (error) {
+                console.error("요청에 실패했습니다. 다시 시도합니다...", error);
+            }
+            setTimeout(() => saveFestivalList(date), 1000);
         };
-
         saveFestivalList(currentDate);
     }, []);
 
