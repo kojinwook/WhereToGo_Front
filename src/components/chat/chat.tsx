@@ -119,7 +119,7 @@ const ChatRoom: React.FC = () => {
                         <div className="message-user-container">
                             {msg.sender !== loginUser?.nickname && (
                                 <div className="profile-info">
-                                    <img src={receiverProfileImage} alt="Profile" className="profile-image" />
+                                    {/* <img src={receiverProfileImage} alt="Profile" className="profile-image" /> */}
                                     <div className="nickname">{receiverNickname}</div>
                                 </div>
                             )}
