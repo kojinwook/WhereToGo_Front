@@ -1,4 +1,4 @@
-import { Festival, Notice } from "types/interface/interface";
+import { Answer, Festival, Notice } from "types/interface/interface";
 import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
 import Question from "types/interface/question.interface";
 import Review from "types/interface/review.interface";
@@ -15,6 +15,8 @@ export default interface ResponseDto{
     review: Review;
     reviews: Review[];
     roomId: string;
+    answers: Answer[];
+    answer: Answer[]
     average: Record<string, number>;
     chatMessageList: ChatMessage[];
 }
