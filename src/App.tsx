@@ -9,6 +9,11 @@ import ReviewWritePage from 'views/festival/review/write/write';
 import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
 import ChatRoomCreate from 'components/chat/create';
+import AdminSignUp from 'views/Authentication/admin/SignUp/admin-signup';
+import SignUp from 'views/Authentication/SignUp/signup';
+import SignIn from 'views/Authentication/SignIn/signin';
+
+
 
 function App() {
 
@@ -25,6 +30,11 @@ function App() {
       <Route path='/chat'>
         <Route path="create" element={<ChatRoomCreate />} />
         <Route path="" element={<ChatRoom />} />
+      </Route>
+      <Route path='/authentication'>
+      <Route path="admin" element={<AdminSignUp />} />
+      <Route path="signin" element={<SignIn />} />
+      <Route path="signup" element={<SignUp />} />
       </Route>
     </Routes>
   );
