@@ -7,5 +7,5 @@ export default interface AdminSignUpRequestDto {
     email: string;
     certificationNumber: string;
     secretKey: string;
-    agreedPersonal: boolean;
+    phone: string;
 }

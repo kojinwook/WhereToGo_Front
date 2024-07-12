@@ -9,7 +9,9 @@ enum ResponseCode{
     DUPLICATE_EMAIL = "DE",
     CERTIFICATION_FAIL = "CF",
     DUPLICATE_PHONE = "DP",
-    DO_NOT_HAVE_PERMISSION = "DNHP"
+    DO_NOT_HAVE_PERMISSION = "DNHP",
+    SING_IN_FAIL = "SIF",
+    NOT_EXISTED_USER = "NU"
 };
 
 export default ResponseCode;
