@@ -70,15 +70,22 @@ function App() {
         <Route path="" element={<ChatRoom />} />
       </Route>
       <Route path='/authentication'>
-      <Route path="admin" element={<AdminSignUp />} />
-      <Route path="signin" element={<SignIn />} />
-      <Route path="signup" element={<SignUp />} />
+        <Route path="admin" element={<AdminSignUp />} />
+        <Route path="signin" element={<SignIn />} />
+        <Route path="signup" element={<SignUp />} />
       </Route>
       <Route path='/inquire'>
+<<<<<<< HEAD
         <Route path="" element={<Inquire />} />
         <Route path="detail/:questionId" element={<InquireDetail />} />
         <Route path="write" element={<InquireWrite />} />
         <Route path="update/:questionId" element={<InquireUpdate />} />
+=======
+        <Route path="main" element={<InquireList />} />
+        <Route path="detail" element={<InquireDetail />} />
+        <Route path="write" element={<InquireWrite />} />
+        <Route path="update" element={<InquireUpdate />} />
+>>>>>>> e0150a8ebe933dbc9aca8a9ce6af3acd24c09c3e
         <Route path="list" element={<InquireList />} />
       </Route>
       <Route path='/notice'>
@@ -87,9 +94,14 @@ function App() {
         <Route path="write" element={<NoticeWrite />} />
         <Route path="update" element={<NoticeUpdate />} />
       </Route>
+<<<<<<< HEAD
       <Route path='/signup' element={<SignUp />}></Route>
       <Route path='/signin' element={<SignIn />}></Route>
+=======
+      <Route path='*' element={<h1>404 Not Found</h1>} />
+>>>>>>> e0150a8ebe933dbc9aca8a9ce6af3acd24c09c3e
     </Routes>
+
   );
 }
 

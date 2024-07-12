@@ -3,9 +3,15 @@
     "version": "2.2.13",
     "width": 2000,
     "height": 2000,
+<<<<<<< HEAD
     "scrollTop": -667.1970999999999,
     "scrollLeft": -96.8952,
     "zoomLevel": 0.4,
+=======
+    "scrollTop": -205,
+    "scrollLeft": -243,
+    "zoomLevel": 1,
+>>>>>>> e0150a8ebe933dbc9aca8a9ce6af3acd24c09c3e
     "show": {
       "tableComment": true,
       "columnComment": true,

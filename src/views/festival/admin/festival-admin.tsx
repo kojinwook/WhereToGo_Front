@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { GetFestivalListRequest, PatchFestivalRequest } from 'apis/apis';
 import { useCookies } from 'react-cookie';
 import Festival from 'types/interface/festival.interface';
@@ -9,6 +9,7 @@ const FestivalAdmin: React.FC = () => {
     const [festivalList, setFestivalList] = useState<Festival[]>([]);
     const [editingFestival, setEditingFestival] = useState<Festival | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
+    const [tags, setTags] = useState<string[]>([]);
     const { formData, setFormData, resetFormData } = useFestivalStore();
     const [cookies, setCookies] = useCookies();
 
@@ -17,7 +18,7 @@ const FestivalAdmin: React.FC = () => {
         const month = dateStr.substring(4, 6);
         const day = dateStr.substring(6, 8);
         return `${year}년 ${month}월 ${day}일`;
-    }
+    };
 
     useEffect(() => {
         const fetchFestivalList = async () => {
@@ -36,12 +37,20 @@ const FestivalAdmin: React.FC = () => {
     const handleEdit = (festival: Festival) => {
         setEditingFestival(festival);
         setFormData(festival);
+        // festival.tags가 문자열인지 확인
+        if (typeof festival.tags === 'string') {
+            setTags(festival.tags.split(','));
+        } else {
+            // festival.tags가 이미 문자열 배열이라면, 직접 할당
+            setTags(festival.tags || []);
+        }
         setModalOpen(true);
     };
 
     const handleCancelEdit = () => {
         setEditingFestival(null);
         resetFormData();
+        setTags([]);
         setModalOpen(false);
     };
 
@@ -49,13 +58,15 @@ const FestivalAdmin: React.FC = () => {
         e.preventDefault();
         if (formData) {
             try {
-                const response = await PatchFestivalRequest(formData, cookies.accessToken);
+                const updatedFormData = { ...formData, tags: tags.join(',') };
+                const response = await PatchFestivalRequest(updatedFormData, cookies.accessToken);
                 if (response.code === 'SU' && festivalList) {
                     setFestivalList(festivalList.map(festival =>
-                        festival.contentId === formData.contentId ? formData : festival
+                        festival.contentId === updatedFormData.contentId ? updatedFormData : festival
                     ));
                     setEditingFestival(null);
                     resetFormData();
+                    setTags([]);
                     setModalOpen(false);
                 } else {
                     console.error('Failed to update festival:', response.message);
@@ -66,9 +77,24 @@ const FestivalAdmin: React.FC = () => {
         }
     };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData({ [name]: value });
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const newTag = e.currentTarget.value.trim();
+            if (newTag && !tags.includes(newTag)) {
+                setTags([...tags, newTag]);
+                e.currentTarget.value = '';
+            }
+        }
+    };
+
+    const removeTag = (tag: string) => {
+        setTags(tags.filter(t => t !== tag));
     };
 
     if (!festivalList) return null;
@@ -103,9 +129,9 @@ const FestivalAdmin: React.FC = () => {
                             <label>First Image:</label>
                             <input type="text" name="firstImage" value={formData?.firstImage || ''} onChange={handleChange} />
                             <label>Start Date:</label>
-                            <input type="text" name="startDate" value={formatDate(formData?.startDate || '')} onChange={handleChange} />
+                            <input type="text" name="startDate" value={formData?.startDate || ''} onChange={handleChange} />
                             <label>End Date:</label>
-                            <input type="text" name="endDate" value={formatDate(formData?.endDate || '')} onChange={handleChange} />
+                            <input type="text" name="endDate" value={formData?.endDate || ''} onChange={handleChange} />
                             <label>Telephone:</label>
                             <input type="text" name="tel" value={formData?.tel || ''} onChange={handleChange} />
                             <label>Content ID:</label>
@@ -113,7 +139,15 @@ const FestivalAdmin: React.FC = () => {
                             <label>Homepage:</label>
                             <input type="text" name="homepage" value={formData?.homepage || ''} onChange={handleChange} />
                             <label>Tags:</label>
-                            <input type="text" name="tags" value={formData?.tags?.join('# ') || ''} onChange={handleChange} />
+                            <input type="text" name="tags" onKeyDown={handleTagKeyDown} />
+                            <div className="tags-container">
+                                {tags.map((tag, index) => (
+                                    <div key={index} className="tag-item">
+                                        {tag}
+                                        <span className="tag-remove" onClick={() => removeTag(tag)}>&times;</span>
+                                    </div>
+                                ))}
+                            </div>
                             <div style={{ marginTop: '10px', textAlign: 'center' }}>
                                 <button type="submit">Save</button>
                                 <button type="button" onClick={handleCancelEdit}>Cancel</button>

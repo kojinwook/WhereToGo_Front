@@ -3,7 +3,6 @@ import { useCookies } from 'react-cookie';
 import { fileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/apis';
 import { useLocation } from 'react-router-dom';
 import PatchReviewRequestDto from 'apis/request/review/patch-review.request.dto';
-import Review from 'types/interface/review.interface';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -17,7 +16,7 @@ export default function ReviewWritePage() {
     const [review, setReview] = useState<string>('');
     const [imageFileList, setImageFileList] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-    const [cookies] = useCookies(['accessToken']);
+    const [cookies] = useCookies();
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -25,10 +24,12 @@ export default function ReviewWritePage() {
             setLoading(true);
             const response = await GetReviewRequest(reviewIds);
             if (response.code === 'SU') {
-                const reviewData = response.review as Review;
+                const reviewData = response.review;
                 setRate(reviewData.rate);
                 setReview(reviewData.review);
-                setImagePreviews(reviewData.imageList || []);
+
+                const imageUrls = reviewData.images.map(image => image.image);
+                setImagePreviews(imageUrls);
                 setLoading(false);
             } else {
                 alert('리뷰를 불러오는데 실패했습니다.');
