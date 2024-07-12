@@ -198,7 +198,7 @@ export default function InquireWrite() {
             {imageError && <div style={{ color: 'red' }}>{imageError}</div>}
           </td>
         </div>
-      </tbody>
+      </tbody> 
       <div className="inquire-write-button">
         <button className="inquire-write-cancel" onClick={cancelClickHandler}>취소</button>
         <button className="inquire-write-upload" onClick={uploadPostClickHandler}>접수</button>

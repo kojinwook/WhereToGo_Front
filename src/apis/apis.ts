@@ -349,12 +349,18 @@ export const PostReviewRequest = async (contentId: number, rate: number, review:
 };
 
 export const postAnswerRequest = async (requestBody: PostAnswerRequestDto) => {
+    console.log(requestBody)
     const result = await axios.post(POST_ANSWER_URL(), requestBody)
         .then(response => {
             const responseBody: PostAnswerResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
         })
     return result;
-};
+}
 
 export const GetAverageRateRequest = async (contentId: string) => {
     const result = await axios.get(GET_RATE_AVERAGE_RATE_URL(contentId))

@@ -10,7 +10,7 @@ import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
 import ChatRoomCreate from 'components/chat/create';
 import InquireDetail from 'views/inquire/detail/inquire-detail';
-import InquireList from 'views/inquire/main/inquire-main';
+
 import InquireUpdate from 'views/inquire/update/inquire-update';
 import InquireWrite from 'views/inquire/write/inquire-write';
 import NoticeDetail from 'views/notice/detail/notice-detail';
@@ -27,6 +27,7 @@ import { ResponseDto } from 'apis/response/response';
 import User from 'types/interface/user.interface';
 import { GetSignInUserRequest } from 'apis/apis';
 import Inquire from 'views/inquire/main/inquire-main';
+import InquireList from 'views/inquire/list/inquire-list';
 
 function App() {
 
@@ -69,20 +70,20 @@ function App() {
         <Route path="" element={<ChatRoom />} />
       </Route>
       <Route path='/inquire'>
-      <Route path="" element={<Inquire />} />
-      <Route path="detail" element={<InquireDetail />} />
-      <Route path="write" element={<InquireWrite />} />
-      <Route path="update" element={<InquireUpdate />} />
-      <Route path="list" element={<InquireList />} />
+        <Route path="" element={<Inquire />} />
+        <Route path="detail/:questionId" element={<InquireDetail />} />
+        <Route path="write" element={<InquireWrite />} />
+        <Route path="update/:questionId" element={<InquireUpdate />} />
+        <Route path="list" element={<InquireList />} />
       </Route>
       <Route path='/notice'>
-      <Route path="main" element={<NoticeMain />} />
-      <Route path="detail" element={<NoticeDetail />} />
-      <Route path="write" element={<NoticeWrite />} />
-      <Route path="update" element={<NoticeUpdate />} />
+        <Route path="main" element={<NoticeMain />} />
+        <Route path="detail" element={<NoticeDetail />} />
+        <Route path="write" element={<NoticeWrite />} />
+        <Route path="update" element={<NoticeUpdate />} />
       </Route>
-      <Route path='/signup' element={<SignUp/>}></Route>
-      <Route path='/signin' element={<SignIn/>}></Route>
+      <Route path='/signup' element={<SignUp />}></Route>
+      <Route path='/signin' element={<SignIn />}></Route>
     </Routes>
   );
 }
