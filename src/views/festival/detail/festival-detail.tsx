@@ -201,9 +201,9 @@ export default function FestivalDetail() {
                                     <p>{renderStars(review.rate)} {review.writeDatetime}</p>
                                     <p><strong>작성자:</strong> {review.nickname}</p>
                                     <div className="review-images">
-                                        {review.imageList && review.imageList.length > 0 ? (
-                                            review.imageList.map((imageUrl, idx) => (
-                                                <img key={idx} src={imageUrl} alt={`이미지 ${idx}`} className="review-image" />
+                                        {review.images && review.images.length > 0 ? (
+                                            review.images.map((image, idx) => (
+                                                <img key={idx} src={image.image} alt={`리뷰 이미지 ${idx}`} className="review-image" />
                                             ))
                                         ) : (
                                             <p><strong>사진:</strong> 없음</p>

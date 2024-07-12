@@ -68,26 +68,26 @@ function App() {
         <Route path="" element={<ChatRoom />} />
       </Route>
       <Route path='/authentication'>
-      <Route path="admin" element={<AdminSignUp />} />
-      <Route path="signin" element={<SignIn />} />
-      <Route path="signup" element={<SignUp />} />
+        <Route path="admin" element={<AdminSignUp />} />
+        <Route path="signin" element={<SignIn />} />
+        <Route path="signup" element={<SignUp />} />
       </Route>
       <Route path='/inquire'>
-      <Route path="main" element={<InquireList />} />
-      <Route path="detail" element={<InquireDetail />} />
-      <Route path="write" element={<InquireWrite />} />
-      <Route path="update" element={<InquireUpdate />} />
-      <Route path="list" element={<InquireList />} />
+        <Route path="main" element={<InquireList />} />
+        <Route path="detail" element={<InquireDetail />} />
+        <Route path="write" element={<InquireWrite />} />
+        <Route path="update" element={<InquireUpdate />} />
+        <Route path="list" element={<InquireList />} />
       </Route>
       <Route path='/notice'>
-      <Route path="main" element={<NoticeMain />} />
-      <Route path="detail" element={<NoticeDetail />} />
-      <Route path="write" element={<NoticeWrite />} />
-      <Route path="update" element={<NoticeUpdate />} />
+        <Route path="main" element={<NoticeMain />} />
+        <Route path="detail" element={<NoticeDetail />} />
+        <Route path="write" element={<NoticeWrite />} />
+        <Route path="update" element={<NoticeUpdate />} />
       </Route>
-      <Route path='/signup' element={<SignUp/>}></Route>
-      <Route path='/signin' element={<SignIn/>}></Route>
+      <Route path='*' element={<h1>404 Not Found</h1>} />
     </Routes>
+
   );
 }
 
