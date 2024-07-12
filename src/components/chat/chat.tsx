@@ -28,7 +28,7 @@ const ChatRoom: React.FC = () => {
             console.error('Missing required props: roomId, receiverNickname, receiverProfileImage');
             return;
         }
-
+console.log(loginUser)
         const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
             webSocketFactory: () => socket,
@@ -81,15 +81,14 @@ const ChatRoom: React.FC = () => {
     };
 
     const sendMessage = () => {
-        // if (!loginUser) {
-        //     alert('로그인이 필요합니다.');
-        //     return;
-        // };
+        if (!loginUser) {
+            alert('로그인이 필요합니다.');
+            return;
+        };
         if (clientRef.current && input.trim()) {
             const message = {
                 roomId: roomId,
-                // sender: loginUser.nickname,
-                sender: 'qwr',
+                sender: loginUser.nickname,
                 message: input,
                 messageKey: new Date().getTime()
             };
@@ -119,7 +118,7 @@ const ChatRoom: React.FC = () => {
                         <div className="message-user-container">
                             {msg.sender !== loginUser?.nickname && (
                                 <div className="profile-info">
-                                    <img src={receiverProfileImage} alt="Profile" className="profile-image" />
+                                    {/* <img src={receiverProfileImage} alt="Profile" className="profile-image" /> */}
                                     <div className="nickname">{receiverNickname}</div>
                                 </div>
                             )}
