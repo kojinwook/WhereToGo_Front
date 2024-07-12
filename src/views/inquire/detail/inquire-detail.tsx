@@ -206,12 +206,13 @@ const InquireDetail: React.FC = () => {
   };
 
   const updateAnswerHandler = async () => {
-    if (!editingAnswerId) return;
+    console.log(editingAnswerId)
+    if (!editingAnswerId || !questionId) return;
     try {
       const response = await patchAnswerRequest(editingAnswerId, {
         content: answerContent,
-        nickname: "",
-        questionId: "",
+        nickname: nickname,
+        questionId: questionId,
       });
       if (response && response.code === "SU") {
         setAnswers(
