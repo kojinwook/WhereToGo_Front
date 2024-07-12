@@ -58,9 +58,11 @@ function App() {
         <Route path="create" element={<ChatRoomCreate />} />
         <Route path="" element={<ChatRoom />} />
       </Route>
-      <Route path='/signup' element={<SignUp/>}></Route>
-      <Route path='/signin' element={<SignIn/>}></Route>
+      <Route path='/signup' element={<SignUp />}></Route>
+      <Route path='/signin' element={<SignIn />}></Route>
+      <Route path='*' element={<h1>404 Not Found</h1>} />
     </Routes>
+
   );
 }
 
