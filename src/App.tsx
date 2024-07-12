@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import FestivalPage from 'views/festival/list/festival-list';
@@ -13,8 +13,49 @@ import UserProfile from 'views/user/profile/profile';
 import UserModifyProfile from 'views/user/modifyProfile/modifyProfile';
 import AdminProfile from 'views/admin/profile/profile';
 import MeetingWrite from 'views/meeting/write/write';
+import InquireDetail from 'views/inquire/detail/inquire-detail';
+import InquireList from 'views/inquire/main/inquire-main';
+import InquireUpdate from 'views/inquire/update/inquire-update';
+import InquireWrite from 'views/inquire/write/inquire-write';
+import NoticeDetail from 'views/notice/detail/notice-detail';
+import NoticeWrite from 'views/notice/write/notice-write';
+import NoticeUpdate from 'views/notice/update/notice-update';
+import NoticeMain from 'views/notice/main/notice-main';
+
+import SignUp from 'components/signup';
+import SignIn from 'components/signin';
+import useLoginUserStore from 'store/login-user.store';
+import { useCookies } from 'react-cookie';
+import { GetSignInUserResponseDto } from 'apis/response/user';
+import { ResponseDto } from 'apis/response/response';
+import User from 'types/interface/user.interface';
+import { GetSignInUserRequest } from 'apis/apis';
 
 function App() {
+
+  const { setLoginUser, resetLoginUser } = useLoginUserStore();
+  const [cookies, setCookies] = useCookies();
+
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
+
+    if (!responseBody) return;
+    const { code } = responseBody;
+
+    if (code === 'DBE') {
+      resetLoginUser();
+      return;
+    }
+    const loginUser: User = { ...responseBody as GetSignInUserResponseDto };
+    setLoginUser(loginUser);
+  }
+
+  useEffect(() => {
+    if (!cookies.accessToken) {
+      resetLoginUser();
+      return;
+    }
+    GetSignInUserRequest(cookies.accessToken).then(getSignInUserResponse)
+  }, [cookies.accessToken]);
 
   return (
     <Routes>
@@ -47,6 +88,23 @@ function App() {
         <Route path='write' element={<MeetingWrite />} />
       </Route>
       
+      <Route path='/inquire'>
+        <Route path="main" element={<InquireList />} />
+        <Route path="detail" element={<InquireDetail />} />
+        <Route path="write" element={<InquireWrite />} />
+        <Route path="update" element={<InquireUpdate />} />
+        <Route path="list" element={<InquireList />} />
+      </Route>
+
+      <Route path='/notice'>
+        <Route path="main" element={<NoticeMain />} />
+        <Route path="detail" element={<NoticeDetail />} />
+        <Route path="write" element={<NoticeWrite />} />
+        <Route path="update" element={<NoticeUpdate />} />
+      </Route>
+
+      <Route path='/signup' element={<SignUp/>}></Route>
+      <Route path='/signin' element={<SignIn/>}></Route>
     </Routes>
   );
 }

@@ -2,38 +2,23 @@ import { PatchAnswerRequestDto, PostAnswerRequestDto } from "./request/answer";
 import { PatchQuestionRequestDto, PostQuestionRequestDto } from "./request/question";
 import { DeleteAnswerResponseDto, GetAllAnswerResponseDto, GetAnswerResponseDto, PatchAnswerResponseDto, PostAnswerResponseDto } from "./response/answer";
 import { DeleteQuestionResponseDto, GetAllQuestionResponseDto, GetQuestionResponseDto, PatchQuestionResponseDto, PostQuestionResponseDto } from "./response/question";
-import GetAllNoticeResponseDto from "./response/notice/get-all-notice.response.dto";
-import GetNoticeResponseDto from "./response/notice/get-notice.response.dto";
-import { DeleteNoticeResponseDto, PatchNoticeResponseDto, PostNoticeResponseDto } from "./response/notice";
+import { DeleteNoticeResponseDto, GetAllNoticeResponseDto, GetNoticeResponseDto, PatchNoticeResponseDto, PostNoticeResponseDto } from "./response/notice";
 import { PatchNoticeRequestDto, PostNoticeRequestDto } from "./request/notice";
 import axios, { AxiosResponse } from "axios";
-import PostFestivalResponseDto from "./response/festival/post-festival-list.response.dto";
 import { ResponseDto } from "./response/response";
-import { PatchFestivalRequestDto } from "./request/festival/festival";
 import Festival from "types/interface/festival.interface";
-import GetAverageRateResponseDto from "./response/review/get-average-rate.response.dto";
-import PatchReviewRequestDto from "./request/review/patch-review.request.dto";
-import GetReviewResponseDto from "./response/review/get-review.response.dto";
-import PostChatMessageRequestDto from "./request/chat/post-chat-message.request.dto";
-import PostChatRoomRequestDto from "./request/chat/post-chat-room.request.dto";
-import GetChatMessageListResponseDto from "./response/chat/get-chat-message-list.response.dto";
-import GetChatMessageResponseDto from "./response/chat/get-chat-message.response.dto";
-import PostChatRoomResponseDto from "./response/chat/post-chat-room.response.to";
-import GetChatRoomListResponseDto from "./response/chat/get-chat-room-list.response.dto";
-import AdminSignUpRequsetDto from "./request/auth/admin-sign-up.request.dto";
-import { AdminSignInRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, nicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, userIdCheckRequestDto } from "./request/auth";
-import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, SignInResponseDto, SignUpResponseDto } from "./response/auth";
-import nicknameCheckResponseDto from "./response/auth/nickname-check.response.dto";
+import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
+import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
-import AdminSignUpRequestDto from "./request/auth/admin-sign-up.request.dto";
-import userIdCheckResponseDto from "./response/auth/userId-check.response.dto";
-import PatchNicknameRequestDto from "./request/user/patch-nickname.request.dto";
-import PatchPasswordRequestDto from "./request/user/patch-password.request.dto";
-import WithdrawalUserRequestDto from "./request/user/withdrawal-user.request.dto";
-import PasswordRecoveryRequestDto from "./request/user/password-recovery.request.dto";
 import { ResponseBody } from "types";
 import { PostMeetingResponseDto } from "./response/meeting";
 import PostMeetingRequestDto from "./request/meeting/post-meeting.request.dto";
+import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
+import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomListResponseDto } from "./response/chat";
+import { PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
+import { PatchReviewRequestDto } from "./request/review";
+import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
+import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -67,7 +52,8 @@ const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
 const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
 const GET_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/getReview?reviewId=${reviewId}`;
 const PATCH_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/patchReview?reviewId=${reviewId}`;
-const GET_REVIEW_LIST_URL = (contentId: string | number) => `${API_DOMAIN}/review/getReviewList?contentId=${contentId}`;
+const GET_REVIEW_LIST_URL = (userId: string | number) => `${API_DOMAIN}/review/getReviewList?userId=${userId}`;
+const GET_ALL_REVIEW_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAllReview?contentId=${contentId}`;
 
 const POST_CHAT_MESSAGE_URL = () => `${API_DOMAIN}/chat/message`;
 const GET_CHAT_MESSAGE_LIST_URL = (roomId: string) => `${API_DOMAIN}/chat/messages/by-room?roomId=${roomId}`;
@@ -128,16 +114,16 @@ export const SignupRequest = async (requestBody: SignUpRequestDto) => {
     return result;
 };
 
-export const UserIdCheckRequest = async (requestBody: userIdCheckRequestDto) => {
+export const UserIdCheckRequest = async (requestBody: UserIdCheckRequestDto) => {
     const result = await axios.post(ID_CHECK_URL(), requestBody)
-        .then(responseHandler<userIdCheckResponseDto>)
+        .then(responseHandler<UserIdCheckResponseDto>)
         .catch(errorHandler);
     return result;
 };
 
-export const NicknameCheckRequest = async (requestBody: nicknameCheckRequestDto) => {
+export const NicknameCheckRequest = async (requestBody: NicknameCheckRequestDto) => {
     const result = await axios.post(NICKNAME_CHECK_URL(), requestBody)
-        .then(responseHandler<nicknameCheckResponseDto>)
+        .then(responseHandler<NicknameCheckResponseDto>)
         .catch(errorHandler);
     return result;
 };
@@ -259,7 +245,7 @@ const PATCH_NOTICE_URL =(noticeId : number |string | undefined) => `${API_DOMAIN
 const GET_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/detail/${noticeId}`;
 const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/delete/${noticeId}`;
 
-const POST_MEETING_URL = () => `${API_DOMAIN}/meeting`;
+const POST_MEETING_URL = () => `${API_DOMAIN}/meeting/write`;
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
@@ -278,7 +264,7 @@ export const PostFestivalListRequest = async (date: string) => {
 export const GetFestivalListRequest = async () => {
     const result = await axios.get(GET_FESTIVAL_LIST_URL())
         .then(response => {
-            const responseBody: PostFestivalResponseDto = response.data;
+            const responseBody: GetFestivalListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -291,7 +277,7 @@ export const GetFestivalListRequest = async () => {
 export const GetSearchFestivalListRequest = async (areaCode: string) => {
     const result = await axios.get(GET_SEARCH_FESTIVAL_LIST_URL(areaCode))
         .then(response => {
-            const responseBody: PostFestivalResponseDto = response.data;
+            const responseBody: GetSearchFestivalListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -304,7 +290,7 @@ export const GetSearchFestivalListRequest = async (areaCode: string) => {
 export const GetFestivalRequest = async (contentId: string) => {
     const result = await axios.get(GET_FESTIVAL_URL(contentId))
         .then(response => {
-            const responseBody: PostFestivalResponseDto = response.data;
+            const responseBody: GetFestivalResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -317,7 +303,7 @@ export const GetFestivalRequest = async (contentId: string) => {
 export const PatchFestivalRequest = async (requestBody: Festival, accessToken: string) => {
     const result = await axios.patch(PATCH_FESTIVAL_URL(requestBody.contentId), requestBody, authorization(accessToken))
         .then(response => {
-            const responseBody: ResponseDto = response.data;
+            const responseBody: PatchFestivalResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -352,8 +338,8 @@ export const getAnswerRequest = async (questionId: number | string) => {
         });
     return result;
 };
-export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: string[], accessToken: string) => {
-    const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList }, authorization(accessToken))
+export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: string[], nickname: string, accessToken: string) => {
+    const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList, nickname }, authorization(accessToken))
         .then(response => {
             const responseBody: ResponseDto = response.data;
             return responseBody;
@@ -493,10 +479,10 @@ export const PatchReviewRequest = async (reviewId: string | number, requestBody:
     return result;
 };
 
-export const GetReviewListRequest = async (contentId: string | number) => {
-    const result = await axios.get(GET_REVIEW_LIST_URL(contentId))
+export const GetReviewListRequest = async (userId: string | number) => {
+    const result = await axios.get(GET_REVIEW_LIST_URL(userId))
         .then(response => {
-            const responseBody: GetReviewResponseDto = response.data;
+            const responseBody: GetReviewListResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -597,6 +583,19 @@ export const patchNoticeRequest = async (noticeId : number | string | undefined,
 }
 
 
+export const GetAllReviewRequest = async (contentId: string | number) => {
+    const result = await axios.get(GET_ALL_REVIEW_URL(contentId))
+        .then(response => {
+            const responseBody: GetAllReviewResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
 export const PostChatMessageRequest = async (requestBody: PostChatMessageRequestDto, accessToken: string) => {
     const result = await axios.post(POST_CHAT_MESSAGE_URL(), requestBody, authorization(accessToken))
         .then(response => {
@@ -675,8 +674,8 @@ export const GetChatRoomListRequest = async () => {
     return result;
 };
 
-export const postMeetingRequest = async (requestBody: PostMeetingRequestDto) => {
-    const result = await axios.post(POST_MEETING_URL(), requestBody)
+export const postMeetingRequest = async (title: string, introduction: string, content: string, ImageList: string[]) => {
+    const result = await axios.post(POST_MEETING_URL(), {title, introduction, content, ImageList})
         .then(response => {
             const responseBody: PostMeetingResponseDto = response.data;
             return responseBody;

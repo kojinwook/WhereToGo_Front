@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './style.css';
+import useReviewStore from 'store/review.store';
+import useLoginUserStore from 'store/login-user.store';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -13,6 +15,7 @@ export default function ReviewWritePage() {
     const contentId = query.get('contentId');
     let contentIds = Number(contentId);
     const navigate = useNavigate();
+    const { loginUser } = useLoginUserStore();
     const [rate, setRate] = useState<number>(0);
     const [review, setReview] = useState<string>('');
     const [imageFileList, setImageFileList] = useState<File[]>([]);
@@ -50,34 +53,39 @@ export default function ReviewWritePage() {
         setImagePreviews(newImagePreviews);
     };
 
+    console.log(imageFileList)
+
     const handleSubmit = async () => {
-        // if (!cookies.accessToken) {
-        //     alert('로그인이 필요합니다.');
-        //     return;
-        // }
+        if (!loginUser || !cookies.accessToken) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
 
         const ImageList: string[] = [];
         for (const file of imageFileList) {
             const formData = new FormData();
             formData.append('file', file);
-
             const imageUrl = await fileUploadRequest(formData);
             if (imageUrl) {
                 ImageList.push(imageUrl);
             }
         }
 
-        const response = await PostReviewRequest(contentIds, rate, review, ImageList, cookies.accessToken);
+        if (!rate || !review) {
+            alert('별점과 내용을 입력해주세요.');
+            return;
+        }
+        
+        const response = await PostReviewRequest(contentIds, rate, review, ImageList, loginUser?.nickname, cookies.accessToken);
         if (response.code === 'SU') {
             alert('리뷰가 성공적으로 등록되었습니다.');
             navigate(`/festival/detail?contentId=${contentId}`)
-            // 리뷰 등록 성공 후 추가적으로 필요한 처리
         } else {
             alert('리뷰 등록에 실패했습니다.');
         }
     };
 
-    console.log(rate)
+    console.log(contentIds, rate, review, loginUser?.nickname, cookies.accessToken)
 
     return (
         <div className='container'>
