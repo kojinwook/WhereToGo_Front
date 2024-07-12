@@ -3,4 +3,6 @@ export default interface Notice{
     title : string;
     content : string;
     image : string;
+    createDateTime : string;
+    updateDateTime : string;
 }

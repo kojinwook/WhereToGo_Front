@@ -1,0 +1,82 @@
+.inquire {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .inquire-main {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .inquire-enter {
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  .inquire-question {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .inquire-left, .inquire-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .inquire-apply, .inquire-list, .inquire-url {
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .inquire-chat, .inquire-number, .inquire-time, .inquire-rest {
+    font-size: 16px;
+  }
+  
+  .inquire-notice-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .inquire-notice {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .inquire-plus {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 70px;
+  }
+  
+  .inquire-notice-list {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .inquire-sort {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .inquire-nothing {
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .inquire-count {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  

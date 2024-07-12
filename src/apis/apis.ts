@@ -12,7 +12,6 @@ import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationRespo
 import { GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
 import { ResponseBody } from "types";
 import { PostMeetingResponseDto } from "./response/meeting";
-import PostMeetingRequestDto from "./request/meeting/post-meeting.request.dto";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomListResponseDto } from "./response/chat";
 import { PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
@@ -78,6 +77,25 @@ const PATCH_PASSWORD_URL = (userId: string) => `${API_DOMAIN}/user/change-passwo
 const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
 const WIDTHDRAWAL_USER_URL = (userId: string) => `${API_DOMAIN}/user/withdrawal/${userId}`;
 
+const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
+const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
+const PATCH_ANSWER_URL = (answerId: number | string) => `${API_DOMAIN}/question/answer/update/${answerId}`;
+const GET_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/detail/${questionId}`;
+const DELETE_ANSWER_URL = (answerId: number | string) => `${API_DOMAIN}/question/answer/delete/${answerId}`;
+
+const GET_ALL_QUESTION_URL = () => `${API_DOMAIN}/question/list`;
+const POST_QUESTION_URL = () => `${API_DOMAIN}/question`;
+const PATCH_QUESTION_URL = (questionId: number | string | undefined) => `${API_DOMAIN}/question/update/${questionId}`;
+const GET_QUESTION_URL = (questionId: number | string | undefined) => `${API_DOMAIN}/question/detail/${questionId}`;
+const DELETE_QUESTION_URL = (questionId: number | string | undefined) => `${API_DOMAIN}/question/delete/${questionId}`;
+
+const GET_ALL_NOTICE_URL = () => `${API_DOMAIN}/notice/list`;
+const POST_NOTICE_URL = () => `${API_DOMAIN}/notice`;
+const PATCH_NOTICE_URL =(noticeId : number |string | undefined) => `${API_DOMAIN}/notice/update/${noticeId}`;
+const GET_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/detail/${noticeId}`;
+const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/delete/${noticeId}`;
+
+const POST_MEETING_URL = () => `${API_DOMAIN}/meeting/write`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -227,26 +245,6 @@ export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryReque
 
 
 
-const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
-const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
-const PATCH_ANSWER_URL = (answerId: number | string) => `${API_DOMAIN}/question/answer/update/${answerId}`;
-const GET_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/detail/${questionId}`;
-const DELETE_ANSWER_URL = (answerId: number | string) => `${API_DOMAIN}/question/answer/delete/${answerId}`;
-
-const GET_ALL_QUESTION_URL = () => `${API_DOMAIN}/question/list`;
-const POST_QUESTION_URL = () => `${API_DOMAIN}/question`;
-const PATCH_QUESTION_URL = (questionId: number | string | undefined) => `${API_DOMAIN}/question/update/${questionId}`;
-const GET_QUESTION_URL = (questionId: number | string | undefined) => `${API_DOMAIN}/question/detail/${questionId}`;
-const DELETE_QUESTION_URL = (questionId: number | string | undefined) => `${API_DOMAIN}/question/delete/${questionId}`;
-
-const GET_ALL_NOTICE_URL = () => `${API_DOMAIN}/notice/list`;
-const POST_NOTICE_URL = () => `${API_DOMAIN}/notice`;
-const PATCH_NOTICE_URL =(noticeId : number |string | undefined) => `${API_DOMAIN}/notice/update/${noticeId}`;
-const GET_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/detail/${noticeId}`;
-const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/delete/${noticeId}`;
-
-const POST_MEETING_URL = () => `${API_DOMAIN}/meeting/write`;
-
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
         .then(response => {
@@ -352,12 +350,18 @@ export const PostReviewRequest = async (contentId: number, rate: number, review:
 };
 
 export const postAnswerRequest = async (requestBody: PostAnswerRequestDto) => {
+    console.log(requestBody)
     const result = await axios.post(POST_ANSWER_URL(), requestBody)
         .then(response => {
             const responseBody: PostAnswerResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
         })
     return result;
-};
+}
 
 export const GetAverageRateRequest = async (contentId: string) => {
     const result = await axios.get(GET_RATE_AVERAGE_RATE_URL(contentId))

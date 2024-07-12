@@ -1,6 +1,5 @@
 import { GetUserRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
-import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
@@ -9,6 +8,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import './style.css';
 
+import defaultProfileImage from 'assets/images/logo.png';
 import boardIcon from 'assets/images/board.png';
 import chatIcon from 'assets/images/chat.png';
 import groupIcon from 'assets/images/group.png';

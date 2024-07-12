@@ -13,23 +13,25 @@ import UserProfile from 'views/user/profile/profile';
 import UserModifyProfile from 'views/user/modifyProfile/modifyProfile';
 import AdminProfile from 'views/admin/profile/profile';
 import MeetingWrite from 'views/meeting/write/write';
+import AdminSignUp from 'views/Authentication/admin/SignUp/admin-signup';
+import SignUp from 'views/Authentication/SignUp/signup';
+import SignIn from 'views/Authentication/SignIn/signin';
 import InquireDetail from 'views/inquire/detail/inquire-detail';
-import InquireList from 'views/inquire/main/inquire-main';
+
 import InquireUpdate from 'views/inquire/update/inquire-update';
 import InquireWrite from 'views/inquire/write/inquire-write';
 import NoticeDetail from 'views/notice/detail/notice-detail';
 import NoticeWrite from 'views/notice/write/notice-write';
 import NoticeUpdate from 'views/notice/update/notice-update';
 import NoticeMain from 'views/notice/main/notice-main';
-
-import SignUp from 'components/signup';
-import SignIn from 'components/signin';
 import useLoginUserStore from 'store/login-user.store';
 import { useCookies } from 'react-cookie';
 import { GetSignInUserResponseDto } from 'apis/response/user';
 import { ResponseDto } from 'apis/response/response';
 import User from 'types/interface/user.interface';
 import { GetSignInUserRequest } from 'apis/apis';
+import Inquire from 'views/inquire/main/inquire-main';
+import InquireList from 'views/inquire/list/inquire-list';
 
 function App() {
 
@@ -88,7 +90,16 @@ function App() {
         <Route path='write' element={<MeetingWrite />} />
       </Route>
       
+      <Route path='/authentication'>
+        <Route path="admin" element={<AdminSignUp />} />
+        <Route path="signin" element={<SignIn />} />
+        <Route path="signup" element={<SignUp />} />
+      </Route>
       <Route path='/inquire'>
+        <Route path="" element={<Inquire />} />
+        <Route path="detail/:questionId" element={<InquireDetail />} />
+        <Route path="write" element={<InquireWrite />} />
+        <Route path="update/:questionId" element={<InquireUpdate />} />
         <Route path="main" element={<InquireList />} />
         <Route path="detail" element={<InquireDetail />} />
         <Route path="write" element={<InquireWrite />} />
@@ -102,10 +113,9 @@ function App() {
         <Route path="write" element={<NoticeWrite />} />
         <Route path="update" element={<NoticeUpdate />} />
       </Route>
-
-      <Route path='/signup' element={<SignUp/>}></Route>
-      <Route path='/signin' element={<SignIn/>}></Route>
+      <Route path='*' element={<h1>404 Not Found</h1>} />
     </Routes>
+
   );
 }
 
