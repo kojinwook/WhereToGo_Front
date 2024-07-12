@@ -15,6 +15,9 @@ export default interface ResponseDto{
     review: Review;
     reviews: Review[];
     roomId: string;
+    profileImage: string | null;
+    email: string;
+    nickname: string;
     answers: Answer[];
     answer: Answer[]
     average: Record<string, number>;

@@ -11,13 +11,13 @@ import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequest
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
 import { ResponseBody } from "types";
+import { PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomListResponseDto } from "./response/chat";
 import { PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
-
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -94,6 +94,8 @@ const POST_NOTICE_URL = () => `${API_DOMAIN}/notice`;
 const PATCH_NOTICE_URL =(noticeId : number |string | undefined) => `${API_DOMAIN}/notice/update/${noticeId}`;
 const GET_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/detail/${noticeId}`;
 const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/delete/${noticeId}`;
+
+const POST_MEETING_URL = () => `${API_DOMAIN}/meeting/write`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -240,6 +242,7 @@ export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryReque
         throw error;
     }
 };
+
 
 
 export const PostFestivalListRequest = async (date: string) => {
@@ -674,3 +677,17 @@ export const GetChatRoomListRequest = async () => {
         })
     return result;
 };
+
+export const postMeetingRequest = async (title: string, introduction: string, content: string, ImageList: string[]) => {
+    const result = await axios.post(POST_MEETING_URL(), {title, introduction, content, ImageList})
+        .then(response => {
+            const responseBody: PostMeetingResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+

@@ -1,0 +1,85 @@
+#user-profile-wrapper {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.user-profile-container {
+    width: 100%;
+    height: 300px;
+    border: 2px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-profile-image-box {
+    margin-bottom: 20px;
+}
+
+.user-profile-image {
+    width: 100px; /* Adjust the size as needed */
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.user-profile-info-box {
+    text-align: center;
+}
+
+.user-profile-info-nickname {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.user-profile-info-email {
+    font-size: 18px;
+    color: #555;
+}
+
+.user-profile-image {
+    width: 100px; /* Adjust the size as needed */
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.user-profile-button {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.user-profile-button > div {
+    flex: 0 1 30%; /* Ensure each button takes up roughly 30% of the container width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px; /* Add space between rows */
+    cursor: pointer;
+}
+
+.user-profile-button > div:not(:last-child) {
+    border-right: 1px solid #ccc; /* Add border between buttons */
+}
+
+.user-profile-button > div:nth-child(3n) {
+    border-right: none; /* 마지막 열 제외한 모든 열에 오른쪽 선 추가 */
+}
+
+.heart-icon, .group-icon, .board-icon, .star-icon, .chat-icon, .setting-icon {
+    width: 60px; /* Adjust the size as needed */
+    height: 60px;
+    border: none;
+}
+
+.heart-text, .group-text, .board-text, .star-text, .chat-text, .setting-text {
+    margin-top: 5px;
+    font-size: 14px; /* Adjust the size as needed */
+}
