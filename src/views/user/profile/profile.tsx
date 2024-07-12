@@ -4,7 +4,8 @@ import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
-import { useNavigate, useParams } from 'react-router-dom';
+import Switch from 'react-switch';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import './style.css';
 
@@ -14,6 +15,7 @@ import groupIcon from 'assets/images/group.png';
 import heartIcon from 'assets/images/heartIcon.png';
 import settingIcon from 'assets/images/setting.png';
 import starIcon from 'assets/images/star.png';
+import { ResponseDto } from 'apis/response/response';
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -39,8 +41,8 @@ const modalStyle = {
 export default function UserProfile() {
     const { userId } = useParams();
     const { loginUser } = useLoginUserStore();
-    const navigator = useNavigate();
-    const [cookies, setCookie] = useCookies();
+    const navigate = useNavigate();
+    const [cookies, setCookie, removeCookie] = useCookies();
 
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -51,11 +53,26 @@ export default function UserProfile() {
     const [isBoardModalOpen, setIsBoardModalOpen] = useState<boolean>(false); // 게시물 모달 열림 상태
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
-  
+
+    const handleProfileChangeClick = () => {
+        navigate('/user/modifyProfile');
+    }
+
+    // 알림
+    const handleNotificationChange = (checked: boolean) => {
+        setIsNotificationEnabled(checked);
+    };
+
+    // 로그아웃
+    const handleLogoutClick = () => {
+    removeCookie('accessToken');
+    navigate('/');
+    };
+    
 
     useEffect(() => {
         if (!userId) return;
-        GetUserRequest(userId, cookies.accessToken).then((responseBody: GetUserResponseDto | null) => {
+        GetUserRequest(userId, cookies.accessToken).then((responseBody: GetUserResponseDto | ResponseDto | null) => {
             if (!responseBody) return;
             const { code } = responseBody;
             if (code === 'NU') {
@@ -67,7 +84,7 @@ export default function UserProfile() {
                 return;
             }
             if (code !== 'SU') {
-                navigator('/');
+                navigate('/');
                 return;
             }
             const { nickname, email, profileImage } = responseBody;
@@ -84,6 +101,7 @@ export default function UserProfile() {
     const toggleChatModal = () => setIsChatModalOpen(!isChatModalOpen);
     const toggleSettingModal = () => setIsSettingModalOpen(!isSettingModalOpen);
 
+    const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(true); // 알림 설정 상태
 
     return (
         <div id='user-profile-wrapper'>
@@ -169,9 +187,14 @@ export default function UserProfile() {
                 contentLabel='설정'
             >
                 <h2>설정</h2>
-                <p>프로필 변경</p>
-                <p>알림</p>
-                <p>로그아웃</p>
+                <div onClick={handleProfileChangeClick}>프로필 변경</div>
+                <div>
+                    <label>
+                        알림
+                        <Switch onChange={handleNotificationChange} checked={isNotificationEnabled} />
+                    </label>
+                </div>
+                <div onClick={handleLogoutClick} >로그아웃</div>
                 <button onClick={toggleSettingModal}>닫기</button>
             </Modal>
         </div>
