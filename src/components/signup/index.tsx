@@ -15,7 +15,7 @@ import SignBox from "components/SignBox";
 export default function SignUp() {
     const userIdRef = useRef<HTMLInputElement | null>(null);
     const nicknameRef = useRef<HTMLInputElement | null>(null);
-    const phoneNumberRef = useRef<HTMLInputElement | null>(null);
+    const phoneRef = useRef<HTMLInputElement | null>(null);
     const passwordRef = useRef<HTMLInputElement | null>(null);
     const passwordCheckRef = useRef<HTMLInputElement | null>(null);
     const emailRef = useRef<HTMLInputElement | null>(null);
@@ -24,7 +24,7 @@ export default function SignUp() {
     const [userId, setUserId] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [phoneNumber, setPhoneNumber] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
     const [passwordCheck, setPasswordCheck] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [certificationNumber, setCertificationNumber] = useState<string>('');
@@ -34,11 +34,12 @@ export default function SignUp() {
     const [isPasswordError, setPasswordError] = useState<boolean>(false);
     const [isPasswordCheckError, setPasswordCheckError] = useState<boolean>(false);
     const [isEmailError, setEmailError] = useState<boolean>(false);
+    const [isPhoneError, setPhoneError] = useState<boolean>(false);
     const [isCertificationNumberError, setCertificationNumberError] = useState<boolean>(false);
     const [isAgreedPersonalError, setAgreedPersonalError] = useState<boolean>(false);
     const [userIdMessage, setUserIdMessage] = useState<string>('');
     const [NicknameMessage, setNicknameMessage] = useState<string>('');
-    const [phoneNumberMessage, setPhoneNumberMessage] = useState<string>('');
+    const [phoneMessage, setPhoneMessage] = useState<string>('');
     const [passwordMessage, setPasswordMessage] = useState<string>('');
     const [passwordCheckMessage, setPasswordCheckMessage] = useState<string>('');
     const [EmailMessage, setEmailMessage] = useState<string>('');
@@ -149,10 +150,10 @@ export default function SignUp() {
         setNicknameCheck(false);
     };
 
-    const onPhoneNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    const onPhoneChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
-        setPhoneNumber(value);
-        setPhoneNumberMessage('');
+        setPhone(value);
+        setPhoneMessage('');
     }
 
 
@@ -254,7 +255,7 @@ export default function SignUp() {
             return;
         }
 
-        const requestBody: SignUpRequestDto = { userId, nickname, password, email, certificationNumber, phoneNumber };
+        const requestBody: SignUpRequestDto = { userId, nickname, password, phone, email, certificationNumber };
         SignupRequest(requestBody).then(signUpResponse)
     };
 
@@ -274,8 +275,8 @@ export default function SignUp() {
 
     const onPhoneNumberKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key !== 'Enter') return;
-        if (!phoneNumberRef.current) return;
-        phoneNumberRef.current.focus();
+        if (!phoneRef.current) return;
+        phoneRef.current.focus();
     }
 
     const onPasswordKeyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -310,7 +311,7 @@ export default function SignUp() {
                     <div className='sign-up-content-input-box'>
                         <SignBox ref={userIdRef} title='아이디' placeholder='아이디를 입력해주세요' type='text' value={userId} onChange={onIdChangeHandler} isErrorMessage={isUserIdError} message={userIdMessage} buttonTitle='중복 확인' onButtonClick={onIdButtenClickHandler} onKeyDown={onIdKeyDownHandler} />
                         <SignBox ref={nicknameRef} title='닉네임' placeholder='닉네임을 입력해주세요' type='text' value={nickname} onChange={onNicknameChangeHandler} isErrorMessage={isNicknameError} message={NicknameMessage} buttonTitle='중복 확인' onButtonClick={onNicknameButtenClickHandler} onKeyDown={onNicknameKeyDownHandler} />
-                        <SignBox ref={phoneNumberRef} title='핸드폰 번호' placeholder='핸드폰번호를 입력해주세요' type='text' value={phoneNumber} onChange={onPhoneNumberChangeHandler} isErrorMessage={isPasswordError} message={phoneNumberMessage} onKeyDown={onPasswordKeyDownHandler} />
+                        <SignBox ref={phoneRef} title='핸드폰 번호' placeholder='핸드폰번호를 입력해주세요' type='text' value={phone} onChange={onPhoneChangeHandler} isErrorMessage={isPhoneError} message={phoneMessage} />
                         <SignBox ref={passwordRef} title='비밀번호' placeholder='비밀번호를 입력해주세요' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} onKeyDown={onPhoneNumberKeyDownHandler} />
                         <SignBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호를 입력해주세요' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isErrorMessage={isPasswordCheckError} message={passwordCheckMessage} onKeyDown={onPasswordCheckKeyDownHandler} />
                         <SignBox ref={emailRef} title='이메일' placeholder='이메일 주소를 입력해주세요' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={EmailMessage} buttonTitle='이메일 인증' onButtonClick={onEmailButtenClickHandler} onKeyDown={onEmailKeyDownHandler} />

@@ -9,6 +9,9 @@ import ReviewWritePage from 'views/festival/review/write/write';
 import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
 import ChatRoomCreate from 'components/chat/create';
+import AdminSignUp from 'views/Authentication/admin/SignUp/admin-signup';
+import SignUp from 'views/Authentication/SignUp/signup';
+import SignIn from 'views/Authentication/SignIn/signin';
 import InquireDetail from 'views/inquire/detail/inquire-detail';
 import InquireList from 'views/inquire/main/inquire-main';
 import InquireUpdate from 'views/inquire/update/inquire-update';
@@ -17,9 +20,6 @@ import NoticeDetail from 'views/notice/detail/notice-detail';
 import NoticeWrite from 'views/notice/write/notice-write';
 import NoticeUpdate from 'views/notice/update/notice-update';
 import NoticeMain from 'views/notice/main/notice-main';
-
-import SignUp from 'components/signup';
-import SignIn from 'components/signin';
 import useLoginUserStore from 'store/login-user.store';
 import { useCookies } from 'react-cookie';
 import { GetSignInUserResponseDto } from 'apis/response/user';
@@ -66,6 +66,11 @@ function App() {
       <Route path='/chat'>
         <Route path="create" element={<ChatRoomCreate />} />
         <Route path="" element={<ChatRoom />} />
+      </Route>
+      <Route path='/authentication'>
+      <Route path="admin" element={<AdminSignUp />} />
+      <Route path="signin" element={<SignIn />} />
+      <Route path="signup" element={<SignUp />} />
       </Route>
       <Route path='/inquire'>
       <Route path="main" element={<InquireList />} />
