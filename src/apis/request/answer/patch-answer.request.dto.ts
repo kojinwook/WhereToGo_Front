@@ -1,5 +1,5 @@
 export default interface PatchAnswerRequestDto {
     content : string;
-    userId : string;
+    nickname : string;
     questionId : string;
 }

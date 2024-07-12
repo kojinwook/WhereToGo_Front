@@ -15,7 +15,8 @@ export default interface ResponseDto{
     review: Review;
     reviews: Review[];
     roomId: string;
-    answer: Answer[];
+    answers: Answer[];
+    answer: Answer[]
     average: Record<string, number>;
     chatMessageList: ChatMessage[];
 }

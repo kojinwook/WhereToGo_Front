@@ -7,7 +7,7 @@ export default function InquireWrite() {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [userId, setUserId] = useState("");
+  const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
   const [image, setImage] = useState("");
   const { loginUser } = useLoginUserStore();
@@ -21,9 +21,9 @@ export default function InquireWrite() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   useEffect(() => {
-    const userId = loginUser?.userId;
-    if (!userId) return;
-    setUserId(userId);
+    const nickname = loginUser?.nickname;
+    if (!nickname) return;
+    setNickname(nickname);
     setIsLoggedIn(true);
   }, [loginUser]);
 
@@ -103,7 +103,7 @@ export default function InquireWrite() {
     if (hasError) return;
 
     try {
-      const requestBody = { title, content, userId, type, image };
+      const requestBody = { title, content, nickname, type, image };
       const result = await postQuestionRequest(requestBody);
 
       if (result && result.code === "SU") {
@@ -135,7 +135,7 @@ export default function InquireWrite() {
       <tbody>
         <div className="inquire-write-tr">
           <th className="inquire-write-left">문의 ID</th>
-          <td className="inquire-write-right">{userId}</td>
+          <td className="inquire-write-right">{nickname}</td>
         </div>
         <div className="inquire-write-tr">
           <th className="inquire-write-left">문의유형</th>

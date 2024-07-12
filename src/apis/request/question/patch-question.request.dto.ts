@@ -1,7 +1,7 @@
 export default interface patchQuestionRequestDto{
     title : string;
     content : string;
-    userId : string;
+    nickname : string;
     type : string;
     image : string;
 }

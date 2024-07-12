@@ -1,6 +1,6 @@
 export default interface Answer{
     answerId : number | string;
-    userId : string;
+    nickname : string;
     content: string;
     questionId : number | string;
     createDateTime : string;

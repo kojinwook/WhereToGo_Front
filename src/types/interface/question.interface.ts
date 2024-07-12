@@ -3,7 +3,7 @@ export default interface Question{
     questionId : number | string;
     title : string;
     content : string;
-    userId : string;
+    nickname : string;
     type : string;
     image : string;
     createDateTime :string;
