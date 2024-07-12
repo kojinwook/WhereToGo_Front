@@ -3,4 +3,6 @@ export default interface Answer{
     userId : string;
     content: string;
     questionId : number | string;
+    createDateTime : string;
+    modifyDateTime : string;
 }

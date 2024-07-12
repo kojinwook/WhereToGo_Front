@@ -26,6 +26,7 @@ import { GetSignInUserResponseDto } from 'apis/response/user';
 import { ResponseDto } from 'apis/response/response';
 import User from 'types/interface/user.interface';
 import { GetSignInUserRequest } from 'apis/apis';
+import Inquire from 'views/inquire/main/inquire-main';
 
 function App() {
 
@@ -68,7 +69,7 @@ function App() {
         <Route path="" element={<ChatRoom />} />
       </Route>
       <Route path='/inquire'>
-      <Route path="main" element={<InquireList />} />
+      <Route path="" element={<Inquire />} />
       <Route path="detail" element={<InquireDetail />} />
       <Route path="write" element={<InquireWrite />} />
       <Route path="update" element={<InquireUpdate />} />

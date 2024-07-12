@@ -6,4 +6,6 @@ export default interface Question{
     userId : string;
     type : string;
     image : string;
+    createDateTime :string;
+    modifyDateTime : string;
 }
