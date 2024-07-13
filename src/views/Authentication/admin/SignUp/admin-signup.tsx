@@ -159,7 +159,7 @@ export default function AdminSignUp() {
     setSecretKeyError(false);
     setSecretKeyMessage('시크릿 키가 확인되었습니다.');
     setSecretKeyCheck(true);
-    navigate(`/signin`);
+    navigate(`/authentication/signin`);
     alert('회원가입이 완료되었습니다.');
   };
 

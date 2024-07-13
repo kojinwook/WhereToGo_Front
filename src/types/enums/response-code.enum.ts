@@ -10,7 +10,8 @@ enum ResponseCode{
     DUPLICATE_PHONE = "DP",
     DO_NOT_HAVE_PERMISSION = "DNHP",
     SING_IN_FAIL = "SIF",
-    NOT_EXISTED_USER = "NU"
+    NOT_EXISTED_USER = "NU",
+    DUPLICATE_ID = "DI"
 };
 
 export default ResponseCode;
