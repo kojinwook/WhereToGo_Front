@@ -3,5 +3,6 @@ title : string;
 content : string;
 nickname : string;
 type : string;
-image : string;
+images: string[];
+
 }

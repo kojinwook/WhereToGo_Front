@@ -3,5 +3,5 @@ export default interface GetQuestionRequestDto{
     content : string;
     nickname : string;
     type : string;
-    image : string;
+    images: string[];
 }
