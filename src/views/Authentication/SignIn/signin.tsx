@@ -9,6 +9,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { ResponseBody } from 'types';
 import { ResponseCode } from 'types/enums/enums';
+import './style.css'
 
 export default function SignIn() {
 
@@ -134,6 +135,7 @@ const toggleRecoveryBox = () => {
 return (
   <div className="sign-in-container">
       <div className="sign-in-box">
+      <div className='sign-up-title'>{'로그인'}</div>
           <div className='sign-in-content-box'>
               <div className='sign-in-content-input-box'>
                   <div>

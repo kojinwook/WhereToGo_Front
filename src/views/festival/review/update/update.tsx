@@ -3,6 +3,7 @@ import { useCookies } from 'react-cookie';
 import { fileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/apis';
 import { useLocation } from 'react-router-dom';
 import PatchReviewRequestDto from 'apis/request/review/patch-review.request.dto';
+import './style.css'
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -103,49 +104,54 @@ export default function ReviewWritePage() {
     }
 
     return (
-        <div>
-            <h1>리뷰 작성 페이지</h1>
-            <label>별점:
-                {[...Array(5)].map((_, index) => (
-                    <i
-                        key={index}
-                        className={index < rate ? 'fas fa-star' : 'far fa-star'}
-                        style={{ cursor: 'pointer', color: index < rate ? 'gold' : 'grey' }}
-                        onMouseEnter={() => handleStarHover(index + 1)}
-                        onClick={() => handleRateChange(index + 1)}
-                    />
-                ))}
-                <span style={{ marginLeft: '10px', fontSize: '1.5rem' }}>{rate}</span>
-            </label>
-            <br />
-            <label>리뷰 내용:
-                <textarea value={review} onChange={handleReviewChange} />
-            </label>
-            <br />
-            <input type="file" multiple onChange={handleImageChange} />
-            <br />
-            <br />
-            <div style={{ display: 'flex', marginTop: '10px' }}>
-                {imagePreviews.length > 0 ? (
-                    imagePreviews.map((preview, index) => (
-                        <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
-                            <img
-                                src={preview}
-                                alt={`이미지 미리보기 ${index}`}
-                                style={{ width: '100px', height: 'auto', marginRight: '10px' }}
-                            />
-                            <button
-                                style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
-                                onClick={() => handleImageRemove(index)}
-                            >
-                                <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
-                            </button>
-                        </div>
-                    ))
-                ) : (
-                    <div></div>
-                )}
+        <div className='review-update-container'>
+            <h1>리뷰 작성</h1>
+            <div className='update-write'>
+                <div><strong>별점</strong></div>
+                <label>
+                    {[...Array(5)].map((_, index) => (
+                        <i
+                            key={index}
+                            className={index < rate ? 'fas fa-star' : 'far fa-star'}
+                            style={{ cursor: 'pointer', color: index < rate ? 'gold' : 'grey' }}
+                            onMouseEnter={() => handleStarHover(index + 1)}
+                            onClick={() => handleRateChange(index + 1)}
+                        />
+                    ))}
+                    <span style={{ marginLeft: '10px', fontSize: '1.5rem' }}>{rate}</span>
+                </label>
+                <br />
+                <div><strong>내용</strong></div>
+                <label>
+                    <textarea value={review} onChange={handleReviewChange} />
+                </label>
+                <br />
+                <div><strong>이미지</strong></div>
+                <input type="file" multiple onChange={handleImageChange} />
+                <br />
+                <div style={{ display: 'flex', marginTop: '10px' }}>
+                    {imagePreviews.length > 0 ? (
+                        imagePreviews.map((preview, index) => (
+                            <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
+                                <img
+                                    src={preview}
+                                    alt={`이미지 미리보기 ${index}`}
+                                    style={{ width: '100px', height: 'auto', marginRight: '10px' }}
+                                />
+                                <button
+                                    style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
+                                    onClick={() => handleImageRemove(index)}
+                                >
+                                    <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
+                                </button>
+                            </div>
+                        ))
+                    ) : (
+                        <div></div>
+                    )}
+                </div>
             </div>
+            
             <br />
             <button onClick={handleSubmit}>리뷰 등록</button>
         </div>
