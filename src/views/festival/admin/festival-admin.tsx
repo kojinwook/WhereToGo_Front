@@ -37,11 +37,9 @@ const FestivalAdmin: React.FC = () => {
     const handleEdit = (festival: Festival) => {
         setEditingFestival(festival);
         setFormData(festival);
-        // festival.tags가 문자열인지 확인
         if (typeof festival.tags === 'string') {
             setTags(festival.tags.split(','));
         } else {
-            // festival.tags가 이미 문자열 배열이라면, 직접 할당
             setTags(festival.tags || []);
         }
         setModalOpen(true);
@@ -58,7 +56,9 @@ const FestivalAdmin: React.FC = () => {
         e.preventDefault();
         if (formData) {
             try {
-                const updatedFormData = { ...formData, tags: tags.join(',') };
+                const updatedFormData = { ...formData, tags };
+                console.log('updatedFormData:', updatedFormData);
+
                 const response = await PatchFestivalRequest(updatedFormData, cookies.accessToken);
                 if (response.code === 'SU' && festivalList) {
                     setFestivalList(festivalList.map(festival =>
@@ -112,7 +112,7 @@ const FestivalAdmin: React.FC = () => {
                         <p><strong>Telephone:</strong> {festival.tel}</p>
                         <p><strong>Content ID:</strong> {festival.contentId}</p>
                         <p><strong>Homepage:</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
-                        <p><strong>Tags:</strong> {festival.tags}</p>
+                        <p><strong>Tags:</strong> {Array.isArray(festival.tags) ? festival.tags.map(tag => `#${tag}`).join(' ') : `#${festival.tags}`}</p>
                         <div className='festival-admin-edit' onClick={() => handleEdit(festival)}>수정</div>
                     </div>
                 </div>
@@ -143,7 +143,7 @@ const FestivalAdmin: React.FC = () => {
                             <div className="tags-container">
                                 {tags.map((tag, index) => (
                                     <div key={index} className="tag-item">
-                                        {tag}
+                                        #{tag}
                                         <span className="tag-remove" onClick={() => removeTag(tag)}>&times;</span>
                                     </div>
                                 ))}

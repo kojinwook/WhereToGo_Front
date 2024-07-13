@@ -70,11 +70,11 @@ function App() {
         <Route path="review/update" element={<ReviewUpdatePage />} />
       </Route>
 
-      <Route path='chat' element={<ChatRoom/>}/>
+      <Route path='chat' element={<ChatRoom />} />
 
       <Route path='/user'>
-        <Route path="profile" element={<UserProfile />}/>
-        <Route path='modifyProfile' element={<UserModifyProfile />}/>
+        <Route path="profile" element={<UserProfile />} />
+        <Route path='modifyProfile' element={<UserModifyProfile />} />
       </Route>
 
       <Route path='/chat'>
@@ -89,7 +89,7 @@ function App() {
       <Route path='/meeting'>
         <Route path='write' element={<MeetingWrite />} />
       </Route>
-      
+
       <Route path='/authentication'>
         <Route path="admin" element={<AdminSignUp />} />
         <Route path="signin" element={<SignIn />} />

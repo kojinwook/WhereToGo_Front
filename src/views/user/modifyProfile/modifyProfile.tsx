@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import './style.css';
 
+Modal.setAppElement('#root');
+
 // 모달 스타일 설정
 const modalStyle = {
     overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경 투명도 설정
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경 투명도 설정
     },
     content: {
         width: '200px', // 모달 너비
@@ -22,14 +24,14 @@ const modalStyle = {
         padding: '20px', // 안쪽 여백
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // 그림자 설정
     },
-  };
+};
 
 export default function UserModifyProfile() {
     const [userId, setUserId] = useState('');
     const [userNickname, setUserNickname] = useState('');
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
-    
+
     const [isNicknameModalOpen, setIsNicknameModalOpen] = useState<boolean>(false); // 닉네임 변경 모달
     const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false); // 이메일 변경 모달
     const [isPwModalOpen, setIsPwModalOpen] = useState<boolean>(false); // 비밀번호 변경 모달
@@ -43,7 +45,7 @@ export default function UserModifyProfile() {
         setIsNicknameModalOpen(!isNicknameModalOpen);
         if (!isNicknameModalOpen) {
             setUserNickname(userNickname); // 현재 닉네임
-        }else {
+        } else {
             setUserNickname(''); // 초기화
         }
     }
@@ -53,7 +55,7 @@ export default function UserModifyProfile() {
         if (!isEmailModalOpen) {
             setEmail(email);
         } else {
-            setEmail(''); 
+            setEmail('');
         }
     };
 
@@ -63,7 +65,7 @@ export default function UserModifyProfile() {
             setCurrentPassword('');
             setNewPassword('');
             setConfirmNewPassword('');
-        }else{
+        } else {
             setCurrentPassword('');
             setNewPassword('');
             setConfirmNewPassword('');
@@ -94,11 +96,11 @@ export default function UserModifyProfile() {
         if (!currentPassword) {
             alert('현재 비밀번호를 입력하세요.');
             return;
-        } 
+        }
         if (!newPassword) {
             alert('새 비밀번호를 입력하세요.');
             return;
-        } 
+        }
         if (!confirmNewPassword) {
             alert('새 비밀번호 확인을 입력하세요.');
             return;
@@ -127,7 +129,7 @@ export default function UserModifyProfile() {
         setIsWithdrawalModalOpen(false); // 모달 닫기
         navigate('/'); // 탈퇴 후 홈페이지로 이동
     };
-    
+
     return (
         <div className='mp-container'>
             <h2>사용자 프로필 수정</h2>
@@ -146,11 +148,11 @@ export default function UserModifyProfile() {
                 contentLabel='닉네임 수정'
             >
                 <h2>닉네임 수정</h2>
-                <input 
-                    type="text" 
-                    value={userNickname} 
-                    onChange={(e) => setUserNickname(e.target.value)} 
-                    placeholder="새 닉네임 입력" 
+                <input
+                    type="text"
+                    value={userNickname}
+                    onChange={(e) => setUserNickname(e.target.value)}
+                    placeholder="새 닉네임 입력"
                 />
                 <button onClick={handleNicknameSubmit}>수정</button>
                 <button onClick={toggleNicknameModal}>취소</button>
@@ -172,7 +174,7 @@ export default function UserModifyProfile() {
                 <button onClick={handleEmailSubmit}>수정</button>
                 <button onClick={toggleEmailModal}>취소</button>
             </Modal>
-            
+
             <Modal
                 isOpen={isPwModalOpen}
                 onRequestClose={togglePwModal}
@@ -180,23 +182,23 @@ export default function UserModifyProfile() {
                 contentLabel='비밀번호 수정'
             >
                 <h2>비밀번호 수정</h2>
-                <input 
-                type="password" 
-                value={currentPassword} 
-                onChange={(e) => setCurrentPassword(e.target.value)} 
-                placeholder="기존 비밀번호 입력" 
+                <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="기존 비밀번호 입력"
                 />
-                <input 
-                    type="password" 
-                    value={newPassword} 
-                    onChange={(e) => setNewPassword(e.target.value)} 
-                    placeholder="새 비밀번호 입력" 
+                <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="새 비밀번호 입력"
                 />
-                <input 
-                    type="password" 
-                    value={confirmNewPassword} 
-                    onChange={(e) => setConfirmNewPassword(e.target.value)} 
-                    placeholder="새 비밀번호 확인" 
+                <input
+                    type="password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    placeholder="새 비밀번호 확인"
                 />
                 <button onClick={handlePasswordSubmit}>수정</button>
                 <button onClick={togglePwModal}>취소</button>
