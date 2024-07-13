@@ -1,0 +1,103 @@
+.sign-up-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.sign-up-box {
+    width: 400px;
+}
+
+.sign-up-title{
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.sign-up-content-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.sign-up-content-input-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.sign-box {
+    margin-bottom: 5px;
+}
+
+.auth-consent-box {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.auth-check-box {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    margin-right: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.check-round-fill-icon {
+    background-color: #007bff;
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+}
+
+.check-ring-light-icon {
+    background-color: transparent;
+}
+
+.auth-consent-title {
+    color: #333;
+}
+
+.auth-consent-title-error {
+    color: red;
+}
+
+.auth-consent-link {
+    margin-left: auto;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.primary-button-lg,
+.sign-up-content-button-box div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.primary-button-lg:hover,
+.sign-up-content-button-box div:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.isErrorMessage {
+    border: 1px solid red;
+}
+
+.input-error-message {
+    color: red;
+    font-size: 12px;
+}

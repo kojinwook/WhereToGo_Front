@@ -1,0 +1,134 @@
+.admin-sign-up-container{
+    width: 80%;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-up-title{
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.sign-up-content-box {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+}
+
+.sign-up-content-input-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.sign-up-content-input-box .input-container {
+    margin-bottom: 5px;
+}
+
+.sign-up-content-input-box .input-container label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.sign-up-content-input-box .input-container input {
+    width: calc(100% - 22px);
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.input-container button {
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #000;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.input-container button:hover {
+    background-color: #E6E6E6;
+}
+
+.auth-consent-box {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.auth-check-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.auth-consent-title,
+.auth-consent-title-error {
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.auth-consent-title-error {
+    color: red;
+}
+
+.auth-consent-link {
+    margin-left: auto;
+    font-size: 14px;
+    color: #007bff;
+    cursor: pointer;
+}
+
+.auth-consent-link:hover {
+    text-decoration: underline;
+}
+
+.primary-button-lg {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.primary-button-lg:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.disable-button-lg {
+    background-color: #6c757d;
+    color: white;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+    cursor: not-allowed;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}

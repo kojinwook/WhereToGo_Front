@@ -14,6 +14,7 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ResponseBody } from 'types';
 import ResponseCode from 'types/enums/response-code.enum';
+import './style.css'
 
 export default function SignUp() {
   const userIdRef = useRef<HTMLInputElement | null>(null);
@@ -56,6 +57,7 @@ export default function SignUp() {
 
   const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
   const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$/;
+  const phonePattern =  /^\d{3}-\d{4}-\d{4}$/;
 
   const navigate = useNavigate();
 
@@ -130,14 +132,22 @@ export default function SignUp() {
   };
 
   const signUpResponse = (responseBody: ResponseBody<SignUpResponseDto>) => {
-    if (!responseBody) return;
+    if (!responseBody) {
+        // responseBody가 유효하지 않은 경우
+        console.error('Invalid response body:', responseBody);
+        return;
+    }
 
     const { code } = responseBody;
-    if (code === ResponseCode.VALIDATION_FAIL) alert('모든 값을 입력하세요.');
+    if (code === ResponseCode.VALIDATION_FAIL) {
+        alert('모든 값을 입력하세요.');
+        return;
+    }
 
+    // 회원가입이 성공적으로 처리된 경우
     navigate('/signup');
     alert('회원가입이 완료되었습니다.');
-  };
+};
 
   const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -232,7 +242,6 @@ export default function SignUp() {
 
   const onSignUpButtonClickHandler = () => {
 
-    if (!userId || !nickname || !password || !passwordCheck || !email || !certificationNumber) return;
     if (!isUserIdCheck) {
       alert('중복 확인은 필수입니다.');
       return;
@@ -254,6 +263,13 @@ export default function SignUp() {
     }
     if (!isCertificationCheck) {
       alert('이메일 인증은 필수입니다.');
+      return;
+    }
+
+    const checkedPhone = phonePattern.test(phone);
+    if (!checkedPhone) {
+      setPhoneError(true);
+      setPhoneMessage('xxx-xxxx-xxxx 형식으로 입력해주세요.');
       return;
     }
 
@@ -300,16 +316,31 @@ export default function SignUp() {
   return (
     <div className='sign-up-container'>
       <div className='sign-up-box'>
+      <div className='sign-up-title'>{'회원가입'}</div>
         <div className='sign-up-content-box'>
           <div className='sign-up-content-divider'></div>
           <div className='sign-up-content-input-box'>
-            <SignBox ref={userIdRef} title='아이디' placeholder='아이디를 입력해주세요' type='text' value={userId} onChange={onIdChangeHandler} isErrorMessage={isUserIdError} message={userIdMessage} buttonTitle='중복 확인' onButtonClick={onIdButtenClickHandler} onKeyDown={onIdKeyDownHandler} />
-            <SignBox ref={nicknameRef} title='닉네임' placeholder='닉네임을 입력해주세요' type='text' value={nickname} onChange={onNicknameChangeHandler} isErrorMessage={isNicknameError} message={NicknameMessage} buttonTitle='중복 확인' onButtonClick={onNicknameButtenClickHandler} onKeyDown={onNicknameKeyDownHandler} />
-            <SignBox ref={passwordRef} title='비밀번호' placeholder='비밀번호를 입력해주세요' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} onKeyDown={onPasswordKeyDownHandler} />
-            <SignBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호를 입력해주세요' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isErrorMessage={isPasswordCheckError} message={passwordCheckMessage} onKeyDown={onPasswordCheckKeyDownHandler} />
-            <SignBox ref={emailRef} title='이메일' placeholder='이메일 주소를 입력해주세요' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={EmailMessage} buttonTitle='이메일 인증' onButtonClick={onEmailButtenClickHandler} onKeyDown={onEmailKeyDownHandler} />
-            <SignBox ref={phoneRef} title='전화번호' placeholder='전화번호를 입력해주세요' type='text' value={phone} onChange={onPhoneChangeHandler} isErrorMessage={isPhoneError} message={PhoneMessage} />
-            <SignBox ref={certificationNumberRef} title='인증번호' placeholder='인증번호 4자리를 입력해주세요' type='text' value={certificationNumber} onChange={onCertificationNumberChangeHandler} isErrorMessage={isCertificationNumberError} message={CertificationNumberMessage} buttonTitle='인증 확인' onButtonClick={onCertificationNumberButtenClickHandler} onKeyDown={onCertificationNumberKeyDownHandler} />
+            <div className='sign-box'>
+              <SignBox ref={userIdRef} title='아이디' placeholder='아이디를 입력해주세요' type='text' value={userId} onChange={onIdChangeHandler} isErrorMessage={isUserIdError} message={userIdMessage} buttonTitle='중복 확인' onButtonClick={onIdButtenClickHandler} onKeyDown={onIdKeyDownHandler} />
+            </div>
+            <div className='sign-box'>
+              <SignBox ref={nicknameRef} title='닉네임' placeholder='닉네임을 입력해주세요' type='text' value={nickname} onChange={onNicknameChangeHandler} isErrorMessage={isNicknameError} message={NicknameMessage} buttonTitle='중복 확인' onButtonClick={onNicknameButtenClickHandler} onKeyDown={onNicknameKeyDownHandler} />
+            </div>
+            <div className='sign-box'>
+              <SignBox ref={passwordRef} title='비밀번호' placeholder='비밀번호를 입력해주세요' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} onKeyDown={onPasswordKeyDownHandler} />
+            </div>
+            <div className='sign-box'>
+              <SignBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호를 입력해주세요' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isErrorMessage={isPasswordCheckError} message={passwordCheckMessage} onKeyDown={onPasswordCheckKeyDownHandler} />
+            </div>
+            <div className='sign-box'>
+              <SignBox ref={emailRef} title='이메일' placeholder='이메일 주소를 입력해주세요' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={EmailMessage} buttonTitle='이메일 인증' onButtonClick={onEmailButtenClickHandler} onKeyDown={onEmailKeyDownHandler} />
+            </div>
+            <div className='sign-box'>
+              <SignBox ref={phoneRef} title='전화번호' placeholder='전화번호를 입력해주세요' type='text' value={phone} onChange={onPhoneChangeHandler} isErrorMessage={isPhoneError} message={PhoneMessage} />
+            </div>
+            <div className='sign-box'>
+              <SignBox ref={certificationNumberRef} title='인증번호' placeholder='인증번호 4자리를 입력해주세요' type='text' value={certificationNumber} onChange={onCertificationNumberChangeHandler} isErrorMessage={isCertificationNumberError} message={CertificationNumberMessage} buttonTitle='인증 확인' onButtonClick={onCertificationNumberButtenClickHandler} onKeyDown={onCertificationNumberKeyDownHandler} />
+            </div>
           </div>
           <div className="auth-consent-box">
             <div className="auth-check-box" onClick={onAgreedPersonalClickHandler}>
