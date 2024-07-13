@@ -678,8 +678,8 @@ export const GetChatRoomListRequest = async () => {
     return result;
 };
 
-export const postMeetingRequest = async (title: string, introduction: string, content: string, ImageList: string[]) => {
-    const result = await axios.post(POST_MEETING_URL(), {title, introduction, content, ImageList})
+export const postMeetingRequest = async (title: string, introduction: string, content: string, imageUrl: string) => {
+    const result = await axios.post(POST_MEETING_URL(), {title, introduction, content, imageUrl})
         .then(response => {
             const responseBody: PostMeetingResponseDto = response.data;
             return responseBody;

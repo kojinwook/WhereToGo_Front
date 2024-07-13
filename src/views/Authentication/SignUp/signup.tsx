@@ -57,6 +57,7 @@ export default function SignUp() {
 
   const emailPattern = /^[a-zA-Z0-9]*@([-.]?[a-zA-Z0-9])*\.[a-zA-Z]{2,4}$/;
   const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,13}$/;
+  const phonePattern =  /^\d{3}-\d{4}-\d{4}$/;
 
   const navigate = useNavigate();
 
@@ -131,14 +132,22 @@ export default function SignUp() {
   };
 
   const signUpResponse = (responseBody: ResponseBody<SignUpResponseDto>) => {
-    if (!responseBody) return;
+    if (!responseBody) {
+        // responseBody가 유효하지 않은 경우
+        console.error('Invalid response body:', responseBody);
+        return;
+    }
 
     const { code } = responseBody;
-    if (code === ResponseCode.VALIDATION_FAIL) alert('모든 값을 입력하세요.');
+    if (code === ResponseCode.VALIDATION_FAIL) {
+        alert('모든 값을 입력하세요.');
+        return;
+    }
 
+    // 회원가입이 성공적으로 처리된 경우
     navigate('/signup');
     alert('회원가입이 완료되었습니다.');
-  };
+};
 
   const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -233,7 +242,6 @@ export default function SignUp() {
 
   const onSignUpButtonClickHandler = () => {
 
-    if (!userId || !nickname || !password || !passwordCheck || !email || !certificationNumber) return;
     if (!isUserIdCheck) {
       alert('중복 확인은 필수입니다.');
       return;
@@ -255,6 +263,13 @@ export default function SignUp() {
     }
     if (!isCertificationCheck) {
       alert('이메일 인증은 필수입니다.');
+      return;
+    }
+
+    const checkedPhone = phonePattern.test(phone);
+    if (!checkedPhone) {
+      setPhoneError(true);
+      setPhoneMessage('xxx-xxxx-xxxx 형식으로 입력해주세요.');
       return;
     }
 
