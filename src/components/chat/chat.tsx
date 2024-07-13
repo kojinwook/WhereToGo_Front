@@ -28,7 +28,7 @@ const ChatRoom: React.FC = () => {
             console.error('Missing required props: roomId, receiverNickname, receiverProfileImage');
             return;
         }
-console.log(loginUser)
+
         const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
             webSocketFactory: () => socket,

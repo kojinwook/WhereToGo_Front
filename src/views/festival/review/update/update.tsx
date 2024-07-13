@@ -73,10 +73,10 @@ export default function ReviewWritePage() {
     };
 
     const handleSubmit = async () => {
-        // if (!cookies.accessToken) {
-        //     alert('로그인이 필요합니다.');
-        //     return;
-        // }
+        if (!cookies.accessToken) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
 
         const ImageList: string[] = [];
         for (const file of imageFileList) {

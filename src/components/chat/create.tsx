@@ -2,18 +2,21 @@ import { PostChatRoomRequest } from 'apis/apis';
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import useLoginUserStore from 'store/login-user.store';
 
 const ChatRoomCreate: React.FC = () => {
+    const {loginUser} = useLoginUserStore();
     const navigate = useNavigate();
     const [roomName, setRoomName] = useState<string>('');
     const [cookies, setCookie] = useCookies();
-    let nickname = 'ffff'
+    const nickname = loginUser?.nickname;
     let creatorNickname = "qwer"
     let creatorProfileImage = "aa";
 
     const handleCreateRoom = async () => {
+        if(!roomName || !nickname || !creatorNickname || !creatorProfileImage) return;
         try {
-            const response = await PostChatRoomRequest({ roomName, nickname, creatorNickname, creatorProfileImage});
+            const response = await PostChatRoomRequest({ roomName, nickname, creatorNickname, creatorProfileImage}, cookies.access_token);
             console.log(response);
             if (response.code === 'SU') {
                 const roomId = response.roomId;
