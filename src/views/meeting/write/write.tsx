@@ -10,7 +10,7 @@ export default function MeetingWrite() {
   const [introduction, setIntroduction] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [cookies] = useCookies(['accessToken']);
-  
+
   const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   }
@@ -31,7 +31,7 @@ export default function MeetingWrite() {
     const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
   };
-  
+
   const handleImageRemove = (index: number) => {
     const newImageFileList = [...imageFileList];
     newImageFileList.splice(index, 1);
@@ -41,29 +41,24 @@ export default function MeetingWrite() {
     newImagePreviews.splice(index, 1);
     setImagePreviews(newImagePreviews);
   };
-  
+
   const handlePost = async () => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('introduction', introduction);
     formData.append('content', content);
 
-    imageFileList.forEach((file) => {
-      formData.append('meetingImage', file);
-    });
+    let imageUrl = '';
+    if (imageFileList.length > 0) {
+      const formData = new FormData();
+      formData.append('file', imageFileList[0]);
+      imageUrl = await fileUploadRequest(formData) || '';
+    }
 
-    const ImageList: string[] = [];
-        for (const file of imageFileList) {
-            const formData = new FormData();
-            formData.append('file', file);
-            const imageUrl = await fileUploadRequest(formData);
-            if (imageUrl) {
-                ImageList.push(imageUrl);
-            }
-        }
 
+    console.log(title, introduction, content, imageUrl);
     try {
-      const response = await postMeetingRequest(title, introduction, content, ImageList);
+      const response = await postMeetingRequest(title, introduction, content, imageUrl);
       if (response.code === 'SU') {
         alert('모임이 성공적으로 등록되었습니다.');
       } else {
@@ -78,9 +73,9 @@ export default function MeetingWrite() {
   return (
     <div className='meeting-write-container'>
       <p><strong>모임 명</strong></p>
-      <input 
-        type="text" 
-        placeholder="모임 명을 입력해주세요." 
+      <input
+        type="text"
+        placeholder="모임 명을 입력해주세요."
         value={title}
         onChange={handleTitle}
       />
@@ -89,8 +84,8 @@ export default function MeetingWrite() {
 
       <p><strong>한 줄 소개</strong></p>
       <label className='introduction'>
-        <textarea 
-          className='introduction-textarea' 
+        <textarea
+          className='introduction-textarea'
           placeholder='한 줄 소개'
           value={introduction}
           onChange={handleIntroduction}
@@ -101,8 +96,8 @@ export default function MeetingWrite() {
 
       <p><strong>내용</strong></p>
       <label className='content'>
-      <textarea 
-          className='content-textarea' 
+        <textarea
+          className='content-textarea'
           placeholder='내용'
           value={content}
           onChange={handleContent}
@@ -112,21 +107,21 @@ export default function MeetingWrite() {
       <p><strong>사진</strong></p>
       <input type="file" multiple onChange={handleImageChange} />
       <div style={{ display: 'flex', marginTop: '10px' }}>
-          {imagePreviews.map((preview, index) => (
-              <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
-                  <img
-                      src={preview}
-                      alt={`이미지 미리보기 ${index}`}
-                      style={{ width: '100px', height: 'auto', marginRight: '10px' }}
-                  />
-                  <button
-                      style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
-                      onClick={() => handleImageRemove(index)}
-                  >
-                      <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
-                  </button>
-              </div>
-          ))}
+        {imagePreviews.map((preview, index) => (
+          <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
+            <img
+              src={preview}
+              alt={`이미지 미리보기 ${index}`}
+              style={{ width: '100px', height: 'auto', marginRight: '10px' }}
+            />
+            <button
+              style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
+              onClick={() => handleImageRemove(index)}
+            >
+              <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
+            </button>
+          </div>
+        ))}
       </div>
 
       <button onClick={handlePost}>등록</button>
