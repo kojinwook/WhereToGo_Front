@@ -54,7 +54,7 @@ const InquireDetail: React.FC = () => {
       if (!questionId) return;
       try {
         const response = await getAllAnswerRequest(questionId);
-        if(!response) return;
+        if (!response) return;
         if (response.code !== "SU") return;
         console.log(response.answers)
         setAnswers(response.answers); // response.answer가 배열 형태로 들어오는지 확인
@@ -65,17 +65,18 @@ const InquireDetail: React.FC = () => {
     };
     fetchAnswerDetails();
   }, [questionId]);
-  
+
 
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
         const response = await getQuestionRequest(questionId);
-        const { title, content, nickname, type, image } = response as unknown as Question;
+        const { title, content, nickname, type, images } = response as unknown as Question;
         if (!title || !content || !nickname || !type) {
           throw new Error("Invalid response structure");
         }
-        setQuestion(response as unknown as Question);
+        const imageUrls = images.map(image => URL.createObjectURL(image));
+        setQuestion({ ...response, images: imageUrls });
         setLoading(false);
       } catch (error) {
         console.error("질문 정보를 불러오는 중 오류가 발생했습니다:", error);
@@ -245,12 +246,12 @@ const InquireDetail: React.FC = () => {
   return (
     <div className="question-detail-container">
       <div className="title-content-container">
-      <div className="nickname">문의 닉네임 : {question.nickname}</div>
-      <div className="type">문의 유형 : {getTypeString(question.type)}</div>
+        <div className="nickname">문의 닉네임 : {question.nickname}</div>
+        <div className="type">문의 유형 : {getTypeString(question.type)}</div>
         <div className="title">제목 : {question.title}</div>
         <div className="content">내용 : {question.content}</div>
-        {question.image && (
-          <img src={question.image} alt="질문 이미지" className="question-image" />
+        {question.images && (
+          <img src={question.images} alt="질문 이미지" className="question-image" />
         )}
       </div>
       <div className="button-box">
@@ -288,57 +289,59 @@ const InquireDetail: React.FC = () => {
               className="submit-answer-button"
               onClick={uploadAnswerClickHandler}
             >
-              댓글 등록
+              답변 등록
             </button>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
           </div>
         )}
 
-{answers.length === 0 ? (
-  <div className="no-answer-message">해당 게시물에 답변이 없습니다.</div>
-) : (
-  answers.map((answer, index) => (
-    <div key={index} className="answer">
-      <div>{answer.content}</div>
-      <div className="answer-actions">
-        {role !== "ADMIN" && (
-          <>
-            <button
-              className="edit-answer-button"
-              onClick={() =>
-                startEditingAnswer(answer.answerId, answer.content)
-              }
-            >
-              수정
-            </button>
-            <button
-              className="delete-answer-button"
-              onClick={() => deleteAnswerHandler(answer.answerId)}
-            >
-              삭제
-            </button>
-          </>
-        )}
-        {editingAnswerId === answer.answerId && (
-          <div className="edit-answer-container">
-            <textarea
-              className="edit-answer-input"
-              value={answerContent}
-              onChange={handleAnswerContentChange}
-            />
-            <button
-              className="submit-edit-answer-button"
-              onClick={updateAnswerHandler}
-            >
-              수정 완료
-            </button>
-          </div>
+        {answers.length === 0 ? (
+          <div className="no-answer-message">해당 게시물에 답변이 없습니다.</div>
+        ) : (
+          answers.map((answer, index) => (
+            <div key={index} className="answer">
+              <div>{answer.content}</div>
+              <div className="answer-actions">
+                {role !== "ADMIN" && (
+                  <>
+                    <button
+                      className="edit-answer-button"
+                      onClick={() =>
+                        startEditingAnswer(answer.answerId, answer.content)
+                      }
+                    >
+                      답변 수정
+                    </button>
+                    <button
+                      className="delete-answer-button"
+                      onClick={() => deleteAnswerHandler(answer.answerId)}
+                    >
+                      답변 삭제
+                    </button>
+                  </>
+                )}
+                {editingAnswerId === answer.answerId && (
+                  <div className="edit-answer-container">
+                    <textarea
+                      className="edit-answer-input"
+                      value={answerContent}
+                      onChange={handleAnswerContentChange}
+                    />
+                    {role !== "ADMIN" && (
+                      <button
+                        className="submit-edit-answer-button"
+                        onClick={updateAnswerHandler}
+                      >
+                        수정 완료
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))
         )}
       </div>
-    </div>
-  ))
-)}
-    </div>
     </div>
   );
 };

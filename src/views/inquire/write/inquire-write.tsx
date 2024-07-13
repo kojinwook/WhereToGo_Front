@@ -1,6 +1,6 @@
 import { postQuestionRequest } from 'apis/apis';
-import React, { ChangeEvent, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 
 export default function InquireWrite() {
@@ -9,7 +9,7 @@ export default function InquireWrite() {
   const [content, setContent] = useState("");
   const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
-  const [image, setImage] = useState("");
+  const [images, setImage] = useState([]);
   const { loginUser } = useLoginUserStore();
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -31,18 +31,17 @@ export default function InquireWrite() {
     setTitle(event.target.value);
     if (event.target.value) setTitleError("");
   };
+
   const handleContentChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
     if (event.target.value) setContentError("");
   };
+
   const handleTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedType = event.target.value; // 숫자 형태의 값이 들어옴
     let typeString = ""; // 변환된 문자열을 저장할 변수
 
-    switch (
-
-    selectedType // 선택된 값에 따라 문자열로 변환
-    ) {
+    switch (selectedType) { // 선택된 값에 따라 문자열로 변환
       case "1":
         typeString = "문의 유형을 선택해주세요.";
         break;
@@ -63,7 +62,7 @@ export default function InquireWrite() {
         break;
     }
     setType(selectedType); // 변환된 문자열을 state에 저장
-    if (selectedType != "1") setTypeError("");
+    if (selectedType !== "1") setTypeError("");
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +85,11 @@ export default function InquireWrite() {
   };
 
   const uploadPostClickHandler = async () => {
+    if (!isLoggedIn) {
+      setErrorMessage("로그인을 한 후 이용해주세요.");
+      return;
+    }
+
     let hasError = false;
 
     if (!title) {
@@ -103,7 +107,7 @@ export default function InquireWrite() {
     if (hasError) return;
 
     try {
-      const requestBody = { title, content, nickname, type, image };
+      const requestBody = { title, content, nickname, type, images };
       const result = await postQuestionRequest(requestBody);
 
       if (result && result.code === "SU") {
@@ -126,10 +130,7 @@ export default function InquireWrite() {
     <table className="inquire-write">
       <thead>
         <tr>
-          <th className="inquire-write-title">1대1 문의 접수
-            <tfoot>
-            </tfoot>
-          </th>
+          <th className="inquire-write-title">1대1 문의 접수</th>
         </tr>
       </thead>
       <tbody>
@@ -190,7 +191,7 @@ export default function InquireWrite() {
                     style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
                     onClick={() => handleImageRemove(index)}
                   >
-                    <i className="fas fa-times-cir cle" style={{ fontSize: '1.5rem', color: 'gray' }} />
+                    <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
                   </button>
                 </div>
               ))}
@@ -198,11 +199,12 @@ export default function InquireWrite() {
             {imageError && <div style={{ color: 'red' }}>{imageError}</div>}
           </td>
         </div>
-      </tbody> 
+      </tbody>
       <div className="inquire-write-button">
         <button className="inquire-write-cancel" onClick={cancelClickHandler}>취소</button>
         <button className="inquire-write-upload" onClick={uploadPostClickHandler}>접수</button>
       </div>
+      {errorMessage && <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>}
     </table>
   );
 }
