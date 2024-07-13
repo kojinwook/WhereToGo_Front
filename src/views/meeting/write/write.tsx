@@ -1,15 +1,24 @@
 import { fileUploadRequest, postMeetingRequest } from 'apis/apis';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import useLoginUserStore from 'store/login-user.store';
 // import './style.css';
 
 export default function MeetingWrite() {
+  const {loginUser} = useLoginUserStore();
   const [imageFileList, setImageFileList] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [title, setTitle] = useState<string>('');
   const [introduction, setIntroduction] = useState<string>('');
   const [content, setContent] = useState<string>('');
-  const [cookies] = useCookies(['accessToken']);
+  const [nickname, setNickname] = useState<string>('');
+  const [cookies] = useCookies();
+
+  useEffect(() => {
+    if (!loginUser) return;
+    console.log(loginUser.nickname)
+    setNickname(loginUser.nickname);
+  }, []);
 
   const handleTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -55,10 +64,8 @@ export default function MeetingWrite() {
       imageUrl = await fileUploadRequest(formData) || '';
     }
 
-
-    console.log(title, introduction, content, imageUrl);
     try {
-      const response = await postMeetingRequest(title, introduction, content, imageUrl);
+      const response = await postMeetingRequest(title, introduction, content, imageUrl, nickname, cookies.accessToken);
       if (response.code === 'SU') {
         alert('모임이 성공적으로 등록되었습니다.');
       } else {

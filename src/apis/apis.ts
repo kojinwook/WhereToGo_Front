@@ -639,8 +639,8 @@ export const GetChatMessageRequest = async (messageId: string) => {
     return result;
 };
 
-export const PostChatRoomRequest = async (requestBody: PostChatRoomRequestDto) => {
-    const result = await axios.post(POST_CHAT_ROOM_URL(), requestBody)
+export const PostChatRoomRequest = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_CHAT_ROOM_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PostChatRoomResponseDto = response.data;
             return responseBody;
@@ -678,8 +678,8 @@ export const GetChatRoomListRequest = async () => {
     return result;
 };
 
-export const postMeetingRequest = async (title: string, introduction: string, content: string, imageUrl: string) => {
-    const result = await axios.post(POST_MEETING_URL(), {title, introduction, content, imageUrl})
+export const postMeetingRequest = async (title: string, introduction: string, content: string, imageUrl: string, nickname: string, accessToken: string) => {
+    const result = await axios.post(POST_MEETING_URL(), {title, introduction, content, imageUrl, nickname}, authorization(accessToken))
         .then(response => {
             const responseBody: PostMeetingResponseDto = response.data;
             return responseBody;
