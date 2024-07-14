@@ -1,4 +1,4 @@
-import { GetUserRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetUserRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -16,11 +16,13 @@ import heartIcon from 'assets/images/heartIcon.png';
 import settingIcon from 'assets/images/setting.png';
 import starIcon from 'assets/images/star.png';
 import { ResponseDto } from 'apis/response/response';
+import { Favorite } from 'types/interface/interface';
+import { get } from 'http';
 
 // 모달 스타일 설정
 const modalStyle = {
     overlay: {
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경 투명도 설정
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // 배경 투명도 설정
     },
     content: {
         width: '400px', // 모달 너비
@@ -36,7 +38,7 @@ const modalStyle = {
         padding: '20px', // 안쪽 여백
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // 그림자 설정
     },
-  };
+};
 
 export default function UserProfile() {
     const { userId } = useParams();
@@ -47,6 +49,7 @@ export default function UserProfile() {
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
+    const [favorites, setFavorites] = useState<Favorite[]>([]);
 
     const [isHeartModalOpen, setIsHeartModalOpen] = useState<boolean>(false); // 찜 모달 열림 상태
     const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false); // 모임 모달 열림 상태
@@ -65,10 +68,9 @@ export default function UserProfile() {
 
     // 로그아웃
     const handleLogoutClick = () => {
-    removeCookie('accessToken');
-    navigate('/');
+        removeCookie('accessToken');
+        navigate('/');
     };
-    
 
     useEffect(() => {
         if (!userId) return;
@@ -93,7 +95,12 @@ export default function UserProfile() {
             setProfileImage(profileImage);
         });
     }, [userId, cookies.accessToken, navigator]);
-    
+
+    useEffect(() => {
+        if (!loginUser) return;
+        getAllFavorite(loginUser.nickname);
+    }, [loginUser]);
+
     // 모달 열기/닫기 이벤트 핸들러
     const toggleHeartModal = () => setIsHeartModalOpen(!isHeartModalOpen);
     const toggleGroupModal = () => setIsGroupModalOpen(!isGroupModalOpen);
@@ -102,6 +109,30 @@ export default function UserProfile() {
     const toggleSettingModal = () => setIsSettingModalOpen(!isSettingModalOpen);
 
     const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(true); // 알림 설정 상태
+
+    const getAllFavorite = async (nickname: string) => {
+        if(!loginUser) {
+            alert('로그인 후 이용해주세요.');
+            navigate('/login');
+            return;
+        }
+        try{
+            const response = await GetAllFavoriteRequest(nickname, cookies.accessToken);
+            console.log(response);
+            if(response.code === 'SU'){
+                setFavorites(response.favoriteList);
+            }else{
+                alert('찜 목록을 불러오는데 실패했습니다.');
+            }
+        }catch(error){
+            console.error(error);
+        }
+        console.log(favorites)
+    };
+
+    const handleTitleClick = (contentId: string) => {
+        navigate(`/festival/detail?contentId=${contentId}`);
+    };
 
     return (
         <div id='user-profile-wrapper'>
@@ -147,7 +178,14 @@ export default function UserProfile() {
                 contentLabel='찜 목록'
             >
                 <h2>나의 찜 목록</h2>
-                <p>여기에 찜 목록을 추가하세요.</p>
+                <div className='favorite-list'>
+                    {favorites.map((favorite) => (
+                        <div key={favorite.id} className='favorite-item'>
+                            {/* 여기에 각 찜 목록 항목의 내용을 출력 */}
+                            <span onClick={() => handleTitleClick(favorite.contentId)}>{favorite.title}</span>
+                        </div>
+                    ))}
+                </div>
                 <button onClick={toggleHeartModal}>닫기</button>
             </Modal>
             <Modal

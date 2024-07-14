@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest } from '../../../apis/apis';
+import { GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest, PutFavoriteRequest } from '../../../apis/apis';
 import { Festival } from 'types/interface/interface';
 import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import ResponseDto from 'apis/response/response.dto';
+import useLoginUserStore from 'store/login-user.store';
 
 export default function FestivalPage() {
-    // const {loginUser} = useLoginUserStore();
+    const { loginUser } = useLoginUserStore();
     const [searchFestivalList, setSearchFestivalList] = useState<Festival[]>();
     const [averageRates, setAverageRates] = useState<{ [key: string]: number }>({});
-    const [isFavorite, setFavorite] = useState<boolean>(false);
-    // const [favoriteList, setFavoriteList] = useState<Favorite[]>([]);
+    // const [isFavorite, setFavorite] = useState<boolean>(false);
+    const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
     const [cookies, setCookies] = useCookies();
+    const [nickname, setNickname] = useState<string>('');
     const navigate = useNavigate();
     const location = useLocation();
+
+    useEffect(() => {
+        if (loginUser) {
+            setNickname(loginUser.nickname);
+        }
+    }, []);
 
     const areas = [
         { name: '전체', code: '' },
@@ -106,55 +114,6 @@ export default function FestivalPage() {
         }
     };
 
-    // const getFavoriteListResponse = (
-    //     responseBody: GetFavoriteListResponseDto | ResponseDto | null
-    // ) => {
-    //     if (!responseBody) return;
-    //     const { code } = responseBody;
-    //     if (code === "NB") alert("존재하지 않습니다.");
-    //     if (code === "DBE") alert("데이터베이스 오류입니다.");
-    //     if (code !== "SU") return;
-
-    //     const { favoriteList } = responseBody as GetFavoriteListResponseDto;
-    //     setFavoriteList(favoriteList);
-
-    // if (!loginUser) {
-    //     setFavorite(false);
-    //     return;
-    // }
-    //     const isFavorite =
-    //         favoriteList.findIndex(
-    //             (favorite) => favorite.userId === loginUser.userId
-    //         ) !== -1;
-    //     setFavorite(isFavorite);
-    // };
-
-    // const onFavoriteClickHandler = () => {
-    //     if (!contentId || !loginUser || !cookies.accessToken) return;
-    //     PutFavoriteRequest(contentId, cookies.accessToken).then(putFavoriteResponse);
-    // };
-
-    // const putFavoriteResponse = (
-    //     responseBody: PutFavoriteResponseDto | ResponseDto | null
-    // ) => {
-    //     if (!responseBody) return;
-    //     const { code } = responseBody;
-    //     if (code === "VF") alert("잘못된 접근입니다.");
-    //     if (code === "NU") alert("존재하지 않는 유저입니다.");
-    //     if (code === "NB") alert("존재하지 않습니다.");
-    //     if (code === "AF") alert("인증에 실패했습니다.");
-    //     if (code === "DBE") alert("데이터베이스 오류입니다.");
-    //     if (code !== "SU") return;
-
-    //     if (!contentId) return;
-    //     GetFavoriteListRequest(contentId).then(getFavoriteListResponse);
-    // };
-
-    // useEffect(() => {
-    //     if (!contentId) return;
-    //     GetFavoriteListRequest(contentId).then(getFavoriteListResponse);
-    // }, [contentId]);
-
     const handleTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`, { state: { from: location } });
     };
@@ -176,6 +135,23 @@ export default function FestivalPage() {
                 {displayRatingValue && <span className="rating-value"> {rating.toFixed(1)}</span>}
             </div>
         );
+    };
+
+    const onFavoriteClickHandler = async (contentId: string) => {
+        if (!nickname) return;
+        try {
+            const response = await PutFavoriteRequest(contentId, nickname, cookies.accessToken);
+            if (response.code === 'SU') {
+                setFavorites(prevFavorites => ({
+                    ...prevFavorites,
+                    [contentId]: !prevFavorites[contentId]
+                }));
+            } else {
+                console.error('Failed to toggle favorite:', response.message);
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+        }
     };
 
     if (!searchFestivalList) return null;
@@ -200,12 +176,12 @@ export default function FestivalPage() {
                         <div>{festival.address1}</div>
                         <div>{renderStars(averageRates[festival.contentId] || 0, true)}</div>
                         <div>{festival.startDate} ~ {festival.endDate}</div>
-                        {/* <div className="icon-button" onClick={onFavoriteClickHandler}>
-                        {isFavorite ?
-                            <div className="icon favorite-fill-icon"></div> :
-                            <div className="icon favorite-light-icon"></div>
-                        }
-                    </div> */}
+                        <div className="icon-button" onClick={() => onFavoriteClickHandler(festival.contentId)}>
+                            {favorites[festival.contentId] ?
+                                <div className="icon favorite-fill-icon"></div> :
+                                <div className="icon favorite-light-icon"></div>
+                            }
+                        </div>
                     </div>
                 ))}
             </div>

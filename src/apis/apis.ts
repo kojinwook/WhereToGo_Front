@@ -18,6 +18,7 @@ import { PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordReque
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
+import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -46,6 +47,8 @@ const GET_FESTIVAL_LIST_URL = () => `${API_DOMAIN}/festival/getFestivalList`;
 const GET_SEARCH_FESTIVAL_LIST_URL = (areaCode: string) => `${API_DOMAIN}/festival/searchFestivalList?areaCode=${areaCode}`;
 const GET_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/getFestival?contentId=${contentId}`;
 const PATCH_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/patchFestival?contentId=${contentId}`;
+const PUT_FAVORITE_URL = (contentId: string | number, nickname: string) => `${API_DOMAIN}/favorite/putFavorite?contentId=${contentId}&nickname=${nickname}`;
+const GET_ALL_FAVORITE_URL = (nickname: string) => `${API_DOMAIN}/favorite/getAllFavoriteList?nickname=${nickname}`;
 
 const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
 const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
@@ -302,6 +305,32 @@ export const PatchFestivalRequest = async (requestBody: Festival, accessToken: s
     const result = await axios.patch(PATCH_FESTIVAL_URL(requestBody.contentId), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PatchFestivalResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const PutFavoriteRequest = async (contentId: string, nickname: string, accessToken: string) => {
+    const result = await axios.put(PUT_FAVORITE_URL(contentId, nickname), authorization(accessToken))
+        .then(response => {
+            const responseBody: ResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetAllFavoriteRequest = async (nickname: string, accessToken: string) => {
+    const result = await axios.get(GET_ALL_FAVORITE_URL(nickname), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetAllFavoriteResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {

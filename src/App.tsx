@@ -73,7 +73,7 @@ function App() {
       <Route path='chat' element={<ChatRoom />} />
 
       <Route path='/user'>
-        <Route path="profile" element={<UserProfile />} />
+        <Route path="profile/:userId" element={<UserProfile />} />
         <Route path='modifyProfile' element={<UserModifyProfile />} />
       </Route>
 
