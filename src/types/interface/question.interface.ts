@@ -5,7 +5,7 @@ export default interface Question{
     content : string;
     nickname : string;
     type : string;
-    images: string[];
+    imageList: string[];
     createDateTime :string;
     modifyDateTime : string;
 }

@@ -112,6 +112,7 @@ const ChatRoom: React.FC = () => {
 
     return (
         <div className="chat-room">
+            <div>{receiverNickname}</div>
             <div className="messages">
                 {messages.map((msg, index) => (
                     <div key={index} className={`message ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>

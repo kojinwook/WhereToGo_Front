@@ -3,5 +3,5 @@ export default interface QuestionData{
     content : string;
     nickname : string;
     type : string;
-    images: string[];
+    imageList: string[];
     }

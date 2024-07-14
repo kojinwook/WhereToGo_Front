@@ -19,7 +19,8 @@ export default interface ResponseDto{
     email: string;
     nickname: string;
     answers: Answer[];
-    answer: Answer[]
+    answer: Answer[];
+    question: Question;
     average: Record<string, number>;
     chatMessageList: ChatMessage[];
     favoriteList: Favorite[];

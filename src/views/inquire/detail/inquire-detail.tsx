@@ -9,7 +9,6 @@ import {
   deleteAnswerRequest,
   deleteQuestionRequest,
   getAllAnswerRequest,
-  getAnswerRequest,
   getQuestionRequest,
   patchAnswerRequest,
   postAnswerRequest,
@@ -54,9 +53,9 @@ const InquireDetail: React.FC = () => {
       if (!questionId) return;
       try {
         const response = await getAllAnswerRequest(questionId);
+        console.log(response)
         if (!response) return;
         if (response.code !== "SU") return;
-        console.log(response.answers)
         setAnswers(response.answers); // response.answer가 배열 형태로 들어오는지 확인
       } catch (error) {
         console.error("답변 정보를 불러오는 중 오류가 발생했습니다:", error);
@@ -71,12 +70,11 @@ const InquireDetail: React.FC = () => {
     const fetchQuestion = async () => {
       try {
         const response = await getQuestionRequest(questionId);
-        const { title, content, nickname, type, images } = response as unknown as Question;
+        const { title, content, nickname, type, imageList } = response.question;
         if (!title || !content || !nickname || !type) {
           throw new Error("Invalid response structure");
         }
-        const imageUrls = images.map(image => URL.createObjectURL(image));
-        setQuestion({ ...response, images: imageUrls });
+        setQuestion(response.question);
         setLoading(false);
       } catch (error) {
         console.error("질문 정보를 불러오는 중 오류가 발생했습니다:", error);
@@ -86,7 +84,6 @@ const InquireDetail: React.FC = () => {
     };
     fetchQuestion();
   }, [questionId]);
-
 
   const updatePostClickHandler = (questionId: number | string | undefined) => {
     if (!questionId) return;
@@ -243,6 +240,7 @@ const InquireDetail: React.FC = () => {
     return <div>질문 정보를 불러오는 데 실패했습니다.</div>;
   }
 
+  console.log(question);
   return (
     <div className="question-detail-container">
       <div className="title-content-container">
@@ -250,9 +248,17 @@ const InquireDetail: React.FC = () => {
         <div className="type">문의 유형 : {getTypeString(question.type)}</div>
         <div className="title">제목 : {question.title}</div>
         <div className="content">내용 : {question.content}</div>
-        {question.images && (
-          <img src={question.images} alt="질문 이미지" className="question-image" />
-        )}
+        <div className="images">
+          {question.imageList.map((imageObject, index) => (
+            <img
+              key={index}
+              src={imageObject.image}
+              alt={`이미지 ${index}`}
+              className="question-image"
+            />
+          ))}
+        </div>
+
       </div>
       <div className="button-box">
         {question.nickname === nickname && (

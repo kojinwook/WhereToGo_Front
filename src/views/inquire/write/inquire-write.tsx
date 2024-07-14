@@ -1,15 +1,16 @@
-import { postQuestionRequest } from 'apis/apis';
+import { fileUploadRequest, postQuestionRequest } from 'apis/apis';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { Form, useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 
 export default function InquireWrite() {
   const navigate = useNavigate();
+  const [cookies] = useCookies();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
-  const [images, setImage] = useState([]);
   const { loginUser } = useLoginUserStore();
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -83,11 +84,21 @@ export default function InquireWrite() {
     newImagePreviews.splice(index, 1);
     setImagePreviews(newImagePreviews);
   };
-
   const uploadPostClickHandler = async () => {
     if (!isLoggedIn) {
       setErrorMessage("로그인을 한 후 이용해주세요.");
       return;
+    }
+
+    const imageList: string[] = [];
+    for (const file of imageFileList) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const imageUrl = await fileUploadRequest(formData);
+        console.log(imageUrl);
+        if (imageUrl) {
+            imageList.push(imageUrl);
+        }
     }
 
     let hasError = false;
@@ -107,8 +118,9 @@ export default function InquireWrite() {
     if (hasError) return;
 
     try {
-      const requestBody = { title, content, nickname, type, images };
-      const result = await postQuestionRequest(requestBody);
+      const requestBody = { title, content, nickname, type, imageList };
+      console.log(requestBody);
+      const result = await postQuestionRequest(requestBody, cookies.accessToken);
 
       if (result && result.code === "SU") {
         alert("해당 문의가 업로드되었습니다.");
