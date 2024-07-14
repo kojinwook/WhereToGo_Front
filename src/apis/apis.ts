@@ -485,8 +485,8 @@ export const getQuestionRequest = async (questionId: number | string | undefined
     return result;
 }
 
-export const postQuestionRequest = async (requestBody: PostQuestionRequestDto) => {
-    const result = await axios.post(POST_QUESTION_URL(), requestBody)
+export const postQuestionRequest = async (requestBody: PostQuestionRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_QUESTION_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PostQuestionResponseDto = response.data;
             return responseBody;

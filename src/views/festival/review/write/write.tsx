@@ -53,8 +53,6 @@ export default function ReviewWritePage() {
         setImagePreviews(newImagePreviews);
     };
 
-    console.log(imageFileList)
-
     const handleSubmit = async () => {
         if (!loginUser || !cookies.accessToken) {
             alert('로그인이 필요합니다.');

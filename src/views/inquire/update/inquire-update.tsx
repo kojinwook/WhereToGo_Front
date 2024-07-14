@@ -3,6 +3,7 @@ import { PostQuestionRequestDto } from 'apis/request/question';
 import QuestionData from 'apis/request/question/questiondata.request.dto';
 
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { Cookies, useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import Question from 'types/interface/question.interface';
@@ -11,6 +12,7 @@ export default function InquireUpdate() {
   const { questionId, answer: answerIdParam } = useParams();
   const navigate = useNavigate();
   const { loginUser } = useLoginUserStore();
+  const [cookies] = useCookies();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [title, setTitle] = useState("");
   const [question, setQuestion] = useState<Question | null>(null);
@@ -30,7 +32,7 @@ export default function InquireUpdate() {
     content: "",
     nickname: "",
     type: "",
-    images: [],
+    imageList: [],
   });
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
@@ -66,12 +68,12 @@ export default function InquireUpdate() {
     const fetchQuestion = async () => {
       try {
         const response = await getQuestionRequest(questionId);
-        const { title, content, nickname, type, images } = response as unknown as Question;
+        const { title, content, nickname, type, imageList } = response as unknown as Question;
         if (!title || !content || !nickname || !type ) {
           throw new Error("Invalid response structure");
         }
         setQuestion(response as unknown as Question | null);
-        setPostRequest({ title, content, nickname, type, images });
+        setPostRequest({ title, content, nickname, type, imageList });
       } catch (error) {
         console.error("질문 정보를 불러오는 중 오류가 발생했습니다:", error);
         alert("질문 정보를 불러오는 중 오류가 발생했습니다.");
@@ -154,9 +156,9 @@ export default function InquireUpdate() {
         content,
         nickname,
         type,
-        images: imageFileList,
+        imageList: imageFileList,
       };
-      const result = await postQuestionRequest(questionData);
+      const result = await postQuestionRequest(questionData, cookies.accessToken);
 
       if (result && result.code === "SU") {
         alert("해당 문의가 업로드되었습니다.");
