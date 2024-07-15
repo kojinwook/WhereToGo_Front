@@ -9,12 +9,12 @@ import { ResponseDto } from "./response/response";
 import Festival from "types/interface/festival.interface";
 import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
+import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
 import { ResponseBody } from "types";
 import { PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomListResponseDto } from "./response/chat";
-import { PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
+import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
@@ -80,6 +80,7 @@ const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const PATCH_PASSWORD_URL = (userId: string) => `${API_DOMAIN}/user/change-password/${userId}`;
 const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
+const FIND_USERID_URL = () => `${API_DOMAIN}/user/find-userId`;
 const WIDTHDRAWAL_USER_URL = (userId: string) => `${API_DOMAIN}/user/withdrawal/${userId}`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
@@ -249,7 +250,17 @@ export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryReque
     }
 };
 
-
+export const FindUserIdRequest = async (requestBody: FindUserIdRequestDto): Promise<ResponseBody<FindUserIdResponseDto>> => {
+    try {
+        const response = await axios.post(FIND_USERID_URL(), requestBody);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return error.response.data;
+        }
+        throw error;
+    }
+};
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
