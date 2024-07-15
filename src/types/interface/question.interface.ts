@@ -1,3 +1,5 @@
+import { Images } from "./interface";
+
 export default interface Question{
     answers : boolean;
     questionId : number | string;
@@ -5,7 +7,7 @@ export default interface Question{
     content : string;
     nickname : string;
     type : string;
-    imageList: string[];
+    imageList: Images[];
     createDateTime :string;
     modifyDateTime : string;
 }

@@ -2,6 +2,7 @@ import { fileUploadRequest, postMeetingRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import useLoginUserStore from 'store/login-user.store';
+import { Images } from 'types/interface/interface';
 // import './style.css';
 
 export default function MeetingWrite() {
@@ -57,11 +58,11 @@ export default function MeetingWrite() {
     formData.append('introduction', introduction);
     formData.append('content', content);
 
-    let imageUrl = '';
+    let imageUrl: Images | null = null;
     if (imageFileList.length > 0) {
       const formData = new FormData();
       formData.append('file', imageFileList[0]);
-      imageUrl = await fileUploadRequest(formData) || '';
+      imageUrl = await fileUploadRequest(formData);
     }
 
     try {
