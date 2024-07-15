@@ -11,7 +11,8 @@ enum ResponseCode{
     DO_NOT_HAVE_PERMISSION = "DNHP",
     SING_IN_FAIL = "SIF",
     NOT_EXISTED_USER = "NU",
-    DUPLICATE_ID = "DI"
+    DUPLICATE_ID = "DI",
+    FALSE_AGREEMENT = "FA"
 };
 
 export default ResponseCode;
