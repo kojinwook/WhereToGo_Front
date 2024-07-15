@@ -3,6 +3,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Form, useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
+import { Images } from 'types/interface/interface';
 
 export default function InquireWrite() {
   const navigate = useNavigate();
@@ -90,12 +91,11 @@ export default function InquireWrite() {
       return;
     }
 
-    const imageList: string[] = [];
+    const imageList: Images[] = [];
     for (const file of imageFileList) {
         const formData = new FormData();
         formData.append('file', file);
         const imageUrl = await fileUploadRequest(formData);
-        console.log(imageUrl);
         if (imageUrl) {
             imageList.push(imageUrl);
         }
@@ -119,9 +119,8 @@ export default function InquireWrite() {
 
     try {
       const requestBody = { title, content, nickname, type, imageList };
-      console.log(requestBody);
       const result = await postQuestionRequest(requestBody, cookies.accessToken);
-
+      console.log(result);
       if (result && result.code === "SU") {
         alert("해당 문의가 업로드되었습니다.");
         navigate("/inquire");
