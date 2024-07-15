@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { GetChatMessageListRequest, GetUserRequest } from 'apis/apis';
+import { GetChatMessageListRequest, GetChatRoomUsersRequest, GetUserRequest } from 'apis/apis';
 import './style.css';
 import useLoginUserStore from 'store/login-user.store';
 import { useLocation } from 'react-router-dom';
@@ -16,6 +16,7 @@ interface Message {
 }
 
 const ChatRoom: React.FC = () => {
+    const messagesEndRef = useRef<HTMLDivElement>(null);
     const clientRef = useRef<Client | null>(null);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
@@ -24,6 +25,7 @@ const ChatRoom: React.FC = () => {
     const { loginUser } = useLoginUserStore();
     const [nickname, setNickname] = useState<string>('');
     const [senderNickname, setSenderNickname] = useState<string>('');
+    const [receiverNickname, setReceiverNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [cookies, setCookie] = useCookies();
     const [messages, setMessages] = useState<Message[]>([]);
@@ -35,17 +37,22 @@ const ChatRoom: React.FC = () => {
     }, [loginUser]);
 
     useEffect(() => {
+        scrollToBottom();
+    }, []);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    useEffect(() => {
         if (!loginUser) {
             alert('로그인이 필요합니다.');
-        }
-        if (!receiverUserId) {
-            alert('상대방 정보가 필요합니다.');
             return;
         }
         const getUserRequest = async () => {
             try {
-                const response = await GetUserRequest(receiverUserId, cookies.access_token);
-                if(!response) return;
+                const response = await GetUserRequest(loginUser.userId, cookies.accessToken);
+                if (!response) return;
                 if (response.code === 'SU') {
                     const { nickname, profileImage } = response;
                     setNickname(nickname);
@@ -58,14 +65,37 @@ const ChatRoom: React.FC = () => {
             }
         }
         getUserRequest();
-    }, [loginUser, receiverUserId, cookies.access_token]);
+    }, [loginUser, cookies.access_token]);
+
+    useEffect(() => {
+        if (!roomId || !loginUser) return;
+        const getRoomUsers = async () => {
+            try {
+                // 채팅방의 유저 정보 가져오기
+                const response = await GetChatRoomUsersRequest(roomId, cookies.accessToken);
+                console.log(response);
+                if (response.code === 'SU') {
+                    // 현재 로그인한 유저와 상대방의 닉네임 설정
+                    const roomUsers = response.users;
+                    const roomUser = roomUsers.find(user => user.userId !== loginUser.userId);
+                    if (roomUser) {
+                        setReceiverNickname(roomUser.nickname);
+                    }
+                } else {
+                    console.error('Failed to get room users:', response.message);
+                }
+            } catch (error) {
+                console.error('Failed to get room users:', error);
+            }
+        }
+        getRoomUsers();
+    }, [roomId, loginUser, cookies.access_token]);
 
     useEffect(() => {
         if (!roomId) {
             console.error('Missing required props: roomId');
             return;
         }
-
         const socket = new SockJS('http://localhost:8080/ws');
         const client = new Client({
             webSocketFactory: () => socket,
@@ -94,6 +124,12 @@ const ChatRoom: React.FC = () => {
             }
         };
     }, [roomId]);
+
+    const scrollToBottom = () => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     const fetchMessages = async () => {
         try {
@@ -147,6 +183,40 @@ const ChatRoom: React.FC = () => {
         return date.toLocaleString('ko-KR', options);
     };
 
+    const convertMessageToLinks = (message: string): (JSX.Element | string)[] => {
+        const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return message.split(urlPattern).map((part, index) => {
+            if (urlPattern.test(part)) {
+                return (
+                    <a
+                        href={part}
+                        key={index}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => handleLinkClick(e, part)}
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return part;
+        });
+    };
+
+
+    const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+        if (e.ctrlKey || e.metaKey) {
+            window.open(url, '_blank');
+        } else {
+            e.preventDefault();
+        }
+    };
+
+    const renderMessageContent = (message: Message) => {
+        return convertMessageToLinks(message.message);
+    };
+
+    console.log(senderNickname, nickname);
     return (
         <div className="chat-room">
             <div>{nickname}</div>
@@ -157,13 +227,14 @@ const ChatRoom: React.FC = () => {
                             {msg.sender !== loginUser?.nickname && (
                                 <div className="profile-info">
                                     <img src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' className='user-profile-image' />
-                                    <div className="nickname">{senderNickname}</div>
+                                    <div className="nickname">{receiverNickname}</div> {/* 상대방 닉네임 표시 */}
                                 </div>
                             )}
                             <div className="message-container">
                                 <div className={`message-content ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
-                                    <div className="text">{msg.message}</div>
+                                    <div className="text">{renderMessageContent(msg)}</div>
                                 </div>
+                                <div ref={messagesEndRef} />
                                 <div className="timestamp">{formatTimestamp(msg.timestamp)}</div>
                             </div>
                         </div>
