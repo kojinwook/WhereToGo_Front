@@ -9,17 +9,18 @@ import { ResponseDto } from "./response/response";
 import Festival from "types/interface/festival.interface";
 import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
+import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
 import { ResponseBody } from "types";
 import { PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomListResponseDto } from "./response/chat";
-import { PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
+import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
 import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.response.dto";
 import { Images } from "types/interface/interface";
+import GetSearchNoticeListResponseDto from "./response/notice/get-search-notice-list.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -79,6 +80,7 @@ const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const PATCH_PASSWORD_URL = (userId: string) => `${API_DOMAIN}/user/change-password/${userId}`;
 const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
+const FIND_USERID_URL = () => `${API_DOMAIN}/user/find-userId`;
 const WIDTHDRAWAL_USER_URL = (userId: string) => `${API_DOMAIN}/user/withdrawal/${userId}`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
@@ -96,6 +98,7 @@ const DELETE_QUESTION_URL = (questionId: number | string | undefined) => `${API_
 const GET_ALL_NOTICE_URL = () => `${API_DOMAIN}/notice/list`;
 const POST_NOTICE_URL = () => `${API_DOMAIN}/notice`;
 const PATCH_NOTICE_URL =(noticeId : number |string | undefined) => `${API_DOMAIN}/notice/update/${noticeId}`;
+const GET_SEARCH_NOTICE_LIST_URL = (keyword: string) => `${API_DOMAIN}/notice/searchNoticeList?keyword=${keyword}`;
 const GET_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/detail/${noticeId}`;
 const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/delete/${noticeId}`;
 
@@ -247,7 +250,17 @@ export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryReque
     }
 };
 
-
+export const FindUserIdRequest = async (requestBody: FindUserIdRequestDto): Promise<ResponseBody<FindUserIdResponseDto>> => {
+    try {
+        const response = await axios.post(FIND_USERID_URL(), requestBody);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return error.response.data;
+        }
+        throw error;
+    }
+};
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
@@ -588,6 +601,18 @@ export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto) => {
     })
     return result;
 }
+export const GetSearchNoticeListRequest = async (keyword: string) => {
+    const result = await axios.get(GET_SEARCH_NOTICE_LIST_URL(keyword))
+        .then(response => {
+            const responseBody: GetSearchNoticeListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
 
 export const deleteNoticeRequest = async (noticeId : number | string ) => {
     const result = await axios.delete(DELETE_NOTICE_URL(noticeId))

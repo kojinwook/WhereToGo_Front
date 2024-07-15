@@ -62,7 +62,7 @@ const InquireList: React.FC = () => {
   }
 
 
-  return (
+ return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
       <div className='inquire-header'>

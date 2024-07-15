@@ -108,7 +108,7 @@ function App() {
       </Route>
 
       <Route path='/notice'>
-        <Route path="main" element={<NoticeMain />} />
+        <Route path="" element={<NoticeList />} />
         <Route path="detail" element={<NoticeDetail />} />
         <Route path="write" element={<NoticeWrite />} />
         <Route path="update" element={<NoticeUpdate />} />
