@@ -1,10 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { PostAnswerRequestDto } from "apis/request/answer";
-import { DeleteQuestionResponseDto } from "apis/response/question";
-import Answer from "types/interface/answer.interface";
-import Question from "types/interface/question.interface";
-import useLoginUserStore from "store/login-user.store";
 import {
   deleteAnswerRequest,
   deleteQuestionRequest,
@@ -13,7 +6,15 @@ import {
   patchAnswerRequest,
   postAnswerRequest,
 } from "apis/apis";
+import { PostAnswerRequestDto } from "apis/request/answer";
+import { DeleteQuestionResponseDto } from "apis/response/question";
 import ResponseDto from "apis/response/response.dto";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import useLoginUserStore from "store/login-user.store";
+import Answer from "types/interface/answer.interface";
+import Question from "types/interface/question.interface";
+import './style.css';
 
 const InquireDetail: React.FC = () => {
   const { questionId, answer: answerIdParam } = useParams();
@@ -262,6 +263,7 @@ const InquireDetail: React.FC = () => {
   console.log(question);
   return (
     <div className="question-detail-container">
+      <div className="nickname">{question.nickname}</div>
       <div className="title-content-container">
       <div className="createDateTime">작성 일자 : {formatDate(question.createDateTime)}</div>
         <div className="nickname">문의 닉네임 : {question.nickname}</div>

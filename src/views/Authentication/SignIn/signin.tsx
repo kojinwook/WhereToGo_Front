@@ -1,40 +1,49 @@
-import { RecoveryPasswordRequest, SignInRequest } from 'apis/apis';
+import { FindUserIdRequest, RecoveryPasswordRequest, SignInRequest } from 'apis/apis';
 import SignInRequestDto from 'apis/request/auth/sign-in.request.dto';
 import PasswordRecoveryRequestDto from 'apis/request/user/password-recovery.request.dto';
 import SignInResponseDto from 'apis/response/auth/sign-in.response.dto';
 import PasswordRecoveryResponseDto from 'apis/response/user/password-recovery.response.dto';
 import InputBox from 'components/InputBox';
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { ResponseBody } from 'types';
 import { ResponseCode } from 'types/enums/enums';
-import './style.css'
+import './style.css';
+import FindUserIdResponseDto from 'apis/response/user/find-userId.response.dto';
+import FindUserIdRequestDto from 'apis/request/user/find-userId.requset.dto';
+
 
 export default function SignIn() {
 
   const userIdRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
+  const emailFindRef = useRef<HTMLInputElement | null>(null);
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
+  const [isEmailFindError, setIsEmailFindError] = useState<boolean>(false);
   const [cookie, setCookie] = useCookies();
   const [email, setEmail] = useState<string>('');
+  const [emailFind, setEmailFind] = useState<string>('');
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordType, setPasswordType] = useState<'text' | 'password'>('password');
   const [showRecoveryBox, setShowRecoveryBox] = useState(false);
+  const [showFindBox, setShowFindBox] = useState(false);
   const [EmailMessage, setEmailMessage] = useState<string>('');
+  const [EmailFindMessage, setEmailFindMessage] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const navigate = useNavigate();
 
-  const [isPasswordError, setIsPasswordError] = useState<boolean>(false); const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
-
+  const [isPasswordError, setIsPasswordError] = useState<boolean>(false); 
+  
+  const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
     if (!responseBody) return;
     const { code } = responseBody;
-    if (code === ResponseCode.VALIDATION_FAIL) alert('아이디와 비밀번호를 입력하세요.');
-    if (code === ResponseCode.SING_IN_FAIL) setMessage('로그인 정보가 일치하지 않습니다.');
-    if (code === ResponseCode.DATABASE_ERROR) alert('데이터베이스 오류입니다.');
-    if (code !== ResponseCode.SUCCESS) return;
+    if (code === "VF") alert('아이디와 비밀번호를 입력하세요.');
+    if (code === "SF") setMessage('로그인 정보가 일치하지 않습니다.');
+    if (code === "DBE") alert('데이터베이스 오류입니다.');
+    if (code !== "SU") return;
 
     const { token, expirationTime } = responseBody as SignInResponseDto;
 
@@ -69,7 +78,7 @@ export default function SignIn() {
   };
 
   const onSignUpButtonClickHandler = () => {
-    navigate('/signup');
+    navigate('/authentication/signup');
   };
 
   const onIdKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -86,52 +95,116 @@ export default function SignIn() {
     setEmail(e.target.value);
   };
 
+  const handleEmailFind = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailFind(e.target.value);
+  };
+
   const recoverPasswordResponse = (responseBody: ResponseBody<PasswordRecoveryResponseDto>) => {
     if (!responseBody) return;
 
     const { code } = responseBody;
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-        alert('올바른 이메일 형식이 아닙니다.');
-        return;
+      setEmailMessage('올바른 이메일 형식이 아닙니다.');
+      return;
     }
-    if (code === 'VF') alert('이메일을 입력하세요.');
-    if (code === 'DBE') alert('데이터베이스 오류입니다.');
+    if (code === 'VF') {
+      setIsEmailError(true);
+      setEmailMessage('이메일을 입력하세요.');
+    }
+    if (code === 'DBE') {
+      setIsEmailError(true);
+      setEmailMessage('데이터베이스 오류입니다.');
+    }
     if (code === 'NU') {
-        setIsEmailError(true);
-        setEmailMessage('가입되지 않은 이메일입니다.');
+      setIsEmailError(true);
+      setEmailMessage('가입되지 않은 이메일입니다.');
     }
     if (code === 'SU') {
-        setIsEmailError(false);
-        setEmailMessage('이메일 전송 완료');
+      setIsEmailError(false);
+      setEmailMessage('이메일 전송 완료');
     }
-};
+  };
 
-const onRecoverPasswordButtonClickHandler = async (email: string) => {
-  if (!email) {
+  const findUserIdResponse = (responseBody: ResponseBody<FindUserIdResponseDto>) => {
+    if (!responseBody) return;
+
+    const { code } = responseBody;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(emailFind)) {
+      setIsEmailFindError(true);
+      setEmailFindMessage('올바른 이메일 형식이 아닙니다.');
+      return;
+    }
+    if (code === 'VF') {
+      setIsEmailFindError(true);
+      setEmailFindMessage('이메일을 입력하세요.');
+    }
+    if (code === 'DBE') {
+      setIsEmailFindError(true);
+      setEmailFindMessage('데이터베이스 오류입니다.');
+    }
+    if (code === 'NU') {
+      setIsEmailFindError(true);
+      setEmailFindMessage('가입되지 않은 이메일입니다.');
+    }
+    if (code === 'SU') {
+      setIsEmailFindError(false);
+      setEmailFindMessage('이메일 전송 완료');
+    }
+  };
+
+  const onRecoverPasswordButtonClickHandler = async (email: string) => {
+    if (!email) {
       setIsEmailError(true);
       setEmailMessage('이메일을 입력하세요.');
       return;
+    }
+    const requestBody: PasswordRecoveryRequestDto = { email };
+    RecoveryPasswordRequest(requestBody).then(recoverPasswordResponse);
+    setIsEmailError(false);
+    setEmailMessage('이메일 전송중...');
+  };
+
+  const onFindUserIdButtonClickHandler = async (email: string) => {
+    if (!email) {
+      setIsEmailFindError(true);
+      setEmailFindMessage('이메일을 입력하세요.');
+      return;
+    }
+    const requestBody: FindUserIdRequestDto = { email };
+    FindUserIdRequest(requestBody).then(findUserIdResponse);
+    setIsEmailFindError(false);
+    setEmailFindMessage('이메일 전송중...');
+  };
+
+  const handleRecoverPassword = async () => {
+    await onRecoverPasswordButtonClickHandler(email);
+  };
+
+  const onRecoverPasswordKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+    handleRecoverPassword();
   }
-  const requestBody: PasswordRecoveryRequestDto = { email };
-  RecoveryPasswordRequest(requestBody).then(recoverPasswordResponse);
-  setIsEmailError(false);
-  setEmailMessage('이메일 전송중...');
-};
 
-const handleRecoverPassword = async () => {
-  await onRecoverPasswordButtonClickHandler(email);
-};
+  const toggleRecoveryBox = () => {
+    setShowRecoveryBox(!showRecoveryBox);
+  };
 
-const onRecoverPasswordKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  if (event.key !== 'Enter') return;
-  handleRecoverPassword();
-}
+  const toggleFindBox = () => {
+    setShowFindBox(!showFindBox);
+  };
 
-const toggleRecoveryBox = () => {
-  setShowRecoveryBox(!showRecoveryBox);
-};
+  const handleFindUserId = async () => {
+    await onFindUserIdButtonClickHandler(emailFind);
+  };
 
+  const onFindUserIdKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== 'Enter') return;
+    handleFindUserId();
+  }
+  
 return (
   <div className="sign-in-container">
       <div className="sign-in-box">
@@ -148,14 +221,15 @@ return (
                       <div className="text-link-lg-right recovery-password-button" onClick={toggleRecoveryBox}>{'비밀번호 찾기'}</div>
                   </div>
                   {showRecoveryBox && (
-          <div className="recovery-password-box">
-              <InputBox ref={emailRef} title="이메일" placeholder="이메일을 입력하세요." type="email" value={email} onChange={handleEmailChange} isErrorMessage={isEmailError} message={EmailMessage} onKeyDown={onRecoverPasswordKeyDownHandler} />
-              <div className="primary-button-small recovery-password-button" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
-          </div>
-      )}
+                    <div className="recovery-password-box">
+                        <InputBox ref={emailRef} title="이메일" placeholder="이메일을 입력하세요." type="email" value={email} onChange={handleEmailChange} isErrorMessage={isEmailError} message={EmailMessage} onKeyDown={onRecoverPasswordKeyDownHandler} />
+                        <div className="primary-button-small full-width" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
+                    </div>
+                )}
               </div>
           </div>
       </div>
   </div>
 )
 }
+

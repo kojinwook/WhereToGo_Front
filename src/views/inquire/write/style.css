@@ -1,0 +1,112 @@
+.inquire-write {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+  
+.inquire-write-title {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 20px;
+  text-align: center;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+}
+
+.inquire-write-tr {
+  margin-top: 20px;
+  display: flex;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.inquire-write-left {
+  flex: 1;
+  font-weight: bold;
+  padding-right: 20px;
+}
+
+.inquire-write-right {
+  flex: 3;
+}
+
+.inquire-write-right input,
+.inquire-write-right select,
+.inquire-write-right textarea {
+  width: 100%;
+  padding: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.inquire-write-right textarea {
+  height: 150px;
+  resize: none;
+}
+
+.inquire-write-right input[type="file"] {
+  border: none;
+}
+
+.inquire-write-button {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.inquire-write-button button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.inquire-write-button button.inquire-write-cancel {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+}
+
+.inquire-write-button button.inquire-write-upload {
+  background-color: #000;
+  border: 1px solid #000;
+}
+
+.inquire-write-button button.inquire-write-cancel:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.inquire-write-button button.inquire-write-upload:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.inquire-write-right img {
+  width: 100px;
+  height: auto;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.inquire-write-right .fas {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 1.5rem;
+  color: gray;
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
