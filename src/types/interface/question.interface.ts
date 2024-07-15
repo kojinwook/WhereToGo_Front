@@ -1,7 +1,8 @@
-import { Images } from "./interface";
+import { Answer, Images } from "./interface";
 
 export default interface Question{
-    answers : boolean;
+    answered : boolean;
+    answers: Answer[];
     questionId : number | string;
     title : string;
     content : string;
