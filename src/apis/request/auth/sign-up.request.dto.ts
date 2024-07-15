@@ -5,4 +5,5 @@ export default interface SignUpRequestDto {
     password: string;
     email: string;
     certificationNumber: string;
+    agreedPersonal: boolean;
 };

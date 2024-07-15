@@ -1,28 +1,23 @@
-import React, { useEffect } from 'react';
-import './App.css';
-import { Route, Routes } from 'react-router-dom';
-import FestivalPage from 'views/festival/list/festival-list';
-import FestivalAdmin from 'views/festival/admin/festival-admin';
-import SaveFestivalList from 'components/festival/save-festival';
-import FestivalDetail from 'views/festival/detail/festival-detail';
-import ReviewWritePage from 'views/festival/review/write/write';
-import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
-import UserProfile from 'views/user/profile/profile';
-import UserModifyProfile from 'views/user/modifyProfile/modifyProfile';
+import SaveFestivalList from 'components/festival/save-festival';
+import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import AdminProfile from 'views/admin/profile/profile';
-import MeetingWrite from 'views/meeting/write/meeting-write';
 import AdminSignUp from 'views/Authentication/admin/SignUp/admin-signup';
-import SignUp from 'views/Authentication/SignUp/signup';
 import SignIn from 'views/Authentication/SignIn/signin';
+import SignUp from 'views/Authentication/SignUp/signup';
+import FestivalAdmin from 'views/festival/admin/festival-admin';
+import FestivalDetail from 'views/festival/detail/festival-detail';
+import FestivalPage from 'views/festival/list/festival-list';
+import ReviewUpdatePage from 'views/festival/review/update/update';
+import ReviewWritePage from 'views/festival/review/write/write';
 import InquireDetail from 'views/inquire/detail/inquire-detail';
-
+import UserModifyProfile from 'views/user/modifyProfile/modifyProfile';
+import UserProfile from 'views/user/profile/profile';
+import './App.css';
 import InquireUpdate from 'views/inquire/update/inquire-update';
 import InquireWrite from 'views/inquire/write/inquire-write';
 import NoticeDetail from 'views/notice/detail/notice-detail';
-import NoticeWrite from 'views/notice/write/notice-write';
-import NoticeUpdate from 'views/notice/update/notice-update';
-import NoticeMain from 'views/notice/main/notice-main';
 import useLoginUserStore from 'store/login-user.store';
 import { useCookies } from 'react-cookie';
 import { GetSignInUserResponseDto } from 'apis/response/user';
@@ -33,6 +28,10 @@ import Inquire from 'views/inquire/main/inquire-main';
 import InquireList from 'views/inquire/list/inquire-list';
 import MeetingDetail from 'views/meeting/detail/meeting-detail';
 import MeetingList from 'views/meeting/list/meeting-list';
+import NoticeUpdate from 'views/notice/update/notice-update';
+import NoticeWrite from 'views/notice/write/notice-write';
+import NoticeList from 'views/notice/main/notice-main';
+import MeetingWrite from 'views/meeting/write/meeting-write';
 
 function App() {
 
@@ -110,7 +109,7 @@ function App() {
       </Route>
 
       <Route path='/notice'>
-        <Route path="main" element={<NoticeMain />} />
+        <Route path="" element={<NoticeList />} />
         <Route path="detail" element={<NoticeDetail />} />
         <Route path="write" element={<NoticeWrite />} />
         <Route path="update" element={<NoticeUpdate />} />

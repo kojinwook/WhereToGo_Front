@@ -1,8 +1,9 @@
 import { FileUploadRequest, PostQuestionRequest } from 'apis/apis';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { Form, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
+import './style.css';
 import { Images } from 'types/interface/interface';
 
 export default function InquireWrite() {
@@ -85,6 +86,7 @@ export default function InquireWrite() {
     newImagePreviews.splice(index, 1);
     setImagePreviews(newImagePreviews);
   };
+
   const uploadPostClickHandler = async () => {
     if (!isLoggedIn) {
       setErrorMessage("로그인을 한 후 이용해주세요.");
@@ -168,16 +170,16 @@ export default function InquireWrite() {
           <td className="inquire-write-right">
             <input
               type="text"
-              placeholder="제목을 입력해 주세요."
+              placeholder=" 제목을 입력해 주세요."
               value={title}
               onChange={handleTitleChange}
             />
             {titleError && <div style={{ color: 'red' }}>{titleError}</div>}
           </td>
         </div>
-        <div className="inquire-write-tr-content">
-          <th className="inquire-write-left-content">내용</th>
-          <td className="inquire-write-right-content">
+        <div className="inquire-write-tr">
+          <th className="inquire-write-left">내용</th>
+          <td className="inquire-write-right">
             <textarea
               placeholder="내용을 입력해주세요."
               value={content}

@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+
+import { DeleteAnswerRequest, DeleteQuestionRequest, GetAllAnswerRequest, GetQuestionRequest, PatchAnswerRequest, PostAnswerRequest } from "apis/apis";
 import { PostAnswerRequestDto } from "apis/request/answer";
 import { DeleteQuestionResponseDto } from "apis/response/question";
+import ResponseDto from "apis/response/response.dto";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import useLoginUserStore from "store/login-user.store";
 import Answer from "types/interface/answer.interface";
 import Question from "types/interface/question.interface";
-import useLoginUserStore from "store/login-user.store";
-import { DeleteAnswerRequest, DeleteQuestionRequest, GetAllAnswerRequest, GetQuestionRequest, PatchAnswerRequest, PostAnswerRequest } from "apis/apis";
-import ResponseDto from "apis/response/response.dto";
+import './style.css';
 
 const InquireDetail: React.FC = () => {
   const { questionId, answer: answerIdParam } = useParams();
@@ -56,8 +58,7 @@ const InquireDetail: React.FC = () => {
       }
     };
     fetchAnswerDetails();
-  }, [questionId]);
-
+  }, [questionId, answerIdParam]);
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -225,6 +226,26 @@ const InquireDetail: React.FC = () => {
     }
   };
 
+  // ISO 8601 포맷의 날짜를 포맷팅하는 함수
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    let period = hours < 12 ? '오전' : '오후';
+
+    // 시간 형식 수정: 12시를 넘어갈 때 오후로 표시하고 12를 기준으로 수정
+    if (hours === 0) {
+      hours = 12;
+    } else if (hours > 12) {
+      hours -= 12;
+    }
+
+    return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
+  };
+
   if (loading) {
     return <div>로딩 중...</div>;
   }
@@ -236,7 +257,9 @@ const InquireDetail: React.FC = () => {
   console.log(question);
   return (
     <div className="question-detail-container">
+      <div className="nickname">{question.nickname}</div>
       <div className="title-content-container">
+      <div className="createDateTime">작성 일자 : {formatDate(question.createDateTime)}</div>
         <div className="nickname">문의 닉네임 : {question.nickname}</div>
         <div className="type">문의 유형 : {getTypeString(question.type)}</div>
         <div className="title">제목 : {question.title}</div>
@@ -251,7 +274,6 @@ const InquireDetail: React.FC = () => {
             />
           ))}
         </div>
-
       </div>
       <div className="button-box">
         {question.nickname === nickname && (

@@ -5,12 +5,12 @@ import useLoginUserStore from 'store/login-user.store';
 import { FileUploadRequest, GetQuestionRequest, PatchQuestionRequest } from 'apis/apis';
 import { Images } from 'types/interface/interface';
 import Question from 'types/interface/question.interface';
+import './style.css';
 
 interface RouteParams {
   questionId: string;
   [key: string]: string | undefined;
-}
-
+};
 
 const InquireUpdate: React.FC = () => {
   const { questionId } = useParams<RouteParams>();
@@ -176,20 +176,20 @@ const InquireUpdate: React.FC = () => {
   }
 
   return (
-    <table className="inquire-write">
+    <table className="inquire-update">
       <thead>
         <tr>
-          <th className="inquire-write-title">질문 수정</th>
+          <th className="inquire-update-title">질문 수정</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <th className="inquire-write-left">질문 ID</th>
-          <td className="inquire-write-right">{nickname}</td>
+          <th className="inquire-update-left">질문 ID</th>
+          <td className="inquire-update-right">{nickname}</td>
         </tr>
         <tr>
-          <th className="inquire-write-left">질문 유형</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">질문 유형</th>
+          <td className="inquire-update-right">
             <select value={type} onChange={handleTypeChange}>
               <option value="1">질문 유형을 선택해주세요.</option>
               <option value="2">비매너 회원 신고</option>
@@ -201,8 +201,8 @@ const InquireUpdate: React.FC = () => {
           </td>
         </tr>
         <tr>
-          <th className="inquire-write-left">제목</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">제목</th>
+          <td className="inquire-update-right">
             <input
               type="text"
               placeholder="제목을 입력해 주세요."
@@ -213,8 +213,8 @@ const InquireUpdate: React.FC = () => {
           </td>
         </tr>
         <tr>
-          <th className="inquire-write-left">내용</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">내용</th>
+          <td className="inquire-update-right">
             <textarea
               placeholder="내용을 입력해주세요."
               value={content}
@@ -224,8 +224,8 @@ const InquireUpdate: React.FC = () => {
           </td>
         </tr>
         <tr>
-          <th className="inquire-write-left">사진</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">사진</th>
+          <td className="inquire-update-right">
             <input type="file" multiple onChange={handleImageChange} />
             <div style={{ display: 'flex', marginTop: '10px' }}>
               {imagePreviews.map((preview, index) => (
@@ -250,9 +250,9 @@ const InquireUpdate: React.FC = () => {
       </tbody>
       <tfoot>
         <tr>
-          <td colSpan={2} className="inquire-write-button">
-            <button className="inquire-write-cancel" onClick={cancelClickHandler}>취소</button>
-            <button className="inquire-write-upload" onClick={uploadPostClickHandler}>수정</button>
+          <td colSpan={2} className="inquire-update-button">
+            <button className="inquire-update-cancel" onClick={cancelClickHandler}>취소</button>
+            <button className="inquire-update-upload" onClick={uploadPostClickHandler}>수정</button>
           </td>
         </tr>
       </tfoot>
