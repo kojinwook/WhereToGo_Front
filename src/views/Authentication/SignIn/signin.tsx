@@ -4,12 +4,12 @@ import PasswordRecoveryRequestDto from 'apis/request/user/password-recovery.requ
 import SignInResponseDto from 'apis/response/auth/sign-in.response.dto';
 import PasswordRecoveryResponseDto from 'apis/response/user/password-recovery.response.dto';
 import InputBox from 'components/InputBox';
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { ResponseBody } from 'types';
 import { ResponseCode } from 'types/enums/enums';
-import './style.css'
+import './style.css';
 
 export default function SignIn() {
 
@@ -27,8 +27,9 @@ export default function SignIn() {
   const [message, setMessage] = useState<string>('');
   const navigate = useNavigate();
 
-  const [isPasswordError, setIsPasswordError] = useState<boolean>(false); const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
-
+  const [isPasswordError, setIsPasswordError] = useState<boolean>(false); 
+  
+  const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
     if (!responseBody) return;
     const { code } = responseBody;
     if (code === ResponseCode.VALIDATION_FAIL) alert('아이디와 비밀번호를 입력하세요.');
@@ -69,7 +70,7 @@ export default function SignIn() {
   };
 
   const onSignUpButtonClickHandler = () => {
-    navigate('/signup');
+    navigate('/authentication/signup');
   };
 
   const onIdKeyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -150,7 +151,7 @@ return (
                   {showRecoveryBox && (
           <div className="recovery-password-box">
               <InputBox ref={emailRef} title="이메일" placeholder="이메일을 입력하세요." type="email" value={email} onChange={handleEmailChange} isErrorMessage={isEmailError} message={EmailMessage} onKeyDown={onRecoverPasswordKeyDownHandler} />
-              <div className="primary-button-small recovery-password-button" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
+              <div className="primary-button-small full-width" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
           </div>
       )}
               </div>

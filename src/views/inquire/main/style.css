@@ -1,4 +1,6 @@
 .inquire {
+    width: 80%;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,15 +25,55 @@
   }
   
   .inquire-left, .inquire-right {
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: 45%;
+  }
+
+  .inquire-left{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .inquire-right {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 10px;
+    padding: 15px;
+}
+
+  .list-left, .list-right {
+    flex: 1; /* 두 버튼의 폭을 동일하게 설정 */
+    display: flex;
+    justify-content: center; /* 버튼 중앙 정렬 */
   }
   
-  .inquire-apply, .inquire-list, .inquire-url {
+  .inquire-divider {
+    width: 1px; /* 선의 두께 */
+    height: 60px; /* 선의 길이 */
+    background-color: #ccc; /* 선 색상 */
+    margin: 0 15px; /* 좌우 여백 */
+  }
+
+  .inquire-apply, .inquire-li{
+    max-width: 100px; /* 버튼의 최대 너비 설정 */
+    text-align: center;  /* 중앙 정렬 */
+    white-space: normal; /* 자동 줄 바꿈 */
+  }
+
+  .inquire-apply, .inquire-li, .inquire-url {
     padding: 10px;
     font-size: 16px;
     cursor: pointer;
+    border: none;
+  }
+
+  .inquire-apply:hover, .inquire-li:hover, .inquire-url:hover {
+    background-color: transparent;
+    color: #000;
   }
   
   .inquire-chat, .inquire-number, .inquire-time, .inquire-rest {
@@ -51,16 +93,42 @@
   }
   
   .inquire-plus {
-    padding: 5px 10px;
     font-size: 14px;
     cursor: pointer;
     width: 70px;
+    border: none;
+    border-radius: 5px;
+  }
+
+  .inquire-plus:hover {
+    background-color: transparent;
+    color: #000;
   }
   
   .inquire-notice-list {
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     padding: 10px;
     border-radius: 5px;
+  }
+
+  .inquire-header {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝으로 정렬 */
+    font-weight: bold; /* 두꺼운 글씨 */
+    margin-bottom: 10px; /* 목록과 간격 */
+    border-bottom: 1px solid #ccc;
+  }
+
+  .inquire-num, .inquire-title, .inquire-type, .inquire-date {
+      flex: 1; /* 각 항목의 동일한 폭 설정 */
+      text-align: center; /* 중앙 정렬 */
+      margin-bottom: 10px;
+  }
+
+  .inquire-sort {
+      display: flex;
+      justify-content: space-between; /* 각 항목의 정렬 */
+      margin-bottom: 10px; /* 항목 간 간격 */
   }
   
   .inquire-sort {
@@ -75,7 +143,7 @@
   }
   
   .inquire-count {
-    text-align: center;
+    margin: 10px;
     font-size: 16px;
     font-weight: bold;
   }

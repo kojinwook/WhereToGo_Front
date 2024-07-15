@@ -145,7 +145,7 @@ export default function SignUp() {
     }
 
     // 회원가입이 성공적으로 처리된 경우
-    navigate('/signup');
+    navigate('/authentication/signin');
     alert('회원가입이 완료되었습니다.');
 };
 
