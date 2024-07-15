@@ -64,8 +64,7 @@ const InquireDetail: React.FC = () => {
       }
     };
     fetchAnswerDetails();
-  }, [questionId]);
-
+  }, [questionId, answerIdParam]);
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -233,6 +232,26 @@ const InquireDetail: React.FC = () => {
     }
   };
 
+  // ISO 8601 포맷의 날짜를 포맷팅하는 함수
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    let period = hours < 12 ? '오전' : '오후';
+
+    // 시간 형식 수정: 12시를 넘어갈 때 오후로 표시하고 12를 기준으로 수정
+    if (hours === 0) {
+      hours = 12;
+    } else if (hours > 12) {
+      hours -= 12;
+    }
+
+    return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
+  };
+
   if (loading) {
     return <div>로딩 중...</div>;
   }
@@ -246,9 +265,11 @@ const InquireDetail: React.FC = () => {
     <div className="question-detail-container">
       <div className="nickname">{question.nickname}</div>
       <div className="title-content-container">
-        <div className="type">문의 유형 | {getTypeString(question.type)}</div>
-        <div className="title">제목 | {question.title}</div>
-        <div className="content">내용 | {question.content}</div>
+      <div className="createDateTime">작성 일자 : {formatDate(question.createDateTime)}</div>
+        <div className="nickname">문의 닉네임 : {question.nickname}</div>
+        <div className="type">문의 유형 : {getTypeString(question.type)}</div>
+        <div className="title">제목 : {question.title}</div>
+        <div className="content">내용 : {question.content}</div>
         <div className="images">
           {question.imageList.map((imageObject, index) => (
             <img
@@ -259,7 +280,6 @@ const InquireDetail: React.FC = () => {
             />
           ))}
         </div>
-
       </div>
       <div className="button-box">
         {question.nickname === nickname && (

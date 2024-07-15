@@ -32,6 +32,7 @@ import NoticeDetail from 'views/notice/detail/notice-detail';
 import NoticeMain from 'views/notice/main/notice-main';
 import NoticeUpdate from 'views/notice/update/notice-update';
 import NoticeWrite from 'views/notice/write/notice-write';
+import NoticeList from 'views/notice/main/notice-main';
 
 function App() {
 
