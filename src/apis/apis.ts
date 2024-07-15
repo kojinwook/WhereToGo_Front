@@ -20,6 +20,7 @@ import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/cha
 import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
 import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.response.dto";
 import { Images } from "types/interface/interface";
+import GetSearchNoticeListResponseDto from "./response/notice/get-search-notice-list.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -96,6 +97,7 @@ const DELETE_QUESTION_URL = (questionId: number | string | undefined) => `${API_
 const GET_ALL_NOTICE_URL = () => `${API_DOMAIN}/notice/list`;
 const POST_NOTICE_URL = () => `${API_DOMAIN}/notice`;
 const PATCH_NOTICE_URL =(noticeId : number |string | undefined) => `${API_DOMAIN}/notice/update/${noticeId}`;
+const GET_SEARCH_NOTICE_LIST_URL = (keyword: string) => `${API_DOMAIN}/notice/searchNoticeList?keyword=${keyword}`;
 const GET_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/detail/${noticeId}`;
 const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/delete/${noticeId}`;
 
@@ -588,6 +590,18 @@ export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto) => {
     })
     return result;
 }
+export const GetSearchNoticeListRequest = async (keyword: string) => {
+    const result = await axios.get(GET_SEARCH_NOTICE_LIST_URL(keyword))
+        .then(response => {
+            const responseBody: GetSearchNoticeListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
 
 export const deleteNoticeRequest = async (noticeId : number | string ) => {
     const result = await axios.delete(DELETE_NOTICE_URL(noticeId))
