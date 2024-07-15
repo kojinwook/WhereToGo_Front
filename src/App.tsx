@@ -8,11 +8,10 @@ import FestivalDetail from 'views/festival/detail/festival-detail';
 import ReviewWritePage from 'views/festival/review/write/write';
 import ReviewUpdatePage from 'views/festival/review/update/update';
 import ChatRoom from 'components/chat/chat';
-import ChatRoomCreate from 'components/chat/create';
 import UserProfile from 'views/user/profile/profile';
 import UserModifyProfile from 'views/user/modifyProfile/modifyProfile';
 import AdminProfile from 'views/admin/profile/profile';
-import MeetingWrite from 'views/meeting/write/write';
+import MeetingWrite from 'views/meeting/write/meeting-write';
 import AdminSignUp from 'views/Authentication/admin/SignUp/admin-signup';
 import SignUp from 'views/Authentication/SignUp/signup';
 import SignIn from 'views/Authentication/SignIn/signin';
@@ -32,6 +31,8 @@ import User from 'types/interface/user.interface';
 import { GetSignInUserRequest } from 'apis/apis';
 import Inquire from 'views/inquire/main/inquire-main';
 import InquireList from 'views/inquire/list/inquire-list';
+import MeetingDetail from 'views/meeting/detail/meeting-detail';
+import MeetingList from 'views/meeting/list/meeting-list';
 
 function App() {
 
@@ -78,7 +79,6 @@ function App() {
       </Route>
 
       <Route path='/chat'>
-        <Route path="create" element={<ChatRoomCreate />} />
         <Route path="" element={<ChatRoom />} />
       </Route>
 
@@ -87,7 +87,9 @@ function App() {
       </Route>
 
       <Route path='/meeting'>
+        <Route path="list" element={<MeetingList />} />
         <Route path='write' element={<MeetingWrite />} />
+        <Route path='detail/:meetingId' element={<MeetingDetail />} />
       </Route>
 
       <Route path='/authentication'>

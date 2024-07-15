@@ -1,4 +1,4 @@
-import { GetAllFavoriteRequest, GetUserRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -8,7 +8,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import './style.css';
 
-import defaultProfileImage from 'assets/images/logo.png';
+import defaultProfileImage from 'assets/images/user.png';
 import boardIcon from 'assets/images/board.png';
 import chatIcon from 'assets/images/chat.png';
 import groupIcon from 'assets/images/group.png';
@@ -16,8 +16,7 @@ import heartIcon from 'assets/images/heartIcon.png';
 import settingIcon from 'assets/images/setting.png';
 import starIcon from 'assets/images/star.png';
 import { ResponseDto } from 'apis/response/response';
-import { Favorite } from 'types/interface/interface';
-import { get } from 'http';
+import { ChatRoom, Favorite } from 'types/interface/interface';
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -50,6 +49,7 @@ export default function UserProfile() {
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
     const [favorites, setFavorites] = useState<Favorite[]>([]);
+    const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
 
     const [isHeartModalOpen, setIsHeartModalOpen] = useState<boolean>(false); // 찜 모달 열림 상태
     const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false); // 모임 모달 열림 상태
@@ -99,6 +99,7 @@ export default function UserProfile() {
     useEffect(() => {
         if (!loginUser) return;
         getAllFavorite(loginUser.nickname);
+        getChatRooms(loginUser.nickname);
     }, [loginUser]);
 
     // 모달 열기/닫기 이벤트 핸들러
@@ -111,27 +112,51 @@ export default function UserProfile() {
     const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(true); // 알림 설정 상태
 
     const getAllFavorite = async (nickname: string) => {
-        if(!loginUser) {
+        if (!loginUser) {
             alert('로그인 후 이용해주세요.');
             navigate('/login');
             return;
         }
-        try{
+        try {
             const response = await GetAllFavoriteRequest(nickname, cookies.accessToken);
             console.log(response);
-            if(response.code === 'SU'){
+            if (response.code === 'SU') {
                 setFavorites(response.favoriteList);
-            }else{
+            } else {
                 alert('찜 목록을 불러오는데 실패했습니다.');
             }
-        }catch(error){
+        } catch (error) {
             console.error(error);
         }
         console.log(favorites)
     };
 
+    const getChatRooms = async (nickname: string) => {
+        if (!loginUser) {
+            alert('로그인 후 이용해주세요.');
+            navigate('/login');
+            return;
+        }
+        try {
+            const response = await GetChatRoomRequest(nickname, cookies.accessToken);
+            console.log(response);
+            if (response.code === 'SU') {
+                setChatRooms(response.chatRoomList);
+            } else {
+                alert('채팅 목록을 불러오는데 실패했습니다.');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+        console.log(chatRooms)
+    }
+
     const handleTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`);
+    };
+
+    const handleChatRoomClick = (roomId: string, userId: string) => {
+        navigate(`/chat?roomId=${roomId}&userId=${userId}`);
     };
 
     return (
@@ -189,16 +214,6 @@ export default function UserProfile() {
                 <button onClick={toggleHeartModal}>닫기</button>
             </Modal>
             <Modal
-                isOpen={isGroupModalOpen}
-                onRequestClose={toggleGroupModal}
-                style={modalStyle}
-                contentLabel='찜 목록'
-            >
-                <h2>나의 찜 목록</h2>
-                <p>여기에 찜 목록을 추가하세요.</p>
-                <button onClick={toggleGroupModal}>닫기</button>
-            </Modal>
-            <Modal
                 isOpen={isBoardModalOpen}
                 onRequestClose={toggleBoardModal}
                 style={modalStyle}
@@ -214,8 +229,14 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='채팅'
             >
-                <h2>채팅</h2>
-                <p>여기에 채팅 목록을 추가하세요.</p>
+                <div className='chat-list'>
+                    {chatRooms.map((chatRoom) => (
+                        <div key={chatRoom.roomId} className='favorite-item'>
+                            {/* 여기에 각 채팅 목록 항목의 내용을 출력 */}
+                            <span onClick={() => handleChatRoomClick(chatRoom.roomId, chatRoom.userId)}>{chatRoom.creatorNickname}</span>
+                        </div>
+                    ))}
+                </div>
                 <button onClick={toggleChatModal}>닫기</button>
             </Modal>
             <Modal

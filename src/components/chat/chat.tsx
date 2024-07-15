@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { GetChatMessageListRequest } from 'apis/apis';
+import { GetChatMessageListRequest, GetUserRequest } from 'apis/apis';
 import './style.css';
 import useLoginUserStore from 'store/login-user.store';
 import { useLocation } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import defaultProfileImage from 'assets/images/user.png';
 
 interface Message {
     sender: string;
@@ -17,15 +19,43 @@ const ChatRoom: React.FC = () => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const roomId = params.get('roomId');
-    const receiverNickname = params.get('creatorNickname');
-    const receiverProfileImage = params.get('creatorProfileImage');
+    const receiverUserId = params.get('userId');
     const { loginUser } = useLoginUserStore();
+    const [nickname, setNickname] = useState<string>('');
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [cookies, setCookie] = useCookies();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState<string>('');
 
     useEffect(() => {
-        if (!roomId || !receiverNickname || !receiverProfileImage) {
-            console.error('Missing required props: roomId, receiverNickname, receiverProfileImage');
+        if (!loginUser) {
+            alert('로그인이 필요합니다.');
+        }
+        if (!receiverUserId) {
+            alert('상대방 정보가 필요합니다.');
+            return;
+        }
+        const getUserRequest = async () => {
+            try {
+                const response = await GetUserRequest(receiverUserId, cookies.access_token);
+                if(!response) return;
+                if (response.code === 'SU') {
+                    const { nickname, profileImage } = response;
+                    setNickname(nickname);
+                    setProfileImage(profileImage);
+                } else {
+                    console.error('Failed to get user:', response.message);
+                }
+            } catch (error) {
+                console.error('Failed to get user:', error);
+            }
+        }
+        getUserRequest();
+    }, []);
+
+    useEffect(() => {
+        if (!roomId) {
+            console.error('Missing required props: roomId');
             return;
         }
 
@@ -112,15 +142,15 @@ const ChatRoom: React.FC = () => {
 
     return (
         <div className="chat-room">
-            <div>{receiverNickname}</div>
+            <div>{nickname}</div>
             <div className="messages">
                 {messages.map((msg, index) => (
                     <div key={index} className={`message ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
                         <div className="message-user-container">
-                            {msg.sender !== loginUser?.nickname && (
+                            {msg.sender === loginUser?.nickname && (
                                 <div className="profile-info">
-                                    {/* <img src={receiverProfileImage} alt="Profile" className="profile-image" /> */}
-                                    <div className="nickname">{receiverNickname}</div>
+                                    <img src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' className='user-profile-image' />
+                                    <div className="nickname">{nickname}</div>
                                 </div>
                             )}
                             <div className="message-container">

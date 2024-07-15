@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
-import { getAllQuestionRequest } from "apis/apis";
+import { GetAllQuestionRequest } from "apis/apis";
 
 const InquireList: React.FC = () => {
   const navigator = useNavigate();
@@ -12,7 +12,7 @@ const InquireList: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const result = await getAllQuestionRequest();
+        const result = await GetAllQuestionRequest();
         if (!result) return;
         const { code, questions } = result;
         if (code === 'DBE') {

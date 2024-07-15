@@ -1,4 +1,4 @@
-import { fileUploadRequest, postQuestionRequest } from 'apis/apis';
+import { FileUploadRequest, PostQuestionRequest } from 'apis/apis';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Form, useNavigate } from 'react-router-dom';
@@ -95,7 +95,7 @@ export default function InquireWrite() {
     for (const file of imageFileList) {
         const formData = new FormData();
         formData.append('file', file);
-        const imageUrl = await fileUploadRequest(formData);
+        const imageUrl = await FileUploadRequest(formData);
         if (imageUrl) {
             imageList.push(imageUrl);
         }
@@ -119,7 +119,7 @@ export default function InquireWrite() {
 
     try {
       const requestBody = { title, content, nickname, type, imageList };
-      const result = await postQuestionRequest(requestBody, cookies.accessToken);
+      const result = await PostQuestionRequest(requestBody, cookies.accessToken);
       console.log(result);
       if (result && result.code === "SU") {
         alert("해당 문의가 업로드되었습니다.");

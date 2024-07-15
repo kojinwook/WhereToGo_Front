@@ -1,4 +1,4 @@
-import { getAllQuestionRequest, getAllNoticeRequest } from "apis/apis" // 공지사항 데이터 가져오기 위해 추가
+import { GetAllQuestionRequest, GetAllNoticeRequest } from "apis/apis" // 공지사항 데이터 가져오기 위해 추가
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface"
@@ -32,7 +32,7 @@ const Inquire: React.FC = () => {
 
     const fetchNotices = async () => { // 공지사항 데이터 가져오기
       try {
-        const result = await getAllNoticeRequest();
+        const result = await GetAllNoticeRequest();
         if (!result) return;
         const { code, notices } = result;
         if (code === 'DBE') {
