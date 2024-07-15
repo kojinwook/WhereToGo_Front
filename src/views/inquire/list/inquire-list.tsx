@@ -1,7 +1,8 @@
+import { getAllQuestionRequest } from "apis/apis";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
-import { getAllQuestionRequest } from "apis/apis";
+import './style.css';
 
 const InquireList: React.FC = () => {
   const navigator = useNavigate();
@@ -20,7 +21,13 @@ const InquireList: React.FC = () => {
           return;
         }
         if (code !== 'SU') return;
-        setPosts(questions);
+
+        // 날짜 기준으로 최신순으로 정렬
+        const sortedQuestions = questions.sort((a: Question, b: Question) => 
+          new Date(b.createDateTime).getTime() - new Date(a.createDateTime).getTime()
+        );
+
+        setPosts(sortedQuestions);
         setLoading(false);
       } catch (error) {
         console.error('문의 목록을 가져오는데 실패했습니다.', error);
@@ -55,24 +62,34 @@ const InquireList: React.FC = () => {
   }
 
 
-  return (
+ return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
-      {loading ? (
-        <p>문의 목록이 없습니다.</p>
-      ) : (
-        <div className="posts">
-          {posts.map((post, index) => (
-            <div className="post" key={post.questionId}>
-              <p>{index + 1}</p>
-              <p>유형: {getTypeText(post.type)}</p>
-              <p onClick={() =>inquireListClickHandler(post.questionId)}>제목: {post.title}</p>
-              <p>작성 일시: {formatDate(post.createDateTime)}</p>
-              <p>답변: {Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className='inquire-header'>
+        <div>NO</div>
+        <div>문의 유형</div>
+        <div>제목</div>
+        <div>날짜</div>
+        <div>답변 유/무</div>
+      </div>
+      
+      <div className="inquire-list-body">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <div className="posts">
+            {posts.map((post, index) => (
+              <div className="post" key={post.questionId}>
+                <p>{posts.length - index}</p>
+                <p>{getTypeText(post.type)}</p>
+                <p onClick={() =>inquireListClickHandler(post.questionId)}>{post.title}</p>
+                <p>{formatDate(post.createDateTime)}</p>
+                <p>{Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
