@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './style.css';
 import useReviewStore from 'store/review.store';
 import useLoginUserStore from 'store/login-user.store';
+import { Images } from 'types/interface/interface';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -59,7 +60,7 @@ export default function ReviewWritePage() {
             return;
         }
 
-        const ImageList: string[] = [];
+        const ImageList: Images[] = [];
         for (const file of imageFileList) {
             const formData = new FormData();
             formData.append('file', file);
