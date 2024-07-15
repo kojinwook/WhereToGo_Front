@@ -1,0 +1,151 @@
+.question-detail-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .title-content-container {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column; 
+    gap: 10px;
+    align-items: center;
+  justify-content: center;
+  text-align: center; 
+  }
+  
+  .nickname,
+  .type,
+  .title,
+  .content {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .question-image {
+    width: 300px;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button-box {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  .update-button,
+  .delete-button,
+  .add-answer-button,
+  .submit-answer-button,
+  .edit-answer-button,
+  .delete-answer-button,
+  .submit-edit-answer-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .update-button,
+  .submit-answer-button,
+  .submit-edit-answer-button {
+    background-color: #fff;
+    color: 000;
+    border: 1px solid #000;
+  }
+  
+  .delete-button,
+  .delete-answer-button {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+  }
+  
+  .add-answer-button {
+    background-color: #fff;
+    color: 000;
+    margin-bottom: 20px;
+    border: 1px solid #000;
+  }
+  
+  .update-button:hover,
+  .submit-answer-button:hover,
+  .submit-edit-answer-button:hover {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .delete-button:hover,
+  .delete-answer-button:hover {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .add-answer-button:hover {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .answer-section {
+    margin-top: 20px;
+  }
+  
+  .answer-input-container,
+  .edit-answer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .answer-input,
+  .edit-answer-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+  .answer {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .answer-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+  
+  .no-answer-message {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 20px;
+    color: #888;
+  }
+  

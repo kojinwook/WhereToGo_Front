@@ -21,7 +21,13 @@ const InquireList: React.FC = () => {
           return;
         }
         if (code !== 'SU') return;
-        setPosts(questions);
+
+        // 날짜 기준으로 최신순으로 정렬
+        const sortedQuestions = questions.sort((a: Question, b: Question) => 
+          new Date(b.createDateTime).getTime() - new Date(a.createDateTime).getTime()
+        );
+
+        setPosts(sortedQuestions);
         setLoading(false);
       } catch (error) {
         console.error('문의 목록을 가져오는데 실패했습니다.', error);
@@ -74,7 +80,7 @@ const InquireList: React.FC = () => {
           <div className="posts">
             {posts.map((post, index) => (
               <div className="post" key={post.questionId}>
-                <p>{index + 1}</p>
+                <p>{posts.length - index}</p>
                 <p>{getTypeText(post.type)}</p>
                 <p onClick={() =>inquireListClickHandler(post.questionId)}>{post.title}</p>
                 <p>{formatDate(post.createDateTime)}</p>

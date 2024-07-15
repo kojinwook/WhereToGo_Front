@@ -19,6 +19,7 @@ import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
 import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.response.dto";
+import { Images } from "types/interface/interface";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -365,7 +366,7 @@ export const getAnswerRequest = async (questionId: number | string) => {
         });
     return result;
 };
-export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: string[], nickname: string, accessToken: string) => {
+export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: Images[], nickname: string, accessToken: string) => {
     const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList, nickname }, authorization(accessToken))
         .then(response => {
             const responseBody: ResponseDto = response.data;
@@ -450,7 +451,7 @@ export const getAllQuestionRequest = async () => {
 export const fileUploadRequest = async (data: FormData) => {
     const result = await axios.post(FILE_UPLOAD_URL(), data, multipartFormData)
         .then(response => {
-            const responseBody: string = response.data;
+            const responseBody: Images = response.data;
             return responseBody;
         })
         .catch(error => {
@@ -537,8 +538,8 @@ export const deleteQuestionRequest = async (questionId: number | string) => {
         });
     return result;
 }
-export const patchQuestionRequest = async (questionId: number | string | undefined, requestBody: PatchQuestionRequestDto) => {
-    const result = await axios.patch(PATCH_QUESTION_URL(questionId), requestBody)
+export const patchQuestionRequest = async (questionId: number | string | undefined, requestBody: PatchQuestionRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_QUESTION_URL(questionId), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PatchQuestionResponseDto = response.data;
             return responseBody;
@@ -707,7 +708,7 @@ export const GetChatRoomListRequest = async () => {
     return result;
 };
 
-export const postMeetingRequest = async (title: string, introduction: string, content: string, imageUrl: string, nickname: string, accessToken: string) => {
+export const postMeetingRequest = async (title: string, introduction: string, content: string, imageUrl: Images | null, nickname: string, accessToken: string) => {
     const result = await axios.post(POST_MEETING_URL(), {title, introduction, content, imageUrl, nickname}, authorization(accessToken))
         .then(response => {
             const responseBody: PostMeetingResponseDto = response.data;

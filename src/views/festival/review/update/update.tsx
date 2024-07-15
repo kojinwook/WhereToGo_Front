@@ -4,6 +4,7 @@ import { fileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/ap
 import { useLocation } from 'react-router-dom';
 import PatchReviewRequestDto from 'apis/request/review/patch-review.request.dto';
 import './style.css'
+import { Images } from 'types/interface/interface';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -78,7 +79,7 @@ export default function ReviewWritePage() {
             return;
         }
 
-        const ImageList: string[] = [];
+        const ImageList: Images[] = [];
         for (const file of imageFileList) {
             const formData = new FormData();
             formData.append('file', file);
@@ -89,7 +90,7 @@ export default function ReviewWritePage() {
             }
         }
 
-        const requestBody = { imageList: ImageList, review, rate } as PatchReviewRequestDto;
+        const requestBody = { imageList: ImageList, review, rate } as unknown as PatchReviewRequestDto;
         const response = await PatchReviewRequest(reviewIds, requestBody, cookies.accessToken);
         if (response.code === 'SU') {
             alert('리뷰가 성공적으로 수정되었습니다.');
@@ -151,7 +152,7 @@ export default function ReviewWritePage() {
                     )}
                 </div>
             </div>
-            
+
             <br />
             <button onClick={handleSubmit}>리뷰 등록</button>
         </div>

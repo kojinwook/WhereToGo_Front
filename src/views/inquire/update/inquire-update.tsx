@@ -1,42 +1,57 @@
-import { getQuestionRequest, postQuestionRequest } from 'apis/apis';
-import { PostQuestionRequestDto } from 'apis/request/question';
-import QuestionData from 'apis/request/question/questiondata.request.dto';
-
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { Cookies, useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
+import { fileUploadRequest, getQuestionRequest, patchQuestionRequest } from 'apis/apis';
+import { Images } from 'types/interface/interface';
 import Question from 'types/interface/question.interface';
+import './style.css';
 
-export default function InquireUpdate() {
-  const { questionId, answer: answerIdParam } = useParams();
+interface RouteParams {
+  questionId: string;
+  [key: string]: string | undefined;
+};
+
+const InquireUpdate: React.FC = () => {
+  const { questionId } = useParams<RouteParams>();
   const navigate = useNavigate();
-  const { loginUser } = useLoginUserStore();
   const [cookies] = useCookies();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [title, setTitle] = useState("");
-  const [question, setQuestion] = useState<Question | null>(null);
-  const [loading, setLoading] = useState(true);
   const [content, setContent] = useState("");
   const [nickname, setNickname] = useState("");
   const [type, setType] = useState("");
-  const [imageFileList, setImageFileList] = useState<string[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const { loginUser } = useLoginUserStore();
   const [errorMessage, setErrorMessage] = useState("");
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
-  const [typeError, setTypeError] = useState("");
   const [imageError, setImageError] = useState("");
-  const [postRequest, setPostRequest] = useState<PostQuestionRequestDto>({
-    title: "",
-    content: "",
-    nickname: "",
-    type: "",
-    imageList: [],
-  });
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [typeError, setTypeError] = useState("");
+  const [imageFileList, setImageFileList] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [questionLoaded, setQuestionLoaded] = useState(false);
 
-  // 컴포넌트가 마운트될 때 사용자 정보 설정
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      try {
+        const response = await getQuestionRequest(questionId);
+        const { title, content, nickname, type, imageList } = response.question;
+        setTitle(title);
+        setContent(content);
+        setNickname(nickname);
+        setType(type);
+        const imageUrls = imageList.map((image: Images) => image.image); // 예시에서는 images 배열에서 이미지 URL을 가져온다고 가정
+        setImagePreviews(imageUrls);
+        setQuestionLoaded(true);
+      } catch (error) {
+        console.error("질문 정보를 불러오는 중 오류가 발생했습니다:", error);
+        setQuestionLoaded(true);
+      }
+    };
+
+    fetchQuestion();
+  }, [questionId]);
+
   useEffect(() => {
     const nickname = loginUser?.nickname;
     if (nickname) {
@@ -44,45 +59,6 @@ export default function InquireUpdate() {
       setIsLoggedIn(true);
     }
   }, [loginUser]);
-
-  // 이전에 작성한 데이터가 있으면 설정
-  // useEffect(() => {
-  //   const fetchQuestion = async () => {
-  //     try {
-  //       const response = await getQuestionRequest(questionId);
-  //       const { title, content, nickname, type, image } = response as unknown as Question;
-  //       if (!title || !content || !nickname || !type) {
-  //         throw new Error("Invalid response structure");
-  //       }
-  //       setQuestion(response as unknown as Question);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error("질문 정보를 불러오는 중 오류가 발생했습니다:", error);
-  //       alert("질문 정보를 불러오는 중 오류가 발생했습니다.");
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchQuestion();
-  // }, [questionId]);
-  useEffect(() => {
-    const fetchQuestion = async () => {
-      try {
-        const response = await getQuestionRequest(questionId);
-        const { title, content, nickname, type, imageList } = response as unknown as Question;
-        if (!title || !content || !nickname || !type ) {
-          throw new Error("Invalid response structure");
-        }
-        setQuestion(response as unknown as Question | null);
-        setPostRequest({ title, content, nickname, type, imageList });
-      } catch (error) {
-        console.error("질문 정보를 불러오는 중 오류가 발생했습니다:", error);
-        alert("질문 정보를 불러오는 중 오류가 발생했습니다.");
-      }
-    };
-
-    fetchQuestion();
-  }, [questionId]);
-
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -95,19 +71,41 @@ export default function InquireUpdate() {
   };
 
   const handleTypeChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const selectedType = event.target.value;
-    setType(selectedType);
+    const selectedType = event.target.value; // 숫자 형태의 값이 들어옴
+    let typeString = ""; // 변환된 문자열을 저장할 변수
+
+    switch (selectedType) { // 선택된 값에 따라 문자열로 변환
+      case "1":
+        typeString = "문의 유형을 선택해주세요.";
+        break;
+      case "2":
+        typeString = "비매너 회원 신고";
+        break;
+      case "3":
+        typeString = "회원정보 안내";
+        break;
+      case "4":
+        typeString = "홈페이지 오류";
+        break;
+      case "5":
+        typeString = "기타 문의";
+        break;
+      default:
+        typeString = ""; // 기본값 처리
+        break;
+    }
+    setType(selectedType); // 변환된 문자열을 state에 저장
     if (selectedType !== "1") setTypeError("");
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
-    
     const files = Array.from(event.target.files);
+    setImageFileList(files);
+
     const previews = files.map(file => URL.createObjectURL(file));
     setImagePreviews(previews);
   };
-
 
   const handleImageRemove = (index: number) => {
     const newImageFileList = [...imageFileList];
@@ -124,6 +122,18 @@ export default function InquireUpdate() {
       setErrorMessage("로그인을 한 후 이용해주세요.");
       return;
     }
+    if (!questionId) return;
+
+    const imageList: Images[] = [];
+    for (const file of imageFileList) {
+      const formData = new FormData();
+      formData.append('file', file);
+      const imageUrl = await fileUploadRequest(formData);
+      if (imageUrl) {
+        imageList.push(imageUrl);
+      }
+    }
+
 
     let hasError = false;
 
@@ -141,60 +151,47 @@ export default function InquireUpdate() {
     }
     if (hasError) return;
 
-    // 데이터 저장
-    const inquireData = {
-      title,
-      content,
-      type,
-      imagePreviews,
-    };
-    localStorage.setItem('inquireData', JSON.stringify(inquireData));
-
     try {
-      const questionData: QuestionData = {
-        title,
-        content,
-        nickname,
-        type,
-        imageList: imageFileList,
-      };
-      const result = await postQuestionRequest(questionData, cookies.accessToken);
-
+      const requestBody = { title, content, nickname, type, imageList };
+      const result = await patchQuestionRequest(questionId, requestBody, cookies.accessToken);
+      console.log(result);
       if (result && result.code === "SU") {
-        alert("해당 문의가 업로드되었습니다.");
-        localStorage.removeItem('inquireData'); // 성공 후 데이터 삭제
-        navigate("/inquire");
+        alert("질문이 성공적으로 수정되었습니다.");
+        navigate(`/inquire/detail/${questionId}`);
       } else {
-        setErrorMessage("해당 문의 업로드 실패");
+        setErrorMessage("질문 수정에 실패했습니다.");
       }
     } catch (error) {
-      console.error("해당 문의 업로드 중 오류가 발생했습니다:", error);
-      setErrorMessage("해당 문의 업로드 중 오류가 발생했습니다");
+      console.error("질문 수정 중 오류가 발생했습니다:", error);
+      setErrorMessage("질문 수정 중 오류가 발생했습니다.");
     }
   };
 
   const cancelClickHandler = () => {
-    localStorage.removeItem('inquireData'); // 취소 시 데이터 삭제
-    navigate("/inquire");
+    navigate(`/inquire/detail/${questionId}`);
   };
 
+  if (!questionLoaded) {
+    return <div>로딩 중...</div>;
+  }
+
   return (
-    <table className="inquire-write">
+    <table className="inquire-update">
       <thead>
         <tr>
-          <th className="inquire-write-title">1대1 문의 접수</th>
+          <th className="inquire-update-title">질문 수정</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <th className="inquire-write-left">문의 ID</th>
-          <td className="inquire-write-right">{nickname}</td>
+          <th className="inquire-update-left">질문 ID</th>
+          <td className="inquire-update-right">{nickname}</td>
         </tr>
         <tr>
-          <th className="inquire-write-left">문의유형</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">질문 유형</th>
+          <td className="inquire-update-right">
             <select value={type} onChange={handleTypeChange}>
-              <option value="1">문의 유형을 선택해주세요.</option>
+              <option value="1">질문 유형을 선택해주세요.</option>
               <option value="2">비매너 회원 신고</option>
               <option value="3">회원정보 안내</option>
               <option value="4">홈페이지 오류</option>
@@ -204,8 +201,8 @@ export default function InquireUpdate() {
           </td>
         </tr>
         <tr>
-          <th className="inquire-write-left">제목</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">제목</th>
+          <td className="inquire-update-right">
             <input
               type="text"
               placeholder="제목을 입력해 주세요."
@@ -216,8 +213,8 @@ export default function InquireUpdate() {
           </td>
         </tr>
         <tr>
-          <th className="inquire-write-left">내용</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">내용</th>
+          <td className="inquire-update-right">
             <textarea
               placeholder="내용을 입력해주세요."
               value={content}
@@ -227,8 +224,8 @@ export default function InquireUpdate() {
           </td>
         </tr>
         <tr>
-          <th className="inquire-write-left">사진</th>
-          <td className="inquire-write-right">
+          <th className="inquire-update-left">사진</th>
+          <td className="inquire-update-right">
             <input type="file" multiple onChange={handleImageChange} />
             <div style={{ display: 'flex', marginTop: '10px' }}>
               {imagePreviews.map((preview, index) => (
@@ -253,13 +250,15 @@ export default function InquireUpdate() {
       </tbody>
       <tfoot>
         <tr>
-          <td colSpan={2}>
-            <button onClick={cancelClickHandler}>취소</button>
-            <button onClick={uploadPostClickHandler}>접수</button>
+          <td colSpan={2} className="inquire-update-button">
+            <button className="inquire-update-cancel" onClick={cancelClickHandler}>취소</button>
+            <button className="inquire-update-upload" onClick={uploadPostClickHandler}>수정</button>
           </td>
         </tr>
       </tfoot>
       {errorMessage && <div style={{ color: 'red', marginTop: '10px' }}>{errorMessage}</div>}
     </table>
   );
-}
+};
+
+export default InquireUpdate;
