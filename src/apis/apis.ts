@@ -20,7 +20,7 @@ import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.resp
 import { Images } from "types/interface/interface";
 import PostMeetingRequestDto from "./request/meeting/post-meeting.request.dto";
 import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
-import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto } from "./response/chat";
+import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto } from "./response/chat";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -65,6 +65,7 @@ const GET_CHAT_MESSAGE = (messageId: string) => `${API_DOMAIN}/chat/message/by-i
 const POST_CHAT_ROOM_URL = () => `${API_DOMAIN}/chat/rooms`;
 const GET_CHAT_ROOM_URL = (nickname: string) => `${API_DOMAIN}/chat/room?nickname=${nickname}`;
 const GET_CHAT_ROOM_LIST_URL = () => `${API_DOMAIN}/chat/rooms`;
+const GET_CHAT_ROOM_USERS_URL = (roomId: string) => `${API_DOMAIN}/chat/room/users?roomId=${roomId}`;
 
 const ADMIN_SIGN_IN_URL = () => `${API_DOMAIN}/auth/admin-sign-in`;
 const ADMIN_SIGN_UP_URL = () => `${API_DOMAIN}/auth/admin-sign-up`;
@@ -726,6 +727,19 @@ export const GetChatRoomListRequest = async () => {
     const result = await axios.get(GET_CHAT_ROOM_LIST_URL())
         .then(response => {
             const responseBody: GetChatRoomListResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const GetChatRoomUsersRequest = async (roomId: string, accessToken: string) => {
+    const result = await axios.get(GET_CHAT_ROOM_USERS_URL(roomId), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetChatRoomUsersResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {

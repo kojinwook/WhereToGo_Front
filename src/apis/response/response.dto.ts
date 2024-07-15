@@ -1,4 +1,4 @@
-import { Answer, ChatRoom, Favorite, Festival, Meeting, Notice } from "types/interface/interface";
+import { Answer, ChatRoom, Favorite, Festival, Meeting, Notice, User } from "types/interface/interface";
 import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
 import Question from "types/interface/question.interface";
 import Review from "types/interface/review.interface";
@@ -27,4 +27,5 @@ export default interface ResponseDto{
     meeting: Meeting;
     meetingList: Meeting[];
     chatRoomList: ChatRoom[];
+    users: User[];
 }
