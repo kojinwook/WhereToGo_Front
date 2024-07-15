@@ -1,6 +1,7 @@
 import Answer from "./answer.interface";
 import Favorite from "./favorite.interface";
 import Festival from "./festival.interface";
+import Images from "./image.interface";
 import Notice from "./notice.interface";
 import Question from "./question.interface";
 import Review from "./review.interface";
@@ -13,5 +14,6 @@ export type {
     Answer,
     Review,
     User,
-    Favorite
+    Favorite,
+    Images
 }

@@ -59,7 +59,7 @@ const InquireList: React.FC = () => {
     <div className="inquire-list">
       <h1>문의 리스트</h1>
       {loading ? (
-        <p>Loading...</p>
+        <p>문의 목록이 없습니다.</p>
       ) : (
         <div className="posts">
           {posts.map((post, index) => (
