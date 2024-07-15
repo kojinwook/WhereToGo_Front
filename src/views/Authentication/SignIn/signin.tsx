@@ -149,11 +149,11 @@ return (
                       <div className="text-link-lg-right recovery-password-button" onClick={toggleRecoveryBox}>{'비밀번호 찾기'}</div>
                   </div>
                   {showRecoveryBox && (
-          <div className="recovery-password-box">
-              <InputBox ref={emailRef} title="이메일" placeholder="이메일을 입력하세요." type="email" value={email} onChange={handleEmailChange} isErrorMessage={isEmailError} message={EmailMessage} onKeyDown={onRecoverPasswordKeyDownHandler} />
-              <div className="primary-button-small full-width" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
-          </div>
-      )}
+                    <div className="recovery-password-box">
+                        <InputBox ref={emailRef} title="이메일" placeholder="이메일을 입력하세요." type="email" value={email} onChange={handleEmailChange} isErrorMessage={isEmailError} message={EmailMessage} onKeyDown={onRecoverPasswordKeyDownHandler} />
+                        <div className="primary-button-small full-width" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
+                    </div>
+                )}
               </div>
           </div>
       </div>
