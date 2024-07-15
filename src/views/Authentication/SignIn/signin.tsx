@@ -34,14 +34,16 @@ export default function SignIn() {
   const [message, setMessage] = useState<string>('');
   const navigate = useNavigate();
 
-  const [isPasswordError, setIsPasswordError] = useState<boolean>(false); const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
+  const [isPasswordError, setIsPasswordError] = useState<boolean>(false);
 
+  const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
+    console.log(responseBody)
     if (!responseBody) return;
     const { code } = responseBody;
-    if (code === ResponseCode.VALIDATION_FAIL) alert('아이디와 비밀번호를 입력하세요.');
-    if (code === ResponseCode.SING_IN_FAIL) setMessage('로그인 정보가 일치하지 않습니다.');
-    if (code === ResponseCode.DATABASE_ERROR) alert('데이터베이스 오류입니다.');
-    if (code !== ResponseCode.SUCCESS) return;
+    if (code === "VF") alert('아이디와 비밀번호를 입력하세요.');
+    if (code === "SF") setMessage('로그인 정보가 일치하지 않습니다.');
+    if (code === "DBE") alert('데이터베이스 오류입니다.');
+    if (code !== "SU") return;
 
     const { token, expirationTime } = responseBody as SignInResponseDto;
 
@@ -109,7 +111,7 @@ export default function SignIn() {
     }
     if (code === 'VF') {
       setIsEmailError(true);
-      setEmailMessage ('이메일을 입력하세요.');
+      setEmailMessage('이메일을 입력하세요.');
     }
     if (code === 'DBE') {
       setIsEmailError(true);
@@ -222,13 +224,13 @@ export default function SignIn() {
             {showFindBox && (
               <div className="find-userId-box">
                 <InputBox ref={emailFindRef} title="이메일" placeholder="이메일을 입력하세요." type="email" value={emailFind} onChange={handleEmailFind} isErrorMessage={isEmailFindError} message={EmailFindMessage} onKeyDown={onFindUserIdKeyDownHandler} />
-                <div className="primary-button-small find-userId-button" onClick={handleFindUserId}>{'아이디 찾기'}</div>
+                <div className="primary-button-small full-width" onClick={handleFindUserId}>{'아이디 찾기'}</div>
               </div>
             )}
             {showRecoveryBox && (
               <div className="recovery-password-box">
                 <InputBox ref={emailRef} title="이메일" placeholder="이메일을 입력하세요." type="email" value={email} onChange={handleEmailChange} isErrorMessage={isEmailError} message={EmailMessage} onKeyDown={onRecoverPasswordKeyDownHandler} />
-                <div className="primary-button-small recovery-password-button" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
+                <div className="primary-button-small full-width" onClick={handleRecoverPassword}>{'비밀번호 찾기'}</div>
               </div>
             )}
           </div>

@@ -9,7 +9,7 @@ enum ResponseCode{
     CERTIFICATION_FAIL = "CF",
     DUPLICATE_PHONE = "DP",
     DO_NOT_HAVE_PERMISSION = "DNHP",
-    SING_IN_FAIL = "SIF",
+    SIGN_IN_FAIL = "SF",
     NOT_EXISTED_USER = "NU",
     DUPLICATE_ID = "DI",
     FALSE_AGREEMENT = "FA"
