@@ -1,5 +1,4 @@
 import ChatRoom from 'components/chat/chat';
-import ChatRoomCreate from 'components/chat/create';
 import SaveFestivalList from 'components/festival/save-festival';
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -13,26 +12,26 @@ import FestivalPage from 'views/festival/list/festival-list';
 import ReviewUpdatePage from 'views/festival/review/update/update';
 import ReviewWritePage from 'views/festival/review/write/write';
 import InquireDetail from 'views/inquire/detail/inquire-detail';
-import MeetingWrite from 'views/meeting/write/write';
 import UserModifyProfile from 'views/user/modifyProfile/modifyProfile';
 import UserProfile from 'views/user/profile/profile';
 import './App.css';
-
-import { GetSignInUserRequest } from 'apis/apis';
-import { ResponseDto } from 'apis/response/response';
-import { GetSignInUserResponseDto } from 'apis/response/user';
-import { useCookies } from 'react-cookie';
-import useLoginUserStore from 'store/login-user.store';
-import User from 'types/interface/user.interface';
-import InquireList from 'views/inquire/list/inquire-list';
-import Inquire from 'views/inquire/main/inquire-main';
 import InquireUpdate from 'views/inquire/update/inquire-update';
 import InquireWrite from 'views/inquire/write/inquire-write';
 import NoticeDetail from 'views/notice/detail/notice-detail';
-import NoticeMain from 'views/notice/main/notice-main';
+import useLoginUserStore from 'store/login-user.store';
+import { useCookies } from 'react-cookie';
+import { GetSignInUserResponseDto } from 'apis/response/user';
+import { ResponseDto } from 'apis/response/response';
+import User from 'types/interface/user.interface';
+import { GetSignInUserRequest } from 'apis/apis';
+import Inquire from 'views/inquire/main/inquire-main';
+import InquireList from 'views/inquire/list/inquire-list';
+import MeetingDetail from 'views/meeting/detail/meeting-detail';
+import MeetingList from 'views/meeting/list/meeting-list';
 import NoticeUpdate from 'views/notice/update/notice-update';
 import NoticeWrite from 'views/notice/write/notice-write';
 import NoticeList from 'views/notice/main/notice-main';
+import MeetingWrite from 'views/meeting/write/meeting-write';
 
 function App() {
 
@@ -79,7 +78,6 @@ function App() {
       </Route>
 
       <Route path='/chat'>
-        <Route path="create" element={<ChatRoomCreate />} />
         <Route path="" element={<ChatRoom />} />
       </Route>
 
@@ -88,7 +86,9 @@ function App() {
       </Route>
 
       <Route path='/meeting'>
+        <Route path="list" element={<MeetingList />} />
         <Route path='write' element={<MeetingWrite />} />
+        <Route path='detail/:meetingId' element={<MeetingDetail />} />
       </Route>
 
       <Route path='/authentication'>

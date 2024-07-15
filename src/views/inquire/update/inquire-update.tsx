@@ -2,7 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { fileUploadRequest, getQuestionRequest, patchQuestionRequest } from 'apis/apis';
+import { FileUploadRequest, GetQuestionRequest, PatchQuestionRequest } from 'apis/apis';
 import { Images } from 'types/interface/interface';
 import Question from 'types/interface/question.interface';
 import './style.css';
@@ -34,7 +34,7 @@ const InquireUpdate: React.FC = () => {
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const response = await getQuestionRequest(questionId);
+        const response = await GetQuestionRequest(questionId);
         const { title, content, nickname, type, imageList } = response.question;
         setTitle(title);
         setContent(content);
@@ -128,7 +128,7 @@ const InquireUpdate: React.FC = () => {
     for (const file of imageFileList) {
       const formData = new FormData();
       formData.append('file', file);
-      const imageUrl = await fileUploadRequest(formData);
+      const imageUrl = await FileUploadRequest(formData);
       if (imageUrl) {
         imageList.push(imageUrl);
       }
@@ -153,7 +153,7 @@ const InquireUpdate: React.FC = () => {
 
     try {
       const requestBody = { title, content, nickname, type, imageList };
-      const result = await patchQuestionRequest(questionId, requestBody, cookies.accessToken);
+      const result = await PatchQuestionRequest(questionId, requestBody, cookies.accessToken);
       console.log(result);
       if (result && result.code === "SU") {
         alert("질문이 성공적으로 수정되었습니다.");

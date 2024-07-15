@@ -1,4 +1,4 @@
-import { getAllNoticeRequest } from 'apis/apis';
+import { GetAllNoticeRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Notice from 'types/interface/notice.interface';
@@ -18,7 +18,7 @@ const NoticeList: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const result = await getAllNoticeRequest();
+        const result = await GetAllNoticeRequest();
         if (!result) return;
         const { code, notices } = result;
         if (code === 'DBE') {

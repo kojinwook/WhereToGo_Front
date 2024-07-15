@@ -1,4 +1,4 @@
-import { fileUploadRequest, PostReviewRequest } from 'apis/apis';
+import { FileUploadRequest, PostReviewRequest } from 'apis/apis';
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -64,7 +64,7 @@ export default function ReviewWritePage() {
         for (const file of imageFileList) {
             const formData = new FormData();
             formData.append('file', file);
-            const imageUrl = await fileUploadRequest(formData);
+            const imageUrl = await FileUploadRequest(formData);
             if (imageUrl) {
                 ImageList.push(imageUrl);
             }
