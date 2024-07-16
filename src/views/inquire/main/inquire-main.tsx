@@ -42,7 +42,7 @@ const Inquire: React.FC = () => {
       window.location.href = 'https://open.kakao.com/o/sZv3FqCg';
     }
   const noticeListClickHandler = () => {
-    navigator(`/notice/main`);
+    navigator(`/notice`);
   }
 
   return (
