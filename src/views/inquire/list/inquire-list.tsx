@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getAllQuestionRequest } from 'apis/apis';
-import Question from 'types/interface/question.interface';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Question from "types/interface/question.interface";
+import { GetAllQuestionRequest } from "apis/apis";
 import './style.css';
 
 const InquireList: React.FC = () => {
@@ -13,7 +13,7 @@ const InquireList: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const result = await getAllQuestionRequest();
+        const result = await GetAllQuestionRequest();
         console.log(result);
         if (!result) return;
         const { code, questions } = result;

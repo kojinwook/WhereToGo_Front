@@ -1,6 +1,7 @@
-import { fileUploadRequest, postMeetingRequest } from 'apis/apis';
+import { FileUploadRequest, PostMeetingRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images } from 'types/interface/interface';
 // import './style.css';
@@ -13,11 +14,12 @@ export default function MeetingWrite() {
   const [introduction, setIntroduction] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
+  const [maxParticipants, setMaxParticipants] = useState<number>(1);
   const [cookies] = useCookies();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loginUser) return;
-    console.log(loginUser.nickname)
     setNickname(loginUser.nickname);
   }, []);
 
@@ -32,6 +34,16 @@ export default function MeetingWrite() {
   const handleContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(event.target.value);
   }
+
+  const handleMaxParticipants = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value);
+    if (value > 20) {
+      alert('최대 인원은 20명으로 제한됩니다.');
+      setMaxParticipants(20);
+    } else {
+      setMaxParticipants(value);
+    }
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -62,13 +74,15 @@ export default function MeetingWrite() {
     if (imageFileList.length > 0) {
       const formData = new FormData();
       formData.append('file', imageFileList[0]);
-      imageUrl = await fileUploadRequest(formData);
+      imageUrl = await FileUploadRequest(formData);
     }
 
     try {
-      const response = await postMeetingRequest(title, introduction, content, imageUrl, nickname, cookies.accessToken);
+      const requestBody = { title, introduction, content, imageUrl, nickname, maxParticipants };
+      const response = await PostMeetingRequest(requestBody, cookies.accessToken);
       if (response.code === 'SU') {
         alert('모임이 성공적으로 등록되었습니다.');
+        navigate('/meeting/list');
       } else {
         alert('모임 등록에 실패했습니다.');
       }
@@ -111,6 +125,18 @@ export default function MeetingWrite() {
           onChange={handleContent}
         ></textarea>
       </label>
+
+      <br />
+
+      <p><strong>최대 인원</strong></p>
+      <input
+        type="number"
+        placeholder="최대 인원을 입력해주세요."
+        value={maxParticipants}
+        onChange={handleMaxParticipants}
+        min={1}
+        max={20}
+      />
 
       <p><strong>사진</strong></p>
       <input type="file" multiple onChange={handleImageChange} />
