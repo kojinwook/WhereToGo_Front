@@ -82,10 +82,7 @@ const InquireList: React.FC = () => {
   return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
-<<<<<<< HEAD
       <div onClick={backPathClickHandler}>뒤로가기</div>
-=======
->>>>>>> ce1d1287a47a79b99c49f5d976693cd606fc71e4
       <div className='inquire-header'>
         <div>NO</div>
         <div>문의 유형</div>
@@ -100,23 +97,11 @@ const InquireList: React.FC = () => {
       ) : (
         <div className="posts">
           {posts.map((post, index) => (
-<<<<<<< HEAD
             <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
               <p>{index + 1}</p>
               <p>{getTypeText(post.type)}</p>
               <p>{post.title}</p>
               <p>{post.modifyDateTime ? formatDate(post.modifyDateTime) : formatDate(post.createDateTime)}</p>
-=======
-            <div className="post" key={post.questionId}>
-              <p>{posts.length - index}</p>
-              <p>{getTypeText(post.type)}</p>
-              <p onClick={() => inquireListClickHandler(post.questionId)}>
-                {post.title}
-              </p>
-              <p>{formatDate(post.createDateTime)}</p>
-              <p>{formatDate(post.modifyDateTime)}</p>
-              {/* <p>답변: {post.answers && Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p> */}
->>>>>>> ce1d1287a47a79b99c49f5d976693cd606fc71e4
               <p>{post.answered ? '유' : '무'}</p>
             </div>
           ))}

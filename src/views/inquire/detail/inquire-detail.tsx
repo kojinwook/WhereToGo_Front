@@ -268,15 +268,12 @@ const InquireDetail: React.FC = () => {
       <div className="nickname">작성자 : {question.nickname}</div>
       <div className="createDateTime">날짜 : {formatDate(question.createDateTime, question.modifyDateTime)}</div>
       <div className="title-content-container">
-<<<<<<< HEAD
         <div className="type">문의 유형 : {getTypeString(question.type)}</div>
         <div className="title">제목 : {question.title}</div>
         <div className="content">내용 : {question.content}</div>
-=======
         <div className="type">문의 유형 | {getTypeString(question.type)}</div>
         <div className="title">제목 | {question.title}</div>
         <div className="content">내용 | {question.content}</div>
->>>>>>> ce1d1287a47a79b99c49f5d976693cd606fc71e4
         <div className="images">
           {question.imageList.map((imageObject, index) => (
             <img
