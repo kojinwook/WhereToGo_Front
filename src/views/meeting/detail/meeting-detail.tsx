@@ -44,7 +44,7 @@ export default function MeetingDetail() {
         const meetingTitle = meeting?.title;
         if (!roomName || !nickname || !creatorNickname || !meetingTitle) return;
         try {
-            const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorNickname, meetingTitle }, cookies.access_token);
+            const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorNickname, meetingTitle }, cookies.accessToken);
             console.log(response);
             if (response.code === 'SU') {
                 const roomId = response.roomId;
@@ -64,7 +64,7 @@ export default function MeetingDetail() {
     const handleJoinMeeting = async () => {
         if (!meetingId || !nickname) return;
         try {
-            const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.access_token);
+            const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.accessToken);
             const { code } = response;
             if (code === 'SU') {
                 alert('모임에 가입 신청이 완료되었습니다.');
@@ -101,7 +101,7 @@ export default function MeetingDetail() {
         if (!meetingId) return;
         const fetchRequests = async () => {
             try {
-                const response = await GetMeetingRequests(meetingId, cookies.access_token);
+                const response = await GetMeetingRequests(meetingId, cookies.accessToken);
                 console.log(response);
                 setRequests(response.requests);
             } catch (error) {

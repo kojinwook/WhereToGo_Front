@@ -1,21 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { GetChatMessageListRequest, GetChatRoomUsersRequest, GetUserRequest } from 'apis/apis';
+import { GetChatMessageListRequest, GetUserRequest } from 'apis/apis';
 import './style.css';
 import useLoginUserStore from 'store/login-user.store';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import defaultProfileImage from 'assets/images/user.png';
-import { log } from 'console';
 
 interface Message {
-    messageId: number; // 메시지 고유 ID
+    messageId: number;
     sender: string;
     message: string;
     timestamp: string;
-    readByReceiver: boolean; // 읽음 상태
+    readByReceiver: boolean;
 }
+
+interface TypingMessage {
+    roomId: string;
+    sender: string;
+    typing: boolean;
+}
+
+interface UserStatus {
+    username: string;
+    online: boolean;
+}
+
+const TYPING_TIMEOUT = 3000;
 
 const ChatRoom: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -25,11 +37,15 @@ const ChatRoom: React.FC = () => {
     const roomId = params.get('roomId');
     const { loginUser } = useLoginUserStore();
     const [nickname, setNickname] = useState<string>('');
-    const [receiverNickname, setReceiverNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [cookies] = useCookies();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState<string>('');
+    const [isTyping, setIsTyping] = useState<boolean>(false);
+    const [otherUserTyping, setOtherUserTyping] = useState<string[]>([]);
+    const [otherUserStatus, setOtherUserStatus] = useState<UserStatus[]>([]);
+
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         scrollToBottom();
@@ -37,7 +53,6 @@ const ChatRoom: React.FC = () => {
 
     useEffect(() => {
         scrollToBottom();
-        console.log(messages.map((msg) => msg.readByReceiver));
     }, [messages]);
 
     useEffect(() => {
@@ -50,11 +65,34 @@ const ChatRoom: React.FC = () => {
                 client.subscribe(`/topic/chat.${roomId}`, (message: IMessage) => {
                     handleChatMessage(message);
                 });
+                client.subscribe(`/topic/typing.${roomId}`, (message: IMessage) => {
+                    handleTypingMessage(message);
+                });
+                client.subscribe(`/topic/status`, (message: IMessage) => {
+                    handleStatusMessage(message);
+                });
+                client.publish({
+                    destination: `/app/chat/${roomId}/enter`,
+                    headers: {},
+                    body: JSON.stringify({
+                        roomId: roomId,
+                        username: loginUser.nickname,
+                        message: 'Entered the chat room',
+                    }),
+                });
                 fetchMessages();
             },
             onDisconnect: () => {
                 console.log('Disconnected');
-            }
+                client.publish({
+                    destination: `/app/chat/${roomId}/leave`,
+                    headers: {},
+                    body: JSON.stringify({
+                        username: loginUser.nickname,
+                        message: 'Left the chat room',
+                    }),
+                });
+            },
         });
         client.activate();
         clientRef.current = client;
@@ -76,11 +114,33 @@ const ChatRoom: React.FC = () => {
             readByReceiver: parsedBody.body.chatMessage.readByReceiver,
         };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
 
-        // 상대방이 보낸 메시지이고, 해당 메시지를 자신이 보낸 것이 아닌 경우 읽음 상태를 업데이트
-        // if (parsedBody.body.chatMessage.sender !== loginUser.nickname) {
-        //     handleReadMessage(parsedBody.body.chatMessage.messageId);
-        // }
+    const handleTypingMessage = (message: IMessage) => {
+        if (!loginUser) return;
+        const parsedBody: TypingMessage = JSON.parse(message.body);
+        if (parsedBody.sender !== loginUser.nickname) {
+            if (parsedBody.typing) {
+                setOtherUserTyping((prev) => [...prev, parsedBody.sender]);
+            } else {
+                setOtherUserTyping((prev) => prev.filter((user) => user !== parsedBody.sender));
+            }
+        }
+    };
+
+    const handleStatusMessage = (message: IMessage) => {
+        if (!loginUser) return;
+        const parsedBody: UserStatus = JSON.parse(message.body);
+        setOtherUserStatus((prev) => {
+            const existingUserIndex = prev.findIndex(user => user.username === parsedBody.username);
+            if (existingUserIndex !== -1) {
+                const updatedStatus = [...prev];
+                updatedStatus[existingUserIndex] = parsedBody;
+                return updatedStatus;
+            } else {
+                return [...prev, parsedBody];
+            }
+        });
     };
 
     useEffect(() => {
@@ -101,7 +161,7 @@ const ChatRoom: React.FC = () => {
             }
         }
         getUserRequest();
-    }, [loginUser, cookies.access_token]);
+    }, [loginUser, cookies.accessToken]);
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -136,7 +196,7 @@ const ChatRoom: React.FC = () => {
         if (!loginUser) {
             alert('로그인이 필요합니다.');
             return;
-        };
+        }
         if (clientRef.current && input.trim()) {
             const messageKey = new Date().getTime();
             const message = {
@@ -149,11 +209,6 @@ const ChatRoom: React.FC = () => {
             clientRef.current.publish({
                 destination: `/app/chat/${roomId}/message`,
                 body: JSON.stringify(message)
-            });
-
-            clientRef.current.publish({
-                destination: `/app/chat/${roomId}/read`,
-                body: JSON.stringify(messageKey)
             });
             setInput('');
         }
@@ -169,46 +224,92 @@ const ChatRoom: React.FC = () => {
         return date.toLocaleString('ko-KR', options);
     };
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+        sendTypingStatus(true);
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+        typingTimeoutRef.current = setTimeout(() => {
+            sendTypingStatus(false);
+        }, TYPING_TIMEOUT);
+    };
+
+    const sendTypingStatus = (isTyping: boolean) => {
+        if (clientRef.current && roomId) {
+            const typingMessage = {
+                roomId: roomId,
+                sender: loginUser?.nickname,
+                typing: isTyping
+            };
+            clientRef.current.publish({
+                destination: `/app/chat/${roomId}/typing`,
+                body: JSON.stringify(typingMessage)
+            });
+        }
+    };
+
+    const handleBackButtonClick = () => {
+        if (clientRef.current && roomId && loginUser) {
+            clientRef.current.publish({
+                destination: `/app/chat/${roomId}/leave`,
+                headers: {},
+                body: JSON.stringify({
+                    username: loginUser.nickname,
+                    message: 'Left the chat room',
+                }),
+            });
+        }
+        window.history.back();
+    };
+
     return (
         <div className="chat-room">
             <div>{nickname}</div>
+            <button onClick={handleBackButtonClick}>뒤로가기</button>
             <div className="messages">
                 {messages.map((msg, index) => (
                     <div key={index} className={`message ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
                         <div className="message-user-container">
                             {msg.sender !== loginUser?.nickname && (
                                 <div className="profile-info">
-                                    <img src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' className='user-profile-image' />
-                                    <div className="nickname">{receiverNickname}</div> {/* 상대방 닉네임 표시 */}
+                                    <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
+                                    <div className="username">{msg.sender}</div>
                                 </div>
                             )}
-                            <div className="message-container">
-                                <div className={`message-content ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
-                                    <div className="text">{msg.message}</div>
-                                </div>
-                                <div ref={messagesEndRef} />
-                                <div className="timestamp">{formatTimestamp(msg.timestamp)}</div>
-                                {msg.sender === loginUser?.nickname && !msg.readByReceiver && (
-                                    <div className="unread-indicator">(1)</div>
-                                )}
-                            </div>
+                            <div className="message-text">{msg.message}</div>
+                            <div className="message-time">{formatTimestamp(msg.timestamp)}</div>
                         </div>
+                        {msg.sender === loginUser?.nickname && !msg.readByReceiver && (
+                            <div className="unread-indicator">(1)</div>
+                        )}
+                    </div>
+                ))}
+                <div ref={messagesEndRef} />
+            </div>
+            <div className="input-container">
+                <input
+                    type="text"
+                    className="message-input"
+                    placeholder="메시지 입력..."
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
+                />
+                <button className="send-button" onClick={sendMessage}>전송</button>
+            </div>
+            <div className="typing-status">
+                {otherUserTyping.length > 0 &&
+                    <div>{otherUserTyping}님이 입력 중입니다...</div>
+                }
+                {otherUserStatus.map((user, index) => (
+                    <div key={index}>
+                        {user.online ? `${user.username}님이 온라인입니다.` : `${user.username}님이 오프라인입니다.`}
                     </div>
                 ))}
             </div>
-            <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                }}
-            />
-            <button onClick={sendMessage}>Send</button>
         </div>
     );
-}
+};
 
 export default ChatRoom;
