@@ -80,7 +80,6 @@ const Inquire: React.FC = () => {
             <div className="inquire-header">
               <span className="inquire-num">NO</span>
               <span className="inquire-title">제목</span>
-              <span className="inquire-type">유형</span>
               <span className="inquire-date">날짜</span>
             </div>
             {notices.length === 0 ? (
