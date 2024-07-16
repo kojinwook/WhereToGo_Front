@@ -2,6 +2,7 @@ import { GetMeetingListRequest } from 'apis/apis'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Meeting } from 'types/interface/interface'
+import './style.css';
 
 export default function MeetingList() {
 
@@ -23,8 +24,11 @@ export default function MeetingList() {
 
     if(!meetingList) return <div>모임이 없습니다.</div>
   return (
-    <div>
+    <div className='meeting-list-container'>
       <h1>모임 리스트</h1>
+      <div className='meeting-list-write-btn'>
+        <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
+      </div>
       <ul>
         {meetingList.map((meeting) => (
           <li key={meeting.meetingId} onClick={() => meetingTitleClickHandler(meeting.meetingId)}>{meeting.title}</li>

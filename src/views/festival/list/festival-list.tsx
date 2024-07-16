@@ -168,7 +168,7 @@ export default function FestivalPage() {
                     <div>주소</div>
                     <div>별점</div>
                     <div>날짜</div>
-                    {/* <div>찜</div> */}
+                    <div>찜</div>
                 </div>
                 {searchFestivalList.map((festival, index) => (
                     <div key={index} className='festival-list-content'>
@@ -177,9 +177,9 @@ export default function FestivalPage() {
                         <div>{renderStars(averageRates[festival.contentId] || 0, true)}</div>
                         <div>{festival.startDate} ~ {festival.endDate}</div>
                         <div className="icon-button" onClick={() => onFavoriteClickHandler(festival.contentId)}>
-                            {favorites[festival.contentId] ?
-                                <div className="icon favorite-fill-icon"></div> :
-                                <div className="icon favorite-light-icon"></div>
+                            {favorites[festival.contentId] ? 
+                                <i className="fas fa-heart favorite-fill-icon" style={{ color: 'red' }}></i> : 
+                                <i className="far fa-heart favorite-light-icon" style={{ color: 'grey' }}></i>
                             }
                         </div>
                     </div>
