@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { fileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/apis';
+import { FileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/apis';
 import { useLocation } from 'react-router-dom';
 import PatchReviewRequestDto from 'apis/request/review/patch-review.request.dto';
 import './style.css'
@@ -84,7 +84,7 @@ export default function ReviewWritePage() {
             const formData = new FormData();
             formData.append('file', file);
 
-            const imageUrl = await fileUploadRequest(formData);
+            const imageUrl = await FileUploadRequest(formData);
             if (imageUrl) {
                 ImageList.push(imageUrl);
             }

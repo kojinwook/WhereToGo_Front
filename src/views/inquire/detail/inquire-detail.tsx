@@ -1,11 +1,4 @@
-import {
-  deleteAnswerRequest,
-  deleteQuestionRequest,
-  getAllAnswerRequest,
-  getQuestionRequest,
-  patchAnswerRequest,
-  postAnswerRequest,
-} from "apis/apis";
+import { DeleteAnswerRequest, DeleteQuestionRequest, GetAllAnswerRequest, GetQuestionRequest, PatchAnswerRequest, PostAnswerRequest } from "apis/apis";
 import { PostAnswerRequestDto } from "apis/request/answer";
 import { DeleteQuestionResponseDto } from "apis/response/question";
 import ResponseDto from "apis/response/response.dto";
@@ -53,7 +46,7 @@ const InquireDetail: React.FC = () => {
     const fetchAnswerDetails = async () => {
       if (!questionId) return;
       try {
-        const response = await getAllAnswerRequest(questionId);
+        const response = await GetAllAnswerRequest(questionId);
         console.log(response)
         if (!response) return;
         if (response.code !== "SU") return;
@@ -64,13 +57,12 @@ const InquireDetail: React.FC = () => {
       }
     };
     fetchAnswerDetails();
-  }, [questionId]);
-
+  }, [questionId, answerIdParam]);
 
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const response = await getQuestionRequest(questionId);
+        const response = await GetQuestionRequest(questionId);
         const { title, content, nickname, type, imageList } = response.question;
         if (!title || !content || !nickname || !type) {
           throw new Error("Invalid response structure");
@@ -126,7 +118,7 @@ const InquireDetail: React.FC = () => {
       alert("해당 문의가 없습니다.");
       return;
     }
-    deleteQuestionRequest(questionId).then(deleteQuestionResponse);
+    DeleteQuestionRequest(questionId).then(deleteQuestionResponse);
   };
 
   const deleteQuestionResponse = (
@@ -154,7 +146,7 @@ const InquireDetail: React.FC = () => {
 
   const uploadAnswerClickHandler = async () => {
     try {
-      const result = await postAnswerRequest({ nickname, content, questionId });
+      const result = await PostAnswerRequest({ nickname, content, questionId });
       if (!result) return;
       if (result && result.code === "SU") {
         alert("댓글이 업로드되었습니다.");
@@ -183,7 +175,7 @@ const InquireDetail: React.FC = () => {
 
   const deleteAnswerHandler = async (answerId: string | number) => {
     try {
-      const response = await deleteAnswerRequest(answerId);
+      const response = await DeleteAnswerRequest(answerId);
       if (response && response.code === "SU") {
         setAnswers(answers.filter((answer) => answer.answerId !== answerId));
         alert("댓글이 삭제되었습니다.");
@@ -208,7 +200,7 @@ const InquireDetail: React.FC = () => {
     console.log(editingAnswerId)
     if (!editingAnswerId || !questionId) return;
     try {
-      const response = await patchAnswerRequest(editingAnswerId, {
+      const response = await PatchAnswerRequest(editingAnswerId, {
         content: answerContent,
         nickname: nickname,
         questionId: questionId,
@@ -231,6 +223,26 @@ const InquireDetail: React.FC = () => {
       console.error("댓글 수정 중 오류가 발생했습니다:", error);
       alert("댓글 수정 중 오류가 발생했습니다.");
     }
+  };
+
+  // ISO 8601 포맷의 날짜를 포맷팅하는 함수
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    let period = hours < 12 ? '오전' : '오후';
+
+    // 시간 형식 수정: 12시를 넘어갈 때 오후로 표시하고 12를 기준으로 수정
+    if (hours === 0) {
+      hours = 12;
+    } else if (hours > 12) {
+      hours -= 12;
+    }
+
+    return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
   };
 
   if (loading) {
@@ -259,7 +271,6 @@ const InquireDetail: React.FC = () => {
             />
           ))}
         </div>
-
       </div>
       <div className="button-box">
         {question.nickname === nickname && (

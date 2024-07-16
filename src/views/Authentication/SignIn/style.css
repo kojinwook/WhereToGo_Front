@@ -57,6 +57,12 @@
     text-align: right;
 }
 
+.find-userId-button {
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: right;
+}
+
 .recovery-password-box {
     margin-top: 16px;
     border-top: 1px solid #eaeaea;
