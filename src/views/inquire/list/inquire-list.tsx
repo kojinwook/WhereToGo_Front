@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
 import './style.css';
+import Inquire from "../main/inquire-main";
 
 const InquireList: React.FC = () => {
   const navigator = useNavigate();
