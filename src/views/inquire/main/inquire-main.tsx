@@ -1,5 +1,4 @@
-import { GetAllQuestionRequest, GetAllNoticeRequest } from "apis/apis" // 공지사항 데이터 가져오기 위해 추가
-import './style.css'
+import { GetAllNoticeRequest } from "apis/apis"; // 공지사항 데이터 가져오기 위해 추가
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Notice from "types/interface/notice.interface"; // 공지사항 인터페이스 가져오기 위해 추가
