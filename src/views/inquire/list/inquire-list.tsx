@@ -1,8 +1,9 @@
+import { GetAllQuestionRequest } from "apis/apis";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
-import { GetAllQuestionRequest } from "apis/apis";
 import './style.css';
+import Inquire from "../main/inquire-main";
 
 const InquireList: React.FC = () => {
   const navigator = useNavigate();
@@ -58,6 +59,9 @@ const InquireList: React.FC = () => {
   const inquireListClickHandler = (questionId: number | string | undefined) => {
     navigator(`/inquire/detail/${questionId}`);
   };
+  const backPathClickHandler = () => {
+    navigator(`/inquire`);
+  }
 
   const getTypeText = (type: string) => {
     switch (type) {
@@ -76,31 +80,11 @@ const InquireList: React.FC = () => {
     }
   };
 
-console.log(posts)
-
- return (
+  return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
-      {loading ? (
-        <p>문의 목록이 없습니다.</p>
-      ) : (
-        <div className="posts">
-          {posts.map((post, index) => (
-            <div className="post" key={post.questionId}>
-              <p>{index + 1}</p>
-              <p>유형: {getTypeText(post.type)}</p>
-              <p onClick={() => inquireListClickHandler(post.questionId)}>
-                제목: {post.title}
-              </p>
-              <p>작성 일시: {formatDate(post.createDateTime)}</p>
-              <p>수정 일시: {formatDate(post.modifyDateTime)}</p>
-              {/* <p>답변: {post.answers && Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p> */}
-              <p>답변: {post.answered ? '유' : '무'}</p>
-
-            </div>
-          ))}
-        </div>
-      )}
+      <div onClick={backPathClickHandler}>뒤로가기</div>
+      <div className="inquire-count">{Inquire.length}건</div> {/* 공지사항 수 표시 */}
       <div className='inquire-header'>
         <div>NO</div>
         <div>문의 유형</div>
@@ -110,21 +94,21 @@ console.log(posts)
       </div>
       
       <div className="inquire-list-body">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <div className="posts">
-            {posts.map((post, index) => (
-              <div className="post" key={post.questionId}>
-                <p>{posts.length - index}</p>
-                <p>{getTypeText(post.type)}</p>
-                <p onClick={() =>inquireListClickHandler(post.questionId)}>{post.title}</p>
-                <p>{formatDate(post.createDateTime)}</p>
-                <p>{Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p>
-              </div>
-            ))}
-          </div>
-        )}
+      {loading ? (
+        <p>문의 목록이 없습니다.</p>
+      ) : (
+        <div className="posts">
+          {posts.map((post, index) => (
+            <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
+              <p>{index + 1}</p>
+              <p>{getTypeText(post.type)}</p>
+              <p>{post.title}</p>
+              <p>{post.modifyDateTime ? formatDate(post.modifyDateTime) : formatDate(post.createDateTime)}</p>
+              <p>{post.answered ? '유' : '무'}</p>
+            </div>
+          ))}
+        </div>
+      )}
       </div>
     </div>
   );

@@ -148,7 +148,7 @@ export default function InquireWrite() {
       </thead>
       <tbody>
         <div className="inquire-write-tr">
-          <th className="inquire-write-left">문의 ID</th>
+          <th className="inquire-write-left">문의 닉네임</th>
           <td className="inquire-write-right">{nickname}</td>
         </div>
         <div className="inquire-write-tr">

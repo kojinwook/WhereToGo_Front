@@ -14,21 +14,23 @@ import InquireDetail from 'views/inquire/detail/inquire-detail';
 import UserModifyProfile from 'views/user/modifyProfile/modifyProfile';
 import UserProfile from 'views/user/profile/profile';
 import './App.css';
+
+import { GetSignInUserRequest } from 'apis/apis';
+import { ResponseDto } from 'apis/response/response';
+import { GetSignInUserResponseDto } from 'apis/response/user';
+import { useCookies } from 'react-cookie';
+import useLoginUserStore from 'store/login-user.store';
+import User from 'types/interface/user.interface';
+import InquireList from 'views/inquire/list/inquire-list';
+import Inquire from 'views/inquire/main/inquire-main';
 import InquireUpdate from 'views/inquire/update/inquire-update';
 import InquireWrite from 'views/inquire/write/inquire-write';
 import NoticeDetail from 'views/notice/detail/notice-detail';
-import useLoginUserStore from 'store/login-user.store';
-import { useCookies } from 'react-cookie';
-import { GetSignInUserResponseDto } from 'apis/response/user';
-import { ResponseDto } from 'apis/response/response';
-import User from 'types/interface/user.interface';
-import { GetSignInUserRequest } from 'apis/apis';
-import Inquire from 'views/inquire/main/inquire-main';
-import InquireList from 'views/inquire/list/inquire-list';
-import MeetingDetail from 'views/meeting/detail/meeting-detail';
-import MeetingList from 'views/meeting/list/meeting-list';
+import NoticeMain from 'views/notice/main/notice-main';
 import NoticeUpdate from 'views/notice/update/notice-update';
 import NoticeWrite from 'views/notice/write/notice-write';
+import MeetingDetail from 'views/meeting/detail/meeting-detail';
+import MeetingList from 'views/meeting/list/meeting-list';
 import NoticeList from 'views/notice/main/notice-main';
 import MeetingWrite from 'views/meeting/write/meeting-write';
 import ChatRoom from 'views/chat/chat';
@@ -99,10 +101,6 @@ function App() {
         <Route path="detail/:questionId" element={<InquireDetail />} />
         <Route path="write" element={<InquireWrite />} />
         <Route path="update/:questionId" element={<InquireUpdate />} />
-        <Route path="main" element={<InquireList />} />
-        <Route path="detail" element={<InquireDetail />} />
-        <Route path="write" element={<InquireWrite />} />
-        <Route path="update" element={<InquireUpdate />} />
         <Route path="list" element={<InquireList />} />
       </Route>
 

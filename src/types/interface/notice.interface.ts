@@ -1,6 +1,6 @@
 
 export default interface Notice{
-    id: number | string;
+    id: number;
     noticeId : number | string;
     title : string;
     content : string;
