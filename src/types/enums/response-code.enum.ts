@@ -12,7 +12,8 @@ enum ResponseCode{
     SIGN_IN_FAIL = "SF",
     NOT_EXISTED_USER = "NU",
     DUPLICATE_ID = "DI",
-    FALSE_AGREEMENT = "FA"
+    FALSE_AGREEMENT = "FA",
+    ALREADY_REQUESTED = "AR"
 };
 
 export default ResponseCode;
