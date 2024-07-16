@@ -11,7 +11,7 @@ import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequest
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { GetMeetingListResponseDto, GetMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { GetMeetingListResponseDto, GetMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
@@ -20,7 +20,8 @@ import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.resp
 import { Images } from "types/interface/interface";
 import PostMeetingRequestDto from "./request/meeting/post-meeting.request.dto";
 import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
-import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto } from "./response/chat";
+import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto } from "./response/chat";
+import { PostJoinMeetingRequestDto } from "./request/meeting";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -65,6 +66,7 @@ const GET_CHAT_MESSAGE = (messageId: string) => `${API_DOMAIN}/chat/message/by-i
 const POST_CHAT_ROOM_URL = () => `${API_DOMAIN}/chat/rooms`;
 const GET_CHAT_ROOM_URL = (nickname: string) => `${API_DOMAIN}/chat/room?nickname=${nickname}`;
 const GET_CHAT_ROOM_LIST_URL = () => `${API_DOMAIN}/chat/rooms`;
+const GET_CHAT_ROOM_USERS_URL = (roomId: string) => `${API_DOMAIN}/chat/room/users?roomId=${roomId}`;
 
 const ADMIN_SIGN_IN_URL = () => `${API_DOMAIN}/auth/admin-sign-in`;
 const ADMIN_SIGN_UP_URL = () => `${API_DOMAIN}/auth/admin-sign-up`;
@@ -97,7 +99,7 @@ const DELETE_QUESTION_URL = (questionId: number | string | undefined) => `${API_
 
 const GET_ALL_NOTICE_URL = () => `${API_DOMAIN}/notice/list`;
 const POST_NOTICE_URL = () => `${API_DOMAIN}/notice`;
-const PATCH_NOTICE_URL =(noticeId : number |string | undefined) => `${API_DOMAIN}/notice/update/${noticeId}`;
+const PATCH_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/update/${noticeId}`;
 const GET_SEARCH_NOTICE_LIST_URL = (keyword: string) => `${API_DOMAIN}/notice/searchNoticeList?keyword=${keyword}`;
 const GET_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/detail/${noticeId}`;
 const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMAIN}/notice/delete/${noticeId}`;
@@ -105,6 +107,7 @@ const DELETE_NOTICE_URL = (noticeId: number | string | undefined) => `${API_DOMA
 const POST_MEETING_URL = () => `${API_DOMAIN}/meeting/write`;
 const GET_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/detail/${meetingId}`;
 const GET_MEETING_LIST_URL = () => `${API_DOMAIN}/meeting/list`;
+const POST_JOIN_MEETING_URL = () => `${API_DOMAIN}/meeting/join`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -218,7 +221,7 @@ export const PatchPasswordRequest = async (userId: string, requestBody: PatchPas
             return responseBody;
         })
         .catch(error => {
-            if(!error.response) return null;
+            if (!error.response) return null;
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
         });
@@ -568,39 +571,39 @@ export const PatchQuestionRequest = async (questionId: number | string | undefin
 }
 export const GetAllNoticeRequest = async () => {
     const result = await axios.get(GET_ALL_NOTICE_URL())
-    .then(response => {
-        const responseBody: GetAllNoticeResponseDto = response.data;
-        return responseBody;
+        .then(response => {
+            const responseBody: GetAllNoticeResponseDto = response.data;
+            return responseBody;
         })
         .catch(error => {
             if (!error.response) return null;
             const responseBody: ResponseDto = error.response.data;
             return responseBody;
-            })
-            return result;
+        })
+    return result;
 }
 export const GetNoticeRequest = async (noticeId: number | string | undefined) => {
     const result = await axios.get(GET_NOTICE_URL(noticeId))
-    .then(response => {
-        const responseBody: GetNoticeResponseDto = response.data;
-        return responseBody;
-    })
-    .catch(error => {
-        const responseBody  : ResponseDto = error.response;
-        return responseBody;
+        .then(response => {
+            const responseBody: GetNoticeResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response;
+            return responseBody;
         });
-        return result;
-    }
+    return result;
+}
 export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto) => {
-        const result = await axios.post(POST_NOTICE_URL(),requestBody)
+    const result = await axios.post(POST_NOTICE_URL(), requestBody)
         .then(response => {
             const responseBody: PostNoticeResponseDto = response.data;
             return responseBody;
         })
         .catch(error => {
-            const responseBody  : ResponseDto = error.response;
+            const responseBody: ResponseDto = error.response;
             return responseBody;
-    })
+        })
     return result;
 }
 export const GetSearchNoticeListRequest = async (keyword: string) => {
@@ -616,31 +619,31 @@ export const GetSearchNoticeListRequest = async (keyword: string) => {
     return result;
 };
 
-export const DeleteNoticeRequest = async (noticeId : number | string ) => {
+export const DeleteNoticeRequest = async (noticeId: number | string) => {
     const result = await axios.delete(DELETE_NOTICE_URL(noticeId))
-    .then(response => {
-        const responseBody: DeleteNoticeResponseDto = response.data;
-        return responseBody;
+        .then(response => {
+            const responseBody: DeleteNoticeResponseDto = response.data;
+            return responseBody;
         })
         .catch(error => {
-            if(!error.response) return null;
-            const responseBody : ResponseDto = error.data;
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.data;
             return responseBody;
-            })
-            return result;
-}
-export const PatchNoticeRequest = async (noticeId : number | string | undefined, requestBody : PatchNoticeRequestDto) => {
-    const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody)
-    .then(response => {
-        const responseBody : PatchNoticeResponseDto = response.data;
-        return responseBody;
-    })
-    .catch(error => {
-        if(!error.response) return null;
-        const responseBody : ResponseDto = error.response.data;
-        return responseBody;
         })
-        return result;
+    return result;
+}
+export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto) => {
+    const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody)
+        .then(response => {
+            const responseBody: PatchNoticeResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
 }
 
 
@@ -735,8 +738,21 @@ export const GetChatRoomListRequest = async () => {
     return result;
 };
 
+export const GetChatRoomUsersRequest = async (roomId: string, accessToken: string) => {
+    const result = await axios.get(GET_CHAT_ROOM_USERS_URL(roomId), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetChatRoomUsersResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
 export const PostMeetingRequest = async (requestBody: PostMeetingRequestDto, accessToken: string) => {
-    const result = await axios.post(POST_MEETING_URL(),requestBody, authorization(accessToken))
+    const result = await axios.post(POST_MEETING_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PostMeetingResponseDto = response.data;
             return responseBody;
@@ -773,4 +789,17 @@ export const GetMeetingListRequest = async () => {
         })
     return result;
 };
+
+export const PostJoinMeetingRequest = async (requestBody: PostJoinMeetingRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_JOIN_MEETING_URL(), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PostJoinMeetingResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result
+}
 

@@ -1,5 +1,4 @@
-import { GetAllQuestionRequest, GetAllNoticeRequest } from "apis/apis" // 공지사항 데이터 가져오기 위해 추가
-import './style.css'
+import { GetAllNoticeRequest } from "apis/apis"; // 공지사항 데이터 가져오기 위해 추가
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Notice from "types/interface/notice.interface"; // 공지사항 인터페이스 가져오기 위해 추가
@@ -42,13 +41,16 @@ const Inquire: React.FC = () => {
       window.location.href = 'https://open.kakao.com/o/sZv3FqCg';
     }
   const noticeListClickHandler = () => {
-    navigator(`/notice/main`);
+    navigator(`/notice`);
+  }
+  const backPathClickHandler = () => {
+    navigator(`/`);
   }
 
   return (
     <div className="inquire">
       <div className="inquire-main"> 1 : 1 문의 </div>
-
+        <div onClick={backPathClickHandler}>취소</div>
         <div className="inquire-enter">
           <div className="inquire-question">
             <div className="inquire-left">
@@ -57,14 +59,14 @@ const Inquire: React.FC = () => {
               </div>
               <div className="inquire-divider"></div>
               <div className="list-right">
-                  <button className="inquire-li" onClick={ListPathClickHandler}>1 : 1<br />문의 목록</button>
+                  <button className="inquire-li" onClick={ListPathClickHandler}>1 : 1<br />문의 내역</button>
               </div>
             </div>
             <div className="inquire-right">
               <div className="inquire-chat"> 오픈 채팅 </div>
               <button className="inquire-url" onClick={OpenChatClickHandler}> URL</button>
               <div className="inquire-number" > 고객센터 0000-0000 </div>
-              <div className="inquire-time"> 평일 09:00 ~ 18:00 (공휴일 휴무) </div>
+              <div className="inquire-time"> 평일 09:00 ~ 18:00 (주말 및 공휴일 휴무) </div>
               <div className="inquire-rest"> 점심시간 12:00 ~ 13:00 </div>
             </div>
           </div>
@@ -77,7 +79,6 @@ const Inquire: React.FC = () => {
             <div className="inquire-header">
               <span className="inquire-num">NO</span>
               <span className="inquire-title">제목</span>
-              <span className="inquire-type">유형</span>
               <span className="inquire-date">날짜</span>
             </div>
             {notices.length === 0 ? (

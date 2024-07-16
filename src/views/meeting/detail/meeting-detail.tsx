@@ -1,4 +1,4 @@
-import { GetMeetingRequest, PostChatRoomRequest } from 'apis/apis'
+import { GetMeetingRequest, PostChatRoomRequest, PostJoinMeetingRequest } from 'apis/apis'
 import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom'
@@ -60,6 +60,21 @@ export default function MeetingDetail() {
         }
     };
 
+    const handleJoinMeeting = async () => {
+        if (!meetingId || !nickname) return;
+        try {
+            const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.access_token);
+            console.log(response);
+            if (response.code === 'SU') {
+                alert('모임에 가입되었습니다.');
+            } else {
+                console.error('Failed to join meeting:', response.message);
+            }
+        } catch (error) {
+            console.error('Failed to join meeting:', error);
+        }
+    }
+
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
     return (
         <div>
@@ -71,6 +86,7 @@ export default function MeetingDetail() {
             <p>인원: {meeting.maxParticipants}</p>
             <p>대표닉네임: {meeting.userNickname}</p>
             <button onClick={handleCreateRoom}>1 : 1 채팅</button>
+            <button onClick={handleJoinMeeting}>모임 참가</button>
         </div>
     )
 }

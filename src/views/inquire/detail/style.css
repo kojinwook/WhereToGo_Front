@@ -1,151 +1,207 @@
 .question-detail-container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .title-content-container {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column; 
-    gap: 10px;
-    align-items: center;
-  justify-content: center;
-  text-align: center; 
-  }
-  
-  .nickname,
-  .type,
-  .title,
-  .content {
-    margin-bottom: 10px;
-    font-size: 16px;
-  }
-  
-  .images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .question-image {
-    width: 300px;
-    height: auto;
-    border-radius: 5px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .button-box {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 20px;
-  }
-  
-  .update-button,
-  .delete-button,
-  .add-answer-button,
-  .submit-answer-button,
-  .edit-answer-button,
-  .delete-answer-button,
-  .submit-edit-answer-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .update-button,
-  .submit-answer-button,
-  .submit-edit-answer-button {
-    background-color: #fff;
-    color: 000;
-    border: 1px solid #000;
-  }
-  
-  .delete-button,
-  .delete-answer-button {
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #000;
-  }
-  
-  .add-answer-button {
-    background-color: #fff;
-    color: 000;
-    margin-bottom: 20px;
-    border: 1px solid #000;
-  }
-  
-  .update-button:hover,
-  .submit-answer-button:hover,
-  .submit-edit-answer-button:hover {
-    background-color: #000;
-    color: #fff;
-  }
-  
-  .delete-button:hover,
-  .delete-answer-button:hover {
-    background-color: #000;
-    color: #fff;
-  }
-  
-  .add-answer-button:hover {
-    background-color: #000;
-    color: #fff;
-  }
-  
-  .answer-section {
-    margin-top: 20px;
-  }
-  
-  .answer-input-container,
-  .edit-answer-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .answer-input,
-  .edit-answer-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-  }
-  
-  .answer {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: #fff;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .answer-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 10px;
-  }
-  
-  .error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-  
-  .no-answer-message {
-    text-align: center;
-    font-size: 16px;
-    margin-top: 20px;
-    color: #888;
-  }
-  
+  width: 80%;
+  margin: 0 auto;
+  padding: 1.25rem;
+  font-family: Arial, sans-serif;
+}
+
+.nickname-datetime-container {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: .625rem 0;
+}
+
+.question-detail-back-button {
+  display: flex;
+  align-items: center;
+}
+
+.question-detail-back-button img{
+  width: 1.25rem;
+  height: auto;
+  border: none;
+  margin-right: .3125rem;
+  cursor: pointer;
+}
+
+.title-content-container {
+  border: .0625rem solid #ccc;
+  border-radius: .625rem;
+  padding: 1.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: .625rem;
+  align-items: center;
+  position: relative;
+}
+
+.more-options {
+  align-self: flex-end;
+  padding-right: .625rem;
+}
+
+.button-box {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 3.125rem;
+  right: .625rem;
+  background-color: white;
+  border: .0625rem solid #ccc;
+  border-radius: .625rem;
+  padding: .625rem;
+  z-index: 1000;
+}
+
+.more-button {
+  border: none;
+  cursor: pointer;
+  width: 1.25rem;
+}
+
+.nickname, .createDateTime {
+  margin: 0;
+}  
+
+.detail-row p{
+  display: flex;
+  align-items: center;
+  margin-bottom: .625rem;
+}
+
+.label {
+  min-width: 120px; /* 문의 유형, 제목, 내용에 대해 동일한 최소 너비 설정 */
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.value {
+  flex: 1; /* 가변 너비를 허용 */
+  word-wrap: break-word; /* 텍스트 줄바꿈 허용 */
+  padding-left: 5px; /* 구분 기호와 값 사이의 간격 추가 */
+}
+
+.images {
+display: flex;
+flex-wrap: wrap;
+gap: .625rem;
+margin-top: .625rem;
+}
+
+.question-image {
+width: 18.75rem;
+height: auto;
+border-radius: .3125rem;
+box-shadow: 0 .0625rem .3125rem rgba(0, 0, 0, 0.1);
+}
+
+.update-button,
+.delete-button {
+  padding: .625rem .9375rem;
+  border: none; /* 테두리 없앰 */
+  border-radius: .3125rem;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #fff; /* 기본 배경색 */
+  color: #000; /* 기본 텍스트 색상 */
+}
+
+.button-box {
+  display: flex;
+  gap: 0; /* 버튼 사이의 간격 없음 */
+}
+
+.button-box button {
+  margin: 0; /* 기본 마진 없앰 */
+}
+
+.button-box button:not(:last-child) {
+  border-bottom: .0625rem solid #ccc; /* 마지막 버튼을 제외하고 오른쪽 구분선 추가 */
+}
+
+.update-button:hover,
+.delete-button:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+
+.add-answer-button,
+.submit-answer-button,
+.edit-answer-button,
+.delete-answer-button,
+.submit-edit-answer-button {
+padding: .625rem .9375rem;
+border: none;
+border-radius: .3125rem;
+cursor: pointer;
+font-weight: bold;
+background-color: #fff; /* 기본 배경색 */
+color: #000; /* 기본 텍스트 색상 */
+border: .0625rem solid #000; /* 기본 테두리 */
+}
+
+.add-answer-button {
+margin-bottom: 1.25rem;
+}
+
+.add-answer-button:hover,
+.submit-answer-button:hover,
+.submit-edit-answer-button:hover,
+.update-button:hover,
+.delete-button:hover,
+.delete-answer-button:hover {
+background-color: #000;
+color: #fff;
+}
+
+.answer-section {
+margin-top: 1.25rem;
+}
+
+.answer-input-container,
+.edit-answer-container {
+display: flex;
+flex-direction: column;
+gap: .625rem;
+}
+
+.answer-input,
+.edit-answer-input {
+width: 100%;
+padding: .625rem;
+border: .0625rem solid #ccc;
+border-radius: .25rem;
+resize: vertical;
+}
+
+.answer {
+padding: .625rem;
+border: .0625rem solid #ddd;
+border-radius: .3125rem;
+margin-bottom: .625rem;
+background-color: #fff;
+box-shadow: 0 .0625rem .3125rem rgba(0, 0, 0, 0.1);
+}
+
+.answer-actions {
+display: flex;
+gap: .625rem;
+justify-content: flex-end;
+margin-top: .625rem;
+}
+
+.error-message {
+color: red;
+font-size: .875rem;
+margin-top: .625rem;
+}
+
+.no-answer-message {
+text-align: center;
+font-size: 1rem;
+margin-top: 1.25rem;
+color: #888;
+}
