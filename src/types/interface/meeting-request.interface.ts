@@ -8,6 +8,6 @@ export default interface MeetingRequest {
         nickname: string;
         email: string;
         phoneNumber: string;
-        // 기타 필드들
+        profileImage: string;
     };
 }

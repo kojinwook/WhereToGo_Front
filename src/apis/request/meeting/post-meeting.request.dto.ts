@@ -4,7 +4,9 @@ export default interface PostMeetingRequestDto {
     title: string,
     introduction: string,
     content: string,
-    imageUrl: Images | null,
+    imageList: Images[],
     nickname: string,
-    maxParticipants: number
+    maxParticipants: number,
+    tags: string[],
+    areas: string[],
 }
