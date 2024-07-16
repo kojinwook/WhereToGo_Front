@@ -3,6 +3,7 @@ import ChatRoom from "./chat-room.interface";
 import Favorite from "./favorite.interface";
 import Festival from "./festival.interface";
 import Images from "./image.interface";
+import MeetingRequest from "./meeting-request.interface";
 import Meeting from "./meeting.interface";
 import Notice from "./notice.interface";
 import Question from "./question.interface";
@@ -19,5 +20,6 @@ export type {
     Favorite,
     Images,
     Meeting,
-    ChatRoom
+    ChatRoom,
+    MeetingRequest
 }

@@ -4,5 +4,5 @@ import ResponseDto from "../response.dto";
 
 
 export default interface GetNoticeResponseDto extends ResponseDto, Notice {
-    notices : Notice[];
+    // notices : Notice[];
 }
