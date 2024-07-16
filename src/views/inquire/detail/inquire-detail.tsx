@@ -1,4 +1,3 @@
-
 import { DeleteAnswerRequest, DeleteQuestionRequest, GetAllAnswerRequest, GetQuestionRequest, PatchAnswerRequest, PostAnswerRequest } from "apis/apis";
 import { PostAnswerRequestDto } from "apis/request/answer";
 import { DeleteQuestionResponseDto } from "apis/response/question";
@@ -259,11 +258,9 @@ const InquireDetail: React.FC = () => {
     <div className="question-detail-container">
       <div className="nickname">{question.nickname}</div>
       <div className="title-content-container">
-      <div className="createDateTime">작성 일자 : {formatDate(question.createDateTime)}</div>
-        <div className="nickname">문의 닉네임 : {question.nickname}</div>
-        <div className="type">문의 유형 : {getTypeString(question.type)}</div>
-        <div className="title">제목 : {question.title}</div>
-        <div className="content">내용 : {question.content}</div>
+        <div className="type">문의 유형 | {getTypeString(question.type)}</div>
+        <div className="title">제목 | {question.title}</div>
+        <div className="content">내용 | {question.content}</div>
         <div className="images">
           {question.imageList.map((imageObject, index) => (
             <img

@@ -1,7 +1,7 @@
+import { GetAllQuestionRequest } from "apis/apis";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
-import { GetAllQuestionRequest } from "apis/apis";
 import './style.css';
 
 const InquireList: React.FC = () => {
@@ -81,7 +81,6 @@ console.log(posts)
  return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
-      
       <div className='inquire-header'>
         <div>NO</div>
         <div>문의 유형</div>
@@ -94,19 +93,18 @@ console.log(posts)
       {loading ? (
         <p>문의 목록이 없습니다.</p>
       ) : (
-        <div className="posts" >
+        <div className="posts">
           {posts.map((post, index) => (
-            <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
-              <p>{index + 1}</p>
-              <p>유형: {getTypeText(post.type)}</p>
-              <p>
-                제목: {post.title}
+            <div className="post" key={post.questionId}>
+              <p>{posts.length - index}</p>
+              <p>{getTypeText(post.type)}</p>
+              <p onClick={() => inquireListClickHandler(post.questionId)}>
+                {post.title}
               </p>
-              <p>작성 일시: {formatDate(post.createDateTime)}</p>
-              <p>수정 일시: {formatDate(post.modifyDateTime)}</p>
+              <p>{formatDate(post.createDateTime)}</p>
+              <p>{formatDate(post.modifyDateTime)}</p>
               {/* <p>답변: {post.answers && Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p> */}
-              <p>답변: {post.answered ? '유' : '무'}</p>
-
+              <p>{post.answered ? '유' : '무'}</p>
             </div>
           ))}
         </div>
