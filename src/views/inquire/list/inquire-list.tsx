@@ -81,15 +81,25 @@ console.log(posts)
  return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
+      
+      <div className='inquire-header'>
+        <div>NO</div>
+        <div>문의 유형</div>
+        <div>제목</div>
+        <div>날짜</div>
+        <div>답변 유/무</div>
+      </div>
+      
+      <div className="inquire-list-body">
       {loading ? (
         <p>문의 목록이 없습니다.</p>
       ) : (
-        <div className="posts">
+        <div className="posts" >
           {posts.map((post, index) => (
-            <div className="post" key={post.questionId}>
+            <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
               <p>{index + 1}</p>
               <p>유형: {getTypeText(post.type)}</p>
-              <p onClick={() => inquireListClickHandler(post.questionId)}>
+              <p>
                 제목: {post.title}
               </p>
               <p>작성 일시: {formatDate(post.createDateTime)}</p>
@@ -101,30 +111,6 @@ console.log(posts)
           ))}
         </div>
       )}
-      <div className='inquire-header'>
-        <div>NO</div>
-        <div>문의 유형</div>
-        <div>제목</div>
-        <div>날짜</div>
-        <div>답변 유/무</div>
-      </div>
-      
-      <div className="inquire-list-body">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <div className="posts">
-            {posts.map((post, index) => (
-              <div className="post" key={post.questionId}>
-                <p>{posts.length - index}</p>
-                <p>{getTypeText(post.type)}</p>
-                <p onClick={() =>inquireListClickHandler(post.questionId)}>{post.title}</p>
-                <p>{formatDate(post.createDateTime)}</p>
-                <p>{Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
