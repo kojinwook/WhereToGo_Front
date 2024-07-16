@@ -58,6 +58,9 @@ const InquireList: React.FC = () => {
   const inquireListClickHandler = (questionId: number | string | undefined) => {
     navigator(`/inquire/detail/${questionId}`);
   };
+  const backPathClickHandler = () => {
+    navigator(`/inquire`);
+  }
 
   const getTypeText = (type: string) => {
     switch (type) {
@@ -76,11 +79,10 @@ const InquireList: React.FC = () => {
     }
   };
 
-console.log(posts)
-
- return (
+  return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
+      <div onClick={backPathClickHandler}>뒤로가기</div>
       <div className='inquire-header'>
         <div>NO</div>
         <div>문의 유형</div>
@@ -95,15 +97,11 @@ console.log(posts)
       ) : (
         <div className="posts">
           {posts.map((post, index) => (
-            <div className="post" key={post.questionId}>
-              <p>{posts.length - index}</p>
+            <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
+              <p>{index + 1}</p>
               <p>{getTypeText(post.type)}</p>
-              <p onClick={() => inquireListClickHandler(post.questionId)}>
-                {post.title}
-              </p>
-              <p>{formatDate(post.createDateTime)}</p>
-              <p>{formatDate(post.modifyDateTime)}</p>
-              {/* <p>답변: {post.answers && Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p> */}
+              <p>{post.title}</p>
+              <p>{post.modifyDateTime ? formatDate(post.modifyDateTime) : formatDate(post.createDateTime)}</p>
               <p>{post.answered ? '유' : '무'}</p>
             </div>
           ))}
