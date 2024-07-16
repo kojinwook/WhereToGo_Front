@@ -1,8 +1,8 @@
+import { FileUploadRequest, GetQuestionRequest, PatchQuestionRequest } from 'apis/apis';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { FileUploadRequest, GetQuestionRequest, PatchQuestionRequest } from 'apis/apis';
 import { Images } from 'types/interface/interface';
 import Question from 'types/interface/question.interface';
 import './style.css';
@@ -184,10 +184,13 @@ const InquireUpdate: React.FC = () => {
       </thead>
       <tbody>
         <tr>
-          <th className="inquire-update-left">질문 ID</th>
-          <td className="inquire-update-right">{nickname}</td>
+          <div className='inquire-update-tr'>
+            <th className="inquire-update-left">질문 ID</th>
+            <td className="inquire-update-right">{nickname}</td>
+          </div>
         </tr>
         <tr>
+        <div className='inquire-update-tr'>
           <th className="inquire-update-left">질문 유형</th>
           <td className="inquire-update-right">
             <select value={type} onChange={handleTypeChange}>
@@ -199,8 +202,10 @@ const InquireUpdate: React.FC = () => {
             </select>
             {typeError && <div style={{ color: 'red' }}>{typeError}</div>}
           </td>
+          </div>
         </tr>
         <tr>
+        <div className='inquire-update-tr'>
           <th className="inquire-update-left">제목</th>
           <td className="inquire-update-right">
             <input
@@ -211,8 +216,10 @@ const InquireUpdate: React.FC = () => {
             />
             {titleError && <div style={{ color: 'red' }}>{titleError}</div>}
           </td>
+          </div>
         </tr>
         <tr>
+        <div className='inquire-update-tr'>
           <th className="inquire-update-left">내용</th>
           <td className="inquire-update-right">
             <textarea
@@ -222,8 +229,10 @@ const InquireUpdate: React.FC = () => {
             />
             {contentError && <div style={{ color: 'red' }}>{contentError}</div>}
           </td>
+          </div>
         </tr>
         <tr>
+        <div className='inquire-update-tr'>
           <th className="inquire-update-left">사진</th>
           <td className="inquire-update-right">
             <input type="file" multiple onChange={handleImageChange} />
@@ -246,6 +255,7 @@ const InquireUpdate: React.FC = () => {
             </div>
             {imageError && <div style={{ color: 'red' }}>{imageError}</div>}
           </td>
+          </div>
         </tr>
       </tbody>
       <tfoot>
