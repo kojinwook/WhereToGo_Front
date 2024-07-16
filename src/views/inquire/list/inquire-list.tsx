@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
 import './style.css';
+import Inquire from "../main/inquire-main";
 
 const InquireList: React.FC = () => {
   const navigator = useNavigate();
@@ -83,6 +84,7 @@ const InquireList: React.FC = () => {
     <div className="inquire-list">
       <h1>문의 리스트</h1>
       <div onClick={backPathClickHandler}>뒤로가기</div>
+      <div className="inquire-count">{Inquire.length}건</div> {/* 공지사항 수 표시 */}
       <div className='inquire-header'>
         <div>NO</div>
         <div>문의 유형</div>
