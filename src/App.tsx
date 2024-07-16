@@ -1,4 +1,3 @@
-import ChatRoom from 'components/chat/chat';
 import SaveFestivalList from 'components/festival/save-festival';
 import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -34,6 +33,7 @@ import MeetingDetail from 'views/meeting/detail/meeting-detail';
 import MeetingList from 'views/meeting/list/meeting-list';
 import NoticeList from 'views/notice/main/notice-main';
 import MeetingWrite from 'views/meeting/write/meeting-write';
+import ChatRoom from 'views/chat/chat';
 
 function App() {
 
@@ -71,8 +71,6 @@ function App() {
         <Route path="review/write" element={<ReviewWritePage />} />
         <Route path="review/update" element={<ReviewUpdatePage />} />
       </Route>
-
-      <Route path='chat' element={<ChatRoom />} />
 
       <Route path='/user'>
         <Route path="profile/:userId" element={<UserProfile />} />

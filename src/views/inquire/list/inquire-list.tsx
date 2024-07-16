@@ -105,7 +105,6 @@ console.log(posts)
               <p>{formatDate(post.modifyDateTime)}</p>
               {/* <p>답변: {post.answers && Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p> */}
               <p>{post.answered ? '유' : '무'}</p>
-
             </div>
           ))}
         </div>
