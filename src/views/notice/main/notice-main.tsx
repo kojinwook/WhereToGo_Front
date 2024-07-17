@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GetAllNoticeRequest } from 'apis/apis';
 import Notice from 'types/interface/notice.interface';
+import './style.css';
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();

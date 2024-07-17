@@ -11,7 +11,7 @@ import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequest
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { GetMeetingListResponseDto, GetMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { GetMeetingListResponseDto, GetMeetingResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
@@ -21,7 +21,8 @@ import { Images } from "types/interface/interface";
 import PostMeetingRequestDto from "./request/meeting/post-meeting.request.dto";
 import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto } from "./response/chat";
-import { PostJoinMeetingRequestDto } from "./request/meeting";
+import { PatchMeetingRequestDto, PostJoinMeetingRequestDto } from "./request/meeting";
+import GetMeetingRequestsResponseDto from "./response/meeting/get-meeting-requests.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -108,6 +109,9 @@ const POST_MEETING_URL = () => `${API_DOMAIN}/meeting/write`;
 const GET_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/detail/${meetingId}`;
 const GET_MEETING_LIST_URL = () => `${API_DOMAIN}/meeting/list`;
 const POST_JOIN_MEETING_URL = () => `${API_DOMAIN}/meeting/join`;
+const POST_RESPONSE_URL = (requestId: number, status: boolean) => `${API_DOMAIN}/meeting/response?requestId=${requestId}&status=${status}`;
+const GET_MEETING_REQUESTS_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/requests?meetingId=${meetingId}`;
+const PATCH_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/update/${meetingId}`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -802,4 +806,43 @@ export const PostJoinMeetingRequest = async (requestBody: PostJoinMeetingRequest
         })
     return result
 }
+
+export const PostRespondToJoinRequest = async (requestId: number, isAccepted: boolean, accessToken: string) => {
+    const result = await axios.post(POST_RESPONSE_URL(requestId, isAccepted), authorization(accessToken))
+        .then(response => {
+            const responseBody: ResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+}
+
+export const GetMeetingRequests = async (meetingId: string, accessToken: string) => {
+    const result = await axios.get(GET_MEETING_REQUESTS_URL(meetingId), authorization(accessToken))
+        .then(response => {
+            const responseBody: GetMeetingRequestsResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
+
+export const PatchMeetingRequest = async (meetingId: string, requestBody: PatchMeetingRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_MEETING_URL(meetingId), requestBody, authorization(accessToken))
+        .then(response => {
+            const responseBody: PatchMeetingResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+    return result;
+};
 

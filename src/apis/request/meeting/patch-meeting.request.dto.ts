@@ -1,11 +1,11 @@
 import { Images } from "types/interface/interface";
 
-export default interface PostMeetingRequestDto {
+export default interface PatchMeetingRequestDto {
     title: string,
     introduction: string,
     content: string,
-    imageList: Images[],
     nickname: string,
+    imageList: Images[],
     maxParticipants: number,
     tags: string[],
     areas: string[],

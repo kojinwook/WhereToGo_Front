@@ -32,6 +32,8 @@ const InquireDetail: React.FC = () => {
   const [answerContent, setAnswerContent] = useState("");
   const [editingAnswerId, setEditingAnswerId] = useState<string | null | number>(null);
 
+  const [showOptions, setShowOptions] = useState(false);
+
   useEffect(() => {
     const nickname = loginUser?.nickname;
     const role = loginUser?.role;
@@ -261,19 +263,53 @@ const InquireDetail: React.FC = () => {
   const backgoPathClickHandler = () => {
     navigator(`/inquire/list`);
   }
+  
+  const toggleOptions = () => {
+    setShowOptions((prev) => !prev);
+  };
 
   return (
     <div className="question-detail-container">
-      <div onClick={backgoPathClickHandler}>뒤로가기</div>
-      <div className="nickname">작성자 : {question.nickname}</div>
-      <div className="createDateTime">날짜 : {formatDate(question.createDateTime, question.modifyDateTime)}</div>
+      <div className="nickname-datetime-container">
+        <div className="question-detail-back-button">
+          <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backgoPathClickHandler} />
+          <p className="nickname">작성자 : {question.nickname}</p>
+        </div>
+        <p className="createDateTime">{formatDate(question.createDateTime, question.modifyDateTime)}</p>
+      </div>
+
       <div className="title-content-container">
-        <div className="type">문의 유형 : {getTypeString(question.type)}</div>
-        <div className="title">제목 : {question.title}</div>
-        <div className="content">내용 : {question.content}</div>
-        <div className="type">문의 유형 | {getTypeString(question.type)}</div>
-        <div className="title">제목 | {question.title}</div>
-        <div className="content">내용 | {question.content}</div>
+        <div className="more-options">
+          {(question.nickname === nickname || role === "ADMIN") && (
+            <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+          )}
+          {showOptions && (
+            <div className="button-box">
+              {question.nickname === nickname && (
+                <button
+                  className="update-button"
+                  onClick={() => updatePostClickHandler(question.questionId)}
+                >
+                  수정
+                </button>
+              )}
+              {(question.nickname === nickname || role === "ADMIN") && (
+                <button
+                  className="delete-button"
+                  onClick={() => deletePostClickHandler(question.questionId)}
+                >
+                  삭제
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="detail-row">
+          <p><span className="label">문의 유형 |</span> <span className="value">{getTypeString(question.type)}</span></p>
+          <p><span className="label">제목 |</span> <span className="value">{question.title}</span></p>
+          <p><span className="label">내용 |</span> <span className="value">{question.content}</span></p>
+        </div>
         <div className="images">
           {question.imageList.map((imageObject, index) => (
             <img
@@ -284,24 +320,6 @@ const InquireDetail: React.FC = () => {
             />
           ))}
         </div>
-      </div>
-      <div className="button-box">
-        {question.nickname === nickname && (
-          <button
-            className="update-button"
-            onClick={() => updatePostClickHandler(question.questionId)}
-          >
-            수정
-          </button>
-        )}
-        {(question.nickname === nickname || role === "ADMIN") && (
-          <button
-            className="delete-button"
-            onClick={() => deletePostClickHandler(question.questionId)}
-          >
-            삭제
-          </button>
-        )}
       </div>
 
       <div className="answer-section">

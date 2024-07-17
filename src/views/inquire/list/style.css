@@ -1,5 +1,4 @@
 .inquire-list {
-  padding: 20px;
   width: 80%;
   margin: auto;
   font-family: Arial, sans-serif;
@@ -8,6 +7,23 @@
 h1 {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #007bff;
+  font-size: 16px;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.back-button img {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+  border: none;
 }
 
 /* 목록 헤더 */
@@ -36,6 +52,7 @@ h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 
 .post:hover {

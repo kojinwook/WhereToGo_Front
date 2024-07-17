@@ -1,17 +1,22 @@
 /* ChatRoom.css */
 
+body, html {
+    height: 100%;
+    overflow: hidden; /* 스크롤을 없애고 한 화면에 꽉 채우기 */
+}
+
 .chat-room {
     display: flex;
+    justify-content: center;
     flex-direction: column;
     height: 100vh;
     background-color: #f0f0f0;
-    padding: 20px;
 }
 
 .messages {
     overflow-y: auto;
     flex: 1;
-    padding: 10px;
+    padding: 50px 200px;
     display: flex;
     flex-direction: column;
 }
@@ -22,14 +27,22 @@
     margin-bottom: 10px;
 }
 
+.sender {
+    justify-content: flex-end;
+}
+
 .message-content {
     max-width: 70%;
     padding: 10px;
     border-radius: 10px;
+    word-wrap: break-word; /* 긴 단어가 올바르게 줄바꿈되도록 */
+    overflow-wrap: break-word; /* 긴 단어가 올바르게 줄바꿈되도록 */
+    box-sizing: border-box; /* 패딩과 보더를 포함하여 크기를 계산 */
 }
 
 .message-container {
     display: flex;
+    width: 100%;
 }
 
 .message-content.receiver {
@@ -37,16 +50,23 @@
 }
 
 .sender .message-content {
-    background-color: #dcf8c6;
+    background-color: white;
     align-self: flex-end;
+    margin-left: auto; /* 오른쪽 정렬 */
+    word-wrap: break-word; /* 긴 단어가 올바르게 줄바꿈되도록 */
+    overflow-wrap: break-word; /* 긴 단어가 올바르게 줄바꿈되도록 */
 }
 
 .receiver .message-content {
     background-color: white;
+    margin-right: auto; /* 오른쪽 여백 없애기 */
+    word-wrap: break-word; /* 긴 단어가 올바르게 줄바꿈되도록 */
+    overflow-wrap: break-word; /* 긴 단어가 올바르게 줄바꿈되도록 */
 }
 
 .text {
     word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .timestamp {
@@ -71,31 +91,35 @@
 
 .input-container {
     display: flex;
-    align-items: center;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
     margin-top: 10px;
+    width: 100%; /* 전체 너비 사용 */
 }
 
-.input-box {
-    flex: 1;
-    height: 40px;
-    padding: 0 10px;
-    font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 20px;
+.chat-room input {
+    width: 80%; /* 적절한 너비 설정 */
+    height: 30px; /* 높이 조정 */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 0 0 0 30px; /* 여백 제거 */
 }
 
-.send-button {
-    height: 40px;
-    padding: 0 20px;
-    margin-left: 10px;
-    background-color: #4caf50;
+.chat-room button {
+    height: 50px; /* 버튼 높이 설정 */
+    width: 90px; /* 버튼 너비를 작게 설정 */
+    background-color: black;
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 5px; /* 모서리 둥글게 */
     cursor: pointer;
     outline: none;
+    margin-left: 10px; /* 간격 유지 */
 }
 
-.send-button:hover {
-    background-color: #45a049;
+.chat-room button:hover {
+    background-color: white;
+    color: black;
 }

@@ -3,15 +3,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    padding: 20px;
+    width: 80%;
+    margin: 0 auto;
 }
 /*카테고리*/
 .festival-list-filter-container{
-    /* width: 70%; */
     display: flex;
     justify-content: space-around;
-    padding: 10 0px;
+    padding: 10px 0;
     margin-bottom: 20px;
     border-bottom: 2px solid #ccc;
 }
@@ -42,24 +41,26 @@
 
 /* 개별 헤더 항목 */
 .festival-list-header > div {
-    flex: 1;
+    flex: 2;
     text-align: center;
+}
+
+.festival-list-header > div:last-child {
+    flex: 1; /* 찜 칸은 비율 줄이기 */
 }
 
 /* 축제 목록*/
 .festival-list-content-container {
-    width: 65%;
+    width: 85%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* padding: 20px; */
 }
 
 /*개별 축제 항목*/
 .festival-list-content {
     width: 100%;
-    border-radius: 10px;
-    padding: 20px;
+    padding: 20px 0;
     margin: 10px 0;
     transition: transform 0.3s;
     background-color: #E6E6E6;
@@ -79,26 +80,34 @@
     font-weight: bold;
     cursor: pointer;
     margin-bottom: 10px;
-    flex: 1;
+    flex: 2;
+    text-align: center;
 }
 
 .festival-list-content-title:hover {
     text-decoration: underline;
 }
 
-/* 주소와 날짜 */
+/* 주소와 날짜, 별점, 찜 */
 .festival-list-content div {
     margin-bottom: 0rem;
     display: flex;
     align-items: center;
+    justify-content: center;
     flex: 1;
+    text-align: center;
+}
+
+.festival-list-content div:last-child {
+    flex: 0.5; /* 찜 칸 비율 줄이기 */
 }
 
 /* 별점 */
 .festival-list-content-stars {
     display: flex;
     align-items: center;
-    flex: 1;
+    /* flex: 1; */
+    justify-content: center;
 }
 
 .fas.fa-star,
