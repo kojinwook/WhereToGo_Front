@@ -395,12 +395,13 @@ export const GetNoticeRequest = async (noticeId: number | string | undefined) =>
         .catch(errorHandler);
     return result;
 }
-export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto) => {
-    const result = await axios.post(POST_NOTICE_URL(), requestBody)
+export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_NOTICE_URL(), requestBody, authorization(accessToken))
         .then(responseHandler<PostNoticeResponseDto>)
         .catch(errorHandler);
     return result;
 }
+
 export const GetSearchNoticeListRequest = async (keyword: string) => {
     const result = await axios.get(GET_SEARCH_NOTICE_LIST_URL(keyword))
         .then(responseHandler<GetSearchNoticeListResponseDto>)
