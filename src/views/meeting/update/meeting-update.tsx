@@ -30,6 +30,7 @@ export default function MeetingUpdate() {
         const fetchMeeting = async () => {
             try {
                 const response = await GetMeetingRequest(meetingId);
+                if (!response) return;
                 const { title, introduction, content, userNickname, imageList, maxParticipants, tags, areas } = response.meeting;
                 if (response.code === 'SU') {
                     setTitle(title);
@@ -148,6 +149,7 @@ export default function MeetingUpdate() {
         }
         const requestBody = { title, introduction, content, nickname, imageList, maxParticipants, tags, areas };
         const response = await PatchMeetingRequest(meetingId, requestBody, cookies.accessToken);
+        if(!response) return;
         if (response.code === 'SU') {
             alert('성공적으로 수정되었습니다.');
             navigate(`/meeting/detail/${meetingId}`);

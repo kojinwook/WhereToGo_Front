@@ -15,7 +15,7 @@ const SaveFestivalList = () => {
         const saveFestivalList = async (date: string) => {
             try {
                 const response = await PostFestivalListRequest(date);
-                console.log(response);
+                if (!response) return;
                 if (response.code === 'SU') {
                     console.log("성공");
                     return;

@@ -32,6 +32,7 @@ export default function FestivalDetail() {
             try {
                 if (!contentId) return;
                 const festivalResponse = await GetFestivalRequest(contentId);
+                if(!festivalResponse) return;
                 if (festivalResponse.code === 'SU') {
                     const fetchedFestival = festivalResponse.festival;
                     fetchedFestival.startDate = formatDate(fetchedFestival.startDate);
@@ -41,6 +42,7 @@ export default function FestivalDetail() {
                     console.error('Failed to fetch festival:', festivalResponse.message);
                 }
                 const averageRateResponse = await GetAverageRateRequest(contentId);
+                if(!averageRateResponse) return;
                 if (averageRateResponse.code === 'SU') {
                     const { average } = averageRateResponse;
                     setAverageRate(average[contentId] || 0);
@@ -59,7 +61,7 @@ export default function FestivalDetail() {
         const fetchReviewList = async () => {
             if (!contentId) return;
             const response = await GetAllReviewRequest(contentId);
-            console.log(response);
+            if(!response) return;
             if (response.code === 'SU') {
                 setReviews(response.reviews);
             } else {

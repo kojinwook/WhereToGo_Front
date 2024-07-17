@@ -12,7 +12,7 @@ export default function MeetingList() {
   useEffect(() => {
     const getMeetingList = async () => {
       const response = await GetMeetingListRequest()
-      console.log(response)
+      if (!response) return
       setMeetingList(response.meetingList)
     }
     getMeetingList()
