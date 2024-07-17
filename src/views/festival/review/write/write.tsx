@@ -85,8 +85,6 @@ export default function ReviewWritePage() {
         }
     };
 
-    console.log(contentIds, rate, review, loginUser?.nickname, cookies.accessToken)
-
     return (
         <div className='container'>
             <p><strong>별점</strong></p>
