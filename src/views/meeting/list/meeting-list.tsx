@@ -1,7 +1,7 @@
-import { GetMeetingListRequest } from 'apis/apis'
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Meeting } from 'types/interface/interface'
+import { GetMeetingListRequest } from 'apis/apis';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Meeting } from 'types/interface/interface';
 import './style.css';
 
 export default function MeetingList() {
@@ -22,12 +22,13 @@ export default function MeetingList() {
     navigate(`/meeting/detail/${meetingId}`)
   }
 
-  if (!meetingList) return <div>
+  if (!meetingList)
+  <div>
     <div className='meeting-list-write-btn'>
       <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
     </div>
   </div>
-  console.log(meetingList)
+  
   return (
     <div className='meeting-list-container'>
       <h1>모임 리스트</h1>
