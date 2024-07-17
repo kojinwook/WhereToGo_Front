@@ -100,21 +100,23 @@ const FestivalAdmin: React.FC = () => {
     if (!festivalList) return null;
 
     return (
-        <div>
+        <div style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+            <div className="inquire-write-title">축제 수정_관리자</div>
             {festivalList.map((festival, index) => (
-                <div key={index} style={{ display: 'flex', marginBottom: '20px', border: '1px solid black', padding: '10px' }}>
-                    <div style={{ flex: '1' }}>
-                        <p><strong>Title:</strong> {festival.title}</p>
-                        <p><strong>Address:</strong> {festival.address1}</p>
-                        <p><strong>First Image:</strong> <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /></p>
-                        <p><strong>Start Date:</strong> {formatDate(festival.startDate)}</p>
-                        <p><strong>End Date:</strong> {formatDate(festival.endDate)}</p>
-                        <p><strong>Telephone:</strong> {festival.tel}</p>
-                        <p><strong>Content ID:</strong> {festival.contentId}</p>
-                        <p><strong>Homepage:</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
+                <div key={index}>
+                    <div className="festival-container" style={{ flex: '1' }} >
+                        <p><strong>축제명 :</strong> {festival.title}</p>
+                        <p><strong>주소 :</strong> {festival.address1}</p>
+                        <p><strong></strong> <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /></p>
+                        <p><strong>시작일 :</strong> {formatDate(festival.startDate)}</p>
+                        <p><strong>종료일 :</strong> {formatDate(festival.endDate)}</p>
+                        <p><strong>전화번호 :</strong> {festival.tel}</p>
+                        {/* <p><strong>Content ID:</strong> {festival.contentId}</p> */}
+                        <p><strong>홈페이지 :</strong> {festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
                         <p><strong>Tags:</strong> {Array.isArray(festival.tags) ? festival.tags.map(tag => `#${tag}`).join(' ') : `#${festival.tags}`}</p>
                         <div className='festival-admin-edit' onClick={() => handleEdit(festival)}>수정</div>
-                    </div>
+                        </div>
+                        <div style={{ display: 'flex', margin: '40px', border: '1px solid #ccc'}}></div>
                 </div>
             ))}
             {modalOpen && (
@@ -149,8 +151,8 @@ const FestivalAdmin: React.FC = () => {
                                 ))}
                             </div>
                             <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                                <button type="submit">Save</button>
-                                <button type="button" onClick={handleCancelEdit}>Cancel</button>
+                                <button type="submit">저장</button>
+                                <button type="button" onClick={handleCancelEdit}>취소</button>
                             </div>
                         </form>
                     </div>
