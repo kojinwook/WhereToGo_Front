@@ -219,7 +219,7 @@ const ChatRoom: React.FC = () => {
     console.log(senderNickname, nickname);
     return (
         <div className="chat-room">
-            <div>{nickname}</div>
+            <div>{senderNickname}</div>
             <div className="messages">
                 {messages.map((msg, index) => (
                     <div key={index} className={`message ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
@@ -241,17 +241,20 @@ const ChatRoom: React.FC = () => {
                     </div>
                 ))}
             </div>
-            <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
+            <div className="input-container">
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                         sendMessage();
                     }
-                }}
-            />
-            <button onClick={sendMessage}>Send</button>
+                }
+            }
+    />
+    <button onClick={sendMessage}>Send</button>
+</div>
         </div>
     );
 }
