@@ -59,7 +59,7 @@ export default function MeetingDetail() {
         const getMeeting = async () => {
             try {
                 const response = await GetMeetingRequest(meetingId)
-                console.log(response)
+                if (!response) return;
                 setMeeting(response.meeting)
             }
             catch (error) {
@@ -86,13 +86,12 @@ export default function MeetingDetail() {
         return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
     };
 
-
     const handleCreateRoom = async () => {
         const meetingTitle = meeting?.title;
         if (!roomName || !nickname || !creatorNickname || !meetingTitle) return;
         try {
             const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorNickname, meetingTitle }, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             if (response.code === 'SU') {
                 const roomId = response.roomId;
                 if (roomId) {
@@ -112,6 +111,7 @@ export default function MeetingDetail() {
         if (!meetingId || !nickname) return;
         try {
             const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.accessToken);
+            if (!response) return;
             const { code } = response;
             if (code === 'SU') {
                 alert('모임에 가입 신청이 완료되었습니다.');
@@ -131,7 +131,7 @@ export default function MeetingDetail() {
         try {
             console.log(requestId, status);
             const response = await PostRespondToJoinRequest(requestId, status, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             const { code } = response;
             if (code === 'SU') {
                 alert('요청이 처리되었습니다.');
@@ -149,7 +149,7 @@ export default function MeetingDetail() {
         const fetchRequests = async () => {
             try {
                 const response = await GetMeetingRequests(meetingId, cookies.accessToken);
-                console.log(response);
+                if (!response) return;
                 setRequests(response.requests);
                 setProfileImage(response.requests[0].user.profileImage);
             } catch (error) {

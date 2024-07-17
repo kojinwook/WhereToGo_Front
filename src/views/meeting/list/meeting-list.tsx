@@ -9,23 +9,26 @@ export default function MeetingList() {
   const [meetingList, setMeetingList] = useState<Meeting[]>([])
   const navigate = useNavigate()
 
-    useEffect(() => {
-        const getMeetingList = async () => {
-            const response = await GetMeetingListRequest()
-            console.log(response)
-            setMeetingList(response.meetingList)
-        }
-        getMeetingList()
-    }, [])
-
-    const meetingTitleClickHandler = (meetingId: number) => {
-        navigate(`/meeting/detail/${meetingId}`)
+  useEffect(() => {
+    const getMeetingList = async () => {
+      const response = await GetMeetingListRequest()
+      if (!response) return
+      setMeetingList(response.meetingList)
     }
+    getMeetingList()
+  }, [])
 
-    if(!meetingList)
-    return <div><div className='meeting-list-write-btn'>
-    <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
-  </div></div>
+  const meetingTitleClickHandler = (meetingId: number) => {
+    navigate(`/meeting/detail/${meetingId}`)
+  }
+
+  if (!meetingList)
+  <div>
+    <div className='meeting-list-write-btn'>
+      <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
+    </div>
+  </div>
+  
   return (
     <div className='meeting-list-container'>
       <h1>모임 리스트</h1>
@@ -34,9 +37,14 @@ export default function MeetingList() {
       </div>
       <ul>
         {meetingList.map((meeting) => (
-          <React.Fragment key={meeting.meetingId}>
-            <li onClick={() => meetingTitleClickHandler(meeting.meetingId)}>{meeting.title}</li>
-          </React.Fragment>
+          <div>
+            <li key={meeting.meetingId} onClick={() => meetingTitleClickHandler(meeting.meetingId)}>{meeting.title}</li>
+            <div className='meeting-images'>
+              {meeting.imageList.map((image, index) => (
+                <img key={index} src={image.image} alt={`Meeting Image ${index + 1}`} className='meeting-image' />
+              ))}
+            </div>
+          </div>
         ))}
       </ul>
     </div>

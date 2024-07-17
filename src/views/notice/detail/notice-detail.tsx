@@ -1,7 +1,8 @@
 import React from 'react'
 
-export default function NoticeDetail() {
-  return (
-    <div>NoticeDetail</div>
-  )
+const NoticeWrite : React.FC = () => {
+return( 
+  <div>NoticeWrite</div>
+)
 }
+export default NoticeWrite;

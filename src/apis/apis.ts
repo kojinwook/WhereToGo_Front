@@ -9,10 +9,10 @@ import { ResponseDto } from "./response/response";
 import Festival from "types/interface/festival.interface";
 import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto } from "./response/user";
+import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { GetMeetingListResponseDto, GetMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
-import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto } from "./response/review/review";
+import { GetMeetingListResponseDto, GetMeetingResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingBoardResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
@@ -20,9 +20,11 @@ import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.resp
 import { Images } from "types/interface/interface";
 import PostMeetingRequestDto from "./request/meeting/post-meeting.request.dto";
 import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
-import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto } from "./response/chat";
-import { PostJoinMeetingRequestDto } from "./request/meeting";
+import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
+import { PatchMeetingRequestDto, PostJoinMeetingRequestDto } from "./request/meeting";
 import GetMeetingRequestsResponseDto from "./response/meeting/get-meeting-requests.response.dto";
+import PostMeetingBoardRequestDto from "./request/meeting/post-meeting-board.request.dto";
+import PutFavoriteResponseDto from "./response/festival/put-favorite.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -111,6 +113,8 @@ const GET_MEETING_LIST_URL = () => `${API_DOMAIN}/meeting/list`;
 const POST_JOIN_MEETING_URL = () => `${API_DOMAIN}/meeting/join`;
 const POST_RESPONSE_URL = (requestId: number, status: boolean) => `${API_DOMAIN}/meeting/response?requestId=${requestId}&status=${status}`;
 const GET_MEETING_REQUESTS_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/requests?meetingId=${meetingId}`;
+const PATCH_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/update/${meetingId}`;
+const POST_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/${meetingId}`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -121,15 +125,8 @@ export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => 
 
 export const AdminSignUpRequest = async (requestBody: AdminSignUpRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_UP_URL(), requestBody)
-        .then(response => {
-            const responseBody: AdminSignUpResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<AdminSignUpResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
@@ -177,294 +174,153 @@ export const CheckCertificationRequest = async (requestBody: CheckCertificationR
 
 export const GetSignInUserRequest = async (accessToken: string) => {
     const result = await axios.get(GET_SIGN_IN_USER_URL(), authorization(accessToken))
-        .then(response => {
-            const responseBody: GetSignInUserResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetSignInUserResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PatchNicknameRequest = async (requestBody: PatchNicknameRequestDto, accessToken: string) => {
     const result = await axios.patch(PATCH_NICKNAME_URL(), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: PatchNicknameResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PatchNicknameResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetUserRequest = async (userId: string, accessToken: string) => {
     const result = await axios.get(GET_USER_URL(userId), authorization(accessToken))
-        .then(response => {
-            const responseBody: GetUserResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        });
+        .then(responseHandler<GetUserResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PatchPasswordRequest = async (userId: string, requestBody: PatchPasswordRequestDto, accessToken: string) => {
     const result = await axios.patch(PATCH_PASSWORD_URL(userId), requestBody, authorization(accessToken))
-        .then(Response => {
-            const responseBody: ResponseDto = Response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        });
+        .then(responseHandler<PatchPasswordResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const WithdrawUserRequest = async (userId: string, requestBody: WithdrawalUserRequestDto) => {
     const config = { data: requestBody };
     const result = await axios.delete(WIDTHDRAWAL_USER_URL(userId), config)
-        .then(response => {
-            const responseBody: ResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        });
+        .then(responseHandler<WithdrawalUserResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryRequestDto): Promise<ResponseBody<PasswordRecoveryResponseDto>> => {
-    try {
-        const response = await axios.post(RECOVER_PASSWORD_URL(), requestBody);
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            return error.response.data;
-        }
-        throw error;
-    }
+    const result = await axios.post(RECOVER_PASSWORD_URL(), requestBody)
+        .then(responseHandler<PasswordRecoveryResponseDto>)
+        .catch(errorHandler);
+    return result;
 };
 
 export const FindUserIdRequest = async (requestBody: FindUserIdRequestDto): Promise<ResponseBody<FindUserIdResponseDto>> => {
-    try {
-        const response = await axios.post(FIND_USERID_URL(), requestBody);
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            return error.response.data;
-        }
-        throw error;
-    }
+    const result = await axios.post(FIND_USERID_URL(), requestBody)
+        .then(responseHandler<FindUserIdResponseDto>)
+        .catch(errorHandler);
+    return result;
 };
 
 export const PostFestivalListRequest = async (date: string) => {
     const result = await axios.post(POST_FESTIVAL_LIST_URL(date), null)
-        .then(response => {
-            const responseBody: PostFestivalResponseDto = response.data;
-            console.log(responseBody);
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostFestivalResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetFestivalListRequest = async () => {
     const result = await axios.get(GET_FESTIVAL_LIST_URL())
-        .then(response => {
-            const responseBody: GetFestivalListResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetFestivalListResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetSearchFestivalListRequest = async (areaCode: string) => {
     const result = await axios.get(GET_SEARCH_FESTIVAL_LIST_URL(areaCode))
-        .then(response => {
-            const responseBody: GetSearchFestivalListResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetSearchFestivalListResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetFestivalRequest = async (contentId: string) => {
     const result = await axios.get(GET_FESTIVAL_URL(contentId))
-        .then(response => {
-            const responseBody: GetFestivalResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetFestivalResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PatchFestivalRequest = async (requestBody: Festival, accessToken: string) => {
     const result = await axios.patch(PATCH_FESTIVAL_URL(requestBody.contentId), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: PatchFestivalResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PatchFestivalResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PutFavoriteRequest = async (contentId: string, nickname: string, accessToken: string) => {
     const result = await axios.put(PUT_FAVORITE_URL(contentId, nickname), authorization(accessToken))
-        .then(response => {
-            const responseBody: ResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PutFavoriteResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetAllFavoriteRequest = async (nickname: string, accessToken: string) => {
     const result = await axios.get(GET_ALL_FAVORITE_URL(nickname), authorization(accessToken))
-        .then(response => {
-            const responseBody: GetAllFavoriteResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetAllFavoriteResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetAllAnswerRequest = async (questionId: number | string) => {
     const result = await axios.get(GET_ALL_ANSWER_URL(questionId))
-        .then(response => {
-            const responseBody: GetAllAnswerResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetAllAnswerResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 export const GetAnswerRequest = async (questionId: number | string) => {
     const result = await axios.get(GET_ANSWER_URL(questionId))
-        .then(response => {
-            const responseBody: GetAnswerResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        });
+        .then(responseHandler<GetAnswerResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 export const PostReviewRequest = async (contentId: number, rate: number, review: string, imageList: Images[], nickname: string, accessToken: string) => {
     const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList, nickname }, authorization(accessToken))
-        .then(response => {
-            const responseBody: ResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        });
+        .then(responseHandler<PostReviewResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PostAnswerRequest = async (requestBody: PostAnswerRequestDto) => {
-    console.log(requestBody)
     const result = await axios.post(POST_ANSWER_URL(), requestBody)
-        .then(response => {
-            const responseBody: PostAnswerResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostAnswerResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const GetAverageRateRequest = async (contentId: string) => {
     const result = await axios.get(GET_RATE_AVERAGE_RATE_URL(contentId))
-        .then(response => {
-            const responseBody: GetAverageRateResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetAverageRateResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const DeleteAnswerRequest = async (answerId: number | string) => {
     const result = await axios.delete(DELETE_ANSWER_URL(answerId))
-        .then(response => {
-            const responseBody: DeleteAnswerResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.data;
-            return responseBody;
-        });
+        .then(responseHandler<DeleteAnswerResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 export const PatchAnswerRequest = async (answerId: number | string, requestBody: PatchAnswerRequestDto) => {
     const result = await axios.patch(PATCH_ANSWER_URL(answerId), requestBody)
-        .then(response => {
-            const responseBody: PatchAnswerResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PatchAnswerResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const GetAllQuestionRequest = async () => {
     const result = await axios.get(GET_ALL_QUESTION_URL())
-        .then(response => {
-            const responseBody: GetAllQuestionResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetAllQuestionResponseDto>)
+        .catch(errorHandler);
     return result;
 
 };
@@ -483,352 +339,199 @@ export const FileUploadRequest = async (data: FormData) => {
 
 export const GetReviewRequest = async (reviewId: string | number) => {
     const result = await axios.get(GET_REVIEW_URL(reviewId))
-        .then(response => {
-            const responseBody: GetReviewResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetReviewResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const GetQuestionRequest = async (questionId: number | string | undefined) => {
     const result = await axios.get(GET_QUESTION_URL(questionId))
-        .then(response => {
-            const responseBody: GetQuestionResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response;
-            return responseBody;
-        });
+        .then(responseHandler<GetQuestionResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const PostQuestionRequest = async (requestBody: PostQuestionRequestDto, accessToken: string) => {
     const result = await axios.post(POST_QUESTION_URL(), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: PostQuestionResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostQuestionResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
-
 export const PatchReviewRequest = async (reviewId: string | number, requestBody: PatchReviewRequestDto, accessToken: string) => {
     const result = await axios.patch(PATCH_REVIEW_URL(reviewId), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: ResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PatchReviewResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetReviewListRequest = async (userId: string | number) => {
     const result = await axios.get(GET_REVIEW_LIST_URL(userId))
-        .then(response => {
-            const responseBody: GetReviewListResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetReviewListResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 export const DeleteQuestionRequest = async (questionId: number | string) => {
     const result = await axios.delete(DELETE_QUESTION_URL(questionId))
-        .then(response => {
-            const responseBody: DeleteQuestionResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.data;
-            return responseBody;
-        });
+        .then(responseHandler<DeleteQuestionResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 export const PatchQuestionRequest = async (questionId: number | string | undefined, requestBody: PatchQuestionRequestDto, accessToken: string) => {
     const result = await axios.patch(PATCH_QUESTION_URL(questionId), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: PatchQuestionResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PatchQuestionResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 export const GetAllNoticeRequest = async () => {
     const result = await axios.get(GET_ALL_NOTICE_URL())
-        .then(response => {
-            const responseBody: GetAllNoticeResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetAllNoticeResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 export const GetNoticeRequest = async (noticeId: number | string | undefined) => {
     const result = await axios.get(GET_NOTICE_URL(noticeId))
-        .then(response => {
-            const responseBody: GetNoticeResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response;
-            return responseBody;
-        });
+        .then(responseHandler<GetNoticeResponseDto>)
+        .catch(errorHandler);
     return result;
 }
-export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto) => {
-    const result = await axios.post(POST_NOTICE_URL(), requestBody)
-        .then(response => {
-            const responseBody: PostNoticeResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response;
-            return responseBody;
-        })
+export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_NOTICE_URL(), requestBody, authorization(accessToken))
+        .then(responseHandler<PostNoticeResponseDto>)
+        .catch(errorHandler);
     return result;
 }
+
 export const GetSearchNoticeListRequest = async (keyword: string) => {
     const result = await axios.get(GET_SEARCH_NOTICE_LIST_URL(keyword))
-        .then(response => {
-            const responseBody: GetSearchNoticeListResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetSearchNoticeListResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const DeleteNoticeRequest = async (noticeId: number | string) => {
     const result = await axios.delete(DELETE_NOTICE_URL(noticeId))
-        .then(response => {
-            const responseBody: DeleteNoticeResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.data;
-            return responseBody;
-        })
-    return result;
-}
-export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto) => {
-    const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody)
-        .then(response => {
-            const responseBody: PatchNoticeResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            if (!error.response) return null;
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<DeleteNoticeResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
+export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto) => {
+    const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody)
+        .then(responseHandler<PatchNoticeResponseDto>)
+        .catch(errorHandler);
+    return result;
+}
 
 export const GetAllReviewRequest = async (contentId: string | number) => {
     const result = await axios.get(GET_ALL_REVIEW_URL(contentId))
-        .then(response => {
-            const responseBody: GetAllReviewResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetAllReviewResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const PostChatMessageRequest = async (requestBody: PostChatMessageRequestDto, accessToken: string) => {
     const result = await axios.post(POST_CHAT_MESSAGE_URL(), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: ResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostChatMessageResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetChatMessageListRequest = async (roomId: string) => {
     const result = await axios.get(GET_CHAT_MESSAGE_LIST_URL(roomId))
-        .then(response => {
-            const responseBody: GetChatMessageListResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetChatMessageListResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetChatMessageRequest = async (messageId: string) => {
     const result = await axios.get(GET_CHAT_MESSAGE(messageId))
-        .then(response => {
-            const responseBody: GetChatMessageResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetChatMessageResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PostChatRoomRequest = async (requestBody: PostChatRoomRequestDto, accessToken: string) => {
     const result = await axios.post(POST_CHAT_ROOM_URL(), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: PostChatRoomResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostChatRoomResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetChatRoomRequest = async (nickname: string, accessToken: string) => {
     const result = await axios.get(GET_CHAT_ROOM_URL(nickname), authorization(accessToken))
-        .then(response => {
-            const responseBody: GetChatRoomResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetChatRoomResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetChatRoomListRequest = async () => {
     const result = await axios.get(GET_CHAT_ROOM_LIST_URL())
-        .then(response => {
-            const responseBody: GetChatRoomListResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetChatRoomListResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetChatRoomUsersRequest = async (roomId: string, accessToken: string) => {
     const result = await axios.get(GET_CHAT_ROOM_USERS_URL(roomId), authorization(accessToken))
-        .then(response => {
-            const responseBody: GetChatRoomUsersResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetChatRoomUsersResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PostMeetingRequest = async (requestBody: PostMeetingRequestDto, accessToken: string) => {
     const result = await axios.post(POST_MEETING_URL(), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: PostMeetingResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostMeetingResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const GetMeetingRequest = async (meetingId: number | string) => {
     const result = await axios.get(GET_MEETING_URL(meetingId))
-        .then(response => {
-            const responseBody: GetMeetingResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetMeetingResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const GetMeetingListRequest = async () => {
     const result = await axios.get(GET_MEETING_LIST_URL())
-        .then(response => {
-            const responseBody: GetMeetingListResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetMeetingListResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
 export const PostJoinMeetingRequest = async (requestBody: PostJoinMeetingRequestDto, accessToken: string) => {
     const result = await axios.post(POST_JOIN_MEETING_URL(), requestBody, authorization(accessToken))
-        .then(response => {
-            const responseBody: PostJoinMeetingResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostJoinMeetingResponseDto>)
+        .catch(errorHandler);
     return result
 }
 
 export const PostRespondToJoinRequest = async (requestId: number, isAccepted: boolean, accessToken: string) => {
     const result = await axios.post(POST_RESPONSE_URL(requestId, isAccepted), authorization(accessToken))
-        .then(response => {
-            const responseBody: ResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<PostJoinMeetingResponseDto>)
+        .catch(errorHandler);
     return result;
 }
 
 export const GetMeetingRequests = async (meetingId: string, accessToken: string) => {
     const result = await axios.get(GET_MEETING_REQUESTS_URL(meetingId), authorization(accessToken))
-        .then(response => {
-            const responseBody: GetMeetingRequestsResponseDto = response.data;
-            return responseBody;
-        })
-        .catch(error => {
-            const responseBody: ResponseDto = error.response.data;
-            return responseBody;
-        })
+        .then(responseHandler<GetMeetingRequestsResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const PatchMeetingRequest = async (meetingId: string, requestBody: PatchMeetingRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_MEETING_URL(meetingId), requestBody, authorization(accessToken))
+        .then(responseHandler<PatchMeetingResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const PostMeetingBoardRequest = async (meetingId: string, requestBody: PostMeetingBoardRequestDto, accessToken: string) => {
+    const result = await axios.post(POST_MEETING_BOARD_URL(meetingId), requestBody, authorization(accessToken))
+        .then(responseHandler<PostMeetingBoardResponseDto>)
+        .catch(errorHandler);
     return result;
 };
 
