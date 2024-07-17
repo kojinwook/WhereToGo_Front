@@ -594,8 +594,8 @@ export const GetNoticeRequest = async (noticeId: number | string | undefined) =>
         });
     return result;
 }
-export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto) => {
-    const result = await axios.post(POST_NOTICE_URL(), requestBody)
+export const PostNoticeRequest = async (requestBody: PostNoticeRequestDto, accessToken : string) => {
+    const result = await axios.post(POST_NOTICE_URL(), requestBody, authorization(accessToken))
         .then(response => {
             const responseBody: PostNoticeResponseDto = response.data;
             return responseBody;

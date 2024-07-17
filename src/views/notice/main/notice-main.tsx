@@ -111,7 +111,7 @@ const NoticeList: React.FC = () => {
             ) : (
               filteredPosts.map((notice) => (
                 <tr key={notice.id} onClick={() => noticeClickHandler(notice.id)}>
-                  <td>{notice.id}</td>
+                  <td>{notice.noticeId}</td>
                   <td>{notice.title}</td>
                   <td>{formatDate(notice.createDateTime)}</td>
                 </tr>
