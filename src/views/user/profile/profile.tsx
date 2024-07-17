@@ -119,7 +119,7 @@ export default function UserProfile() {
         }
         try {
             const response = await GetAllFavoriteRequest(nickname, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             if (response.code === 'SU') {
                 setFavorites(response.favoriteList);
             } else {
@@ -139,7 +139,7 @@ export default function UserProfile() {
         }
         try {
             const response = await GetChatRoomRequest(nickname, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             if (response.code === 'SU') {
                 setChatRooms(response.chatRoomList);
             } else {

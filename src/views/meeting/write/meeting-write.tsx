@@ -85,6 +85,7 @@ export default function MeetingWrite() {
     try {
       const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, areas };
       const response = await PostMeetingRequest(requestBody, cookies.accessToken);
+      if (!response) return;
       if (response.code === 'SU') {
         alert('모임이 성공적으로 등록되었습니다.');
         navigate('/meeting/list');

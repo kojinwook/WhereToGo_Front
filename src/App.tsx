@@ -35,6 +35,7 @@ import NoticeList from 'views/notice/main/notice-main';
 import MeetingWrite from 'views/meeting/write/meeting-write';
 import ChatRoom from 'views/chat/chat';
 import MeetingUpdate from 'views/meeting/update/meeting-update';
+import BoardWrite from 'views/meeting/board/write/board-write';
 
 function App() {
 
@@ -91,6 +92,7 @@ function App() {
         <Route path='write' element={<MeetingWrite />} />
         <Route path='detail/:meetingId' element={<MeetingDetail />} />
         <Route path='update/:meetingId' element={<MeetingUpdate />} />
+        <Route path='board/write/:meetingId' element={<BoardWrite />} />
       </Route>
 
       <Route path='/authentication'>
