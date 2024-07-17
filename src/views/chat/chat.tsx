@@ -317,6 +317,20 @@ const ChatRoom: React.FC = () => {
                     </div>
                 ))}
             </div>
+            <div className="input-container">
+                <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                }
+            }
+    />
+    <button onClick={sendMessage}>Send</button>
+</div>
         </div>
     );
 };
