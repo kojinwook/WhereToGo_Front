@@ -25,6 +25,7 @@ export default function ReviewWritePage() {
         const fetchReview = async () => {
             setLoading(true);
             const response = await GetReviewRequest(reviewIds);
+            if(!response) return;
             if (response.code === 'SU') {
                 const reviewData = response.review;
                 setRate(reviewData.rate);
@@ -92,6 +93,7 @@ export default function ReviewWritePage() {
 
         const requestBody = { imageList: ImageList, review, rate } as unknown as PatchReviewRequestDto;
         const response = await PatchReviewRequest(reviewIds, requestBody, cookies.accessToken);
+        if (!response) return;
         if (response.code === 'SU') {
             alert('리뷰가 성공적으로 수정되었습니다.');
             // 리뷰 수정 성공 후 추가적으로 필요한 처리

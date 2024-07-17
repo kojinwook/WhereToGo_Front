@@ -11,7 +11,6 @@ export default function FestivalPage() {
     const { loginUser } = useLoginUserStore();
     const [searchFestivalList, setSearchFestivalList] = useState<Festival[]>();
     const [averageRates, setAverageRates] = useState<{ [key: string]: number }>({});
-    // const [isFavorite, setFavorite] = useState<boolean>(false);
     const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
     const [cookies, setCookies] = useCookies();
     const [nickname, setNickname] = useState<string>('');
@@ -54,6 +53,7 @@ export default function FestivalPage() {
 
     const getFestivalList = async () => {
         const response = await GetFestivalListRequest();
+        if (!response) return;
         if (response.code === 'SU') {
             const formattedFestivals = response.festivalList.map(festival => ({
                 ...festival,
@@ -80,6 +80,7 @@ export default function FestivalPage() {
             const responses = await Promise.all(requests);
             const rates: { [key: string]: number } = {};
             responses.forEach((response, index) => {
+                if (!response) return;
                 if (response.code === 'SU') {
                     const averageRates = response.average;
                     for (const [id, rate] of Object.entries(averageRates)) {
@@ -104,6 +105,7 @@ export default function FestivalPage() {
 
     const getSearchFestivalList = async (areaCode: string) => {
         const response = await GetSearchFestivalListRequest(areaCode);
+        if (!response) return;
         if (response.code === 'SU') {
             const formattedFestivals = response.festivalList.map(festival => ({
                 ...festival,
@@ -141,6 +143,7 @@ export default function FestivalPage() {
         if (!nickname) return;
         try {
             const response = await PutFavoriteRequest(contentId, nickname, cookies.accessToken);
+            if (!response) return;
             if (response.code === 'SU') {
                 setFavorites(prevFavorites => ({
                     ...prevFavorites,

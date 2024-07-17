@@ -174,6 +174,7 @@ const ChatRoom: React.FC = () => {
     const fetchMessages = async () => {
         try {
             const response = await GetChatMessageListRequest(String(roomId));
+            if(!response) return;
             if (response.code === 'SU') {
                 const chatMessageList = response.chatMessageList;
                 if (chatMessageList && Array.isArray(chatMessageList)) {

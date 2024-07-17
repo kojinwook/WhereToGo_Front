@@ -35,6 +35,7 @@ const InquireUpdate: React.FC = () => {
     const fetchQuestion = async () => {
       try {
         const response = await GetQuestionRequest(questionId);
+        if (!response) return;
         const { title, content, nickname, type, imageList } = response.question;
         setTitle(title);
         setContent(content);

@@ -24,6 +24,7 @@ const FestivalAdmin: React.FC = () => {
         const fetchFestivalList = async () => {
             try {
                 const response = await GetFestivalListRequest();
+                if(!response) return;
                 if (response.code === 'SU') {
                     setFestivalList(response.festivalList);
                 }
@@ -60,6 +61,7 @@ const FestivalAdmin: React.FC = () => {
                 console.log('updatedFormData:', updatedFormData);
 
                 const response = await PatchFestivalRequest(updatedFormData, cookies.accessToken);
+                if(!response) return;
                 if (response.code === 'SU' && festivalList) {
                     setFestivalList(festivalList.map(festival =>
                         festival.contentId === updatedFormData.contentId ? updatedFormData : festival
