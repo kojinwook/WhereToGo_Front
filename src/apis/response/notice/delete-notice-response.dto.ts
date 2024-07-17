@@ -3,5 +3,5 @@ import ResponseDto from "../response.dto";
 
 
 export default interface DeleteNoticeResponseDto extends ResponseDto, Notice{
-    notices : Notice[];
+    // notices : Notice[];
 }

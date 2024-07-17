@@ -15,5 +15,5 @@ export type {
     GetSaveMessageResponseDto,
     PostChatMessageResponseDto,
     PostChatRoomResponseDto,
-    GetChatRoomUsersResponseDto
+    GetChatRoomUsersResponseDto,
 }

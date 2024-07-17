@@ -1,7 +1,8 @@
-import { GetAllNoticeRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { GetAllNoticeRequest } from 'apis/apis';
 import Notice from 'types/interface/notice.interface';
+import './style.css';
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();
@@ -13,7 +14,7 @@ const NoticeList: React.FC = () => {
   const [posts, setPosts] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc'); // 초기 정렬 순서
+  const [filteredPosts, setFilteredPosts] = useState<Notice[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -35,15 +36,27 @@ const NoticeList: React.FC = () => {
     fetchPosts();
   }, [noticeId]);
 
+  useEffect(() => {
+    setFilteredPosts(posts); // Initialize filteredPosts with all posts
+  }, [posts]);
+
+  useEffect(() => {
+    const filteredNotices = handleSearch();
+    setFilteredPosts(filteredNotices);
+  }, [searchTerm]);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
   const handleSearch = () => {
-    const filteredNotices = posts.filter(notice =>
-      notice.title.includes(searchTerm)
-    );
-    return filteredNotices;
+    if (searchTerm.trim() === '') {
+      return posts; // If no search term, return all posts
+    } else {
+      return posts.filter(notice =>
+        notice.title.includes(searchTerm)
+      );
+    }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -56,20 +69,17 @@ const NoticeList: React.FC = () => {
     }
   };
 
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    // 정렬 로직 구현
-    setPosts([...posts].sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return new Date(a.createDateTime).getTime() - new Date(b.createDateTime).getTime();
-      } else {
-        return new Date(b.createDateTime).getTime() - new Date(a.createDateTime).getTime();
-      }
-    }));
-  };
-
   const noticeClickHandler = (noticeId: number | string | undefined) => {
     navigator(`/notice/detail/${noticeId}`);
+  };
+
+  const handleSearchButtonClick = () => {
+    const filteredNotices = handleSearch();
+    if (filteredNotices.length === 0) {
+      alert('해당하는 게시물이 없습니다.');
+    }
+    setFilteredPosts(filteredNotices);
+    setSearchTerm(''); // Reset search term after search
   };
 
   return (
@@ -83,33 +93,34 @@ const NoticeList: React.FC = () => {
           onChange={handleSearchChange}
           onKeyDown={handleKeyPress}
         />
-        <button onClick={() => {
-          const filteredNotices = handleSearch();
-          if (filteredNotices.length === 0) {
-            alert('해당하는 게시물이 없습니다.');
-          }
-          // 필요시 상태 업데이트
-        }}>검색</button>
+        <button onClick={handleSearchButtonClick}>검색</button>
       </div>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
-          {posts.length === 0 ? (
-            <p>게시물이 없습니다.</p>
-          ) : (
-            <div className="notices">
-              {posts.map((notice) => (
-                <div className="notice" key={notice.id}>
-                  <p>번호: {notice.id}</p>
-                  <p onClick={() => noticeClickHandler(notice.id)}>제목: {notice.title}</p>
-                  <p>작성일: {formatDate(notice.createDateTime)}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
+      <div className="notices">
+        <table className="notice-table">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>제목</th>
+              <th>날짜</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPosts.length === 0 ? (
+              <tr>
+                <td colSpan={3}>게시물이 없습니다.</td>
+              </tr>
+            ) : (
+              filteredPosts.map((notice) => (
+                <tr key={notice.id} onClick={() => noticeClickHandler(notice.id)}>
+                  <td>{notice.id}</td>
+                  <td>{notice.title}</td>
+                  <td>{formatDate(notice.createDateTime)}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

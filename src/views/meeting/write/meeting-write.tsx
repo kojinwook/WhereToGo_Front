@@ -7,7 +7,7 @@ import { Images } from 'types/interface/interface';
 // import './style.css';
 
 export default function MeetingWrite() {
-  const {loginUser} = useLoginUserStore();
+  const { loginUser } = useLoginUserStore();
   const [imageFileList, setImageFileList] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [title, setTitle] = useState<string>('');
@@ -15,6 +15,8 @@ export default function MeetingWrite() {
   const [content, setContent] = useState<string>('');
   const [nickname, setNickname] = useState<string>('');
   const [maxParticipants, setMaxParticipants] = useState<number>(1);
+  const [tags, setTags] = useState<string[]>([]);
+  const [areas, setAreas] = useState<string[]>([]);
   const [cookies] = useCookies();
   const navigate = useNavigate();
 
@@ -70,15 +72,18 @@ export default function MeetingWrite() {
     formData.append('introduction', introduction);
     formData.append('content', content);
 
-    let imageUrl: Images | null = null;
-    if (imageFileList.length > 0) {
-      const formData = new FormData();
-      formData.append('file', imageFileList[0]);
-      imageUrl = await FileUploadRequest(formData);
+    const imageList: Images[] = [];
+    for (const file of imageFileList) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const imageUrl = await FileUploadRequest(formData);
+        if (imageUrl) {
+            imageList.push(imageUrl);
+        }
     }
 
     try {
-      const requestBody = { title, introduction, content, imageUrl, nickname, maxParticipants };
+      const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, areas };
       const response = await PostMeetingRequest(requestBody, cookies.accessToken);
       if (response.code === 'SU') {
         alert('모임이 성공적으로 등록되었습니다.');
@@ -91,6 +96,37 @@ export default function MeetingWrite() {
       alert('모임 등록 중 오류가 발생했습니다.');
     }
   };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const newTag = e.currentTarget.value.trim();
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+        e.currentTarget.value = '';
+      }
+    }
+  };
+
+  const handleAreasKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const newAreas = e.currentTarget.value.trim();
+      if (newAreas && !tags.includes(newAreas)) {
+        setAreas([...areas, newAreas]);
+        e.currentTarget.value = '';
+      }
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
+  const removeArea = (area: string) => {
+    setAreas(areas.filter(a => a !== area));
+  };
+
 
   return (
     <div className='meeting-write-container'>
@@ -105,9 +141,8 @@ export default function MeetingWrite() {
       <br />
 
       <p><strong>한 줄 소개</strong></p>
-      <label className='introduction'>
+      <label>
         <textarea
-          className='introduction-textarea'
           placeholder='한 줄 소개'
           value={introduction}
           onChange={handleIntroduction}
@@ -117,9 +152,8 @@ export default function MeetingWrite() {
       <br />
 
       <p><strong>내용</strong></p>
-      <label className='content'>
+      <label>
         <textarea
-          className='content-textarea'
           placeholder='내용'
           value={content}
           onChange={handleContent}
@@ -137,6 +171,40 @@ export default function MeetingWrite() {
         min={1}
         max={20}
       />
+
+      <br />
+
+      <p><strong>태그</strong></p>
+      <input
+        type="text"
+        placeholder="태그를 입력해주세요. (Enter로 추가)"
+        name="tags"
+        onKeyDown={handleTagKeyDown} />
+      <div>
+        {tags.map((tag, index) => (
+          <div key={index}>
+            #{tag}
+            <span onClick={() => removeTag(tag)}>&times;</span>
+          </div>
+        ))}
+      </div>
+
+      <br />
+
+      <p><strong>지역</strong></p>
+      <input
+        type="text"
+        placeholder="지역을 입력해주세요. (Enter로 추가)"
+        name="areas"
+        onKeyDown={handleAreasKeyDown} />
+      <div>
+        {areas.map((areas, index) => (
+          <div key={index}>
+            #{areas}
+            <span onClick={() => removeArea(areas)}>&times;</span>
+          </div>
+        ))}
+      </div>
 
       <p><strong>사진</strong></p>
       <input type="file" multiple onChange={handleImageChange} />

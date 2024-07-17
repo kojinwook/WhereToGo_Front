@@ -1,19 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { GetChatMessageListRequest, GetChatRoomUsersRequest, GetUserRequest } from 'apis/apis';
+import { GetChatMessageListRequest, GetUserRequest } from 'apis/apis';
 import './style.css';
 import useLoginUserStore from 'store/login-user.store';
 import { useLocation } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import defaultProfileImage from 'assets/images/user.png';
-import { log } from 'console';
 
 interface Message {
+    messageId: number;
     sender: string;
     message: string;
     timestamp: string;
+    readByReceiver: boolean;
 }
+
+interface TypingMessage {
+    roomId: string;
+    sender: string;
+    typing: boolean;
+}
+
+interface UserStatus {
+    username: string;
+    online: boolean;
+}
+
+const TYPING_TIMEOUT = 3000;
 
 const ChatRoom: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -21,20 +35,17 @@ const ChatRoom: React.FC = () => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const roomId = params.get('roomId');
-    const receiverUserId = params.get('userId');
     const { loginUser } = useLoginUserStore();
     const [nickname, setNickname] = useState<string>('');
-    const [senderNickname, setSenderNickname] = useState<string>('');
-    const [receiverNickname, setReceiverNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
-    const [cookies, setCookie] = useCookies();
+    const [cookies] = useCookies();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState<string>('');
+    const [isTyping, setIsTyping] = useState<boolean>(false);
+    const [otherUserTyping, setOtherUserTyping] = useState<string[]>([]);
+    const [otherUserStatus, setOtherUserStatus] = useState<UserStatus[]>([]);
 
-    useEffect(() => {
-        if (!loginUser) return;
-        setSenderNickname(loginUser.nickname);
-    }, [loginUser]);
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         scrollToBottom();
@@ -45,10 +56,95 @@ const ChatRoom: React.FC = () => {
     }, [messages]);
 
     useEffect(() => {
-        if (!loginUser) {
-            alert('로그인이 필요합니다.');
-            return;
+        if (!roomId || !loginUser) return;
+        const socket = new SockJS('http://localhost:8080/ws');
+        const client = new Client({
+            webSocketFactory: () => socket,
+            onConnect: () => {
+                console.log('Connected');
+                client.subscribe(`/topic/chat.${roomId}`, (message: IMessage) => {
+                    handleChatMessage(message);
+                });
+                client.subscribe(`/topic/typing.${roomId}`, (message: IMessage) => {
+                    handleTypingMessage(message);
+                });
+                client.subscribe(`/topic/status`, (message: IMessage) => {
+                    handleStatusMessage(message);
+                });
+                client.publish({
+                    destination: `/app/chat/${roomId}/enter`,
+                    headers: {},
+                    body: JSON.stringify({
+                        roomId: roomId,
+                        username: loginUser.nickname,
+                        message: 'Entered the chat room',
+                    }),
+                });
+                fetchMessages();
+            },
+            onDisconnect: () => {
+                console.log('Disconnected');
+                client.publish({
+                    destination: `/app/chat/${roomId}/leave`,
+                    headers: {},
+                    body: JSON.stringify({
+                        username: loginUser.nickname,
+                        message: 'Left the chat room',
+                    }),
+                });
+            },
+        });
+        client.activate();
+        clientRef.current = client;
+        return () => {
+            if (clientRef.current) {
+                clientRef.current.deactivate();
+            }
+        };
+    }, [roomId, loginUser]);
+
+    const handleChatMessage = (message: IMessage) => {
+        if (!loginUser) return;
+        const parsedBody = JSON.parse(message.body);
+        const newMessage: Message = {
+            messageId: parsedBody.body.chatMessage.messageId,
+            sender: parsedBody.body.chatMessage.sender,
+            message: parsedBody.body.chatMessage.message,
+            timestamp: parsedBody.body.chatMessage.timestamp,
+            readByReceiver: parsedBody.body.chatMessage.readByReceiver,
+        };
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+    };
+
+    const handleTypingMessage = (message: IMessage) => {
+        if (!loginUser) return;
+        const parsedBody: TypingMessage = JSON.parse(message.body);
+        if (parsedBody.sender !== loginUser.nickname) {
+            if (parsedBody.typing) {
+                setOtherUserTyping((prev) => [...prev, parsedBody.sender]);
+            } else {
+                setOtherUserTyping((prev) => prev.filter((user) => user !== parsedBody.sender));
+            }
         }
+    };
+
+    const handleStatusMessage = (message: IMessage) => {
+        if (!loginUser) return;
+        const parsedBody: UserStatus = JSON.parse(message.body);
+        setOtherUserStatus((prev) => {
+            const existingUserIndex = prev.findIndex(user => user.username === parsedBody.username);
+            if (existingUserIndex !== -1) {
+                const updatedStatus = [...prev];
+                updatedStatus[existingUserIndex] = parsedBody;
+                return updatedStatus;
+            } else {
+                return [...prev, parsedBody];
+            }
+        });
+    };
+
+    useEffect(() => {
+        if (!roomId || !loginUser) return;
         const getUserRequest = async () => {
             try {
                 const response = await GetUserRequest(loginUser.userId, cookies.accessToken);
@@ -65,65 +161,7 @@ const ChatRoom: React.FC = () => {
             }
         }
         getUserRequest();
-    }, [loginUser, cookies.access_token]);
-
-    useEffect(() => {
-        if (!roomId || !loginUser) return;
-        const getRoomUsers = async () => {
-            try {
-                // 채팅방의 유저 정보 가져오기
-                const response = await GetChatRoomUsersRequest(roomId, cookies.accessToken);
-                console.log(response);
-                if (response.code === 'SU') {
-                    // 현재 로그인한 유저와 상대방의 닉네임 설정
-                    const roomUsers = response.users;
-                    const roomUser = roomUsers.find(user => user.userId !== loginUser.userId);
-                    if (roomUser) {
-                        setReceiverNickname(roomUser.nickname);
-                    }
-                } else {
-                    console.error('Failed to get room users:', response.message);
-                }
-            } catch (error) {
-                console.error('Failed to get room users:', error);
-            }
-        }
-        getRoomUsers();
-    }, [roomId, loginUser, cookies.access_token]);
-
-    useEffect(() => {
-        if (!roomId) {
-            console.error('Missing required props: roomId');
-            return;
-        }
-        const socket = new SockJS('http://localhost:8080/ws');
-        const client = new Client({
-            webSocketFactory: () => socket,
-            onConnect: () => {
-                console.log('Connected');
-                client.subscribe(`/topic/chat.${roomId}`, (message: IMessage) => {
-                    const parsedBody = JSON.parse(message.body);
-                    const newMessage: Message = parsedBody.body.chatMessage;
-                    setMessages((prevMessages) => [...prevMessages, newMessage]);
-                });
-                client.subscribe(`/queue/chat.${roomId}`, (message: IMessage) => {
-                    const newMessage: Message = JSON.parse(message.body);
-                    setMessages((prevMessages) => [...prevMessages, newMessage]);
-                });
-                fetchMessages();
-            },
-            onDisconnect: () => {
-                console.log('Disconnected');
-            }
-        });
-        client.activate();
-        clientRef.current = client;
-        return () => {
-            if (clientRef.current) {
-                clientRef.current.deactivate();
-            }
-        };
-    }, [roomId]);
+    }, [loginUser, cookies.accessToken]);
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -138,10 +176,11 @@ const ChatRoom: React.FC = () => {
                 const chatMessageList = response.chatMessageList;
                 if (chatMessageList && Array.isArray(chatMessageList)) {
                     const formattedMessages: Message[] = chatMessageList.map((msg: any) => ({
+                        messageId: msg.messageId,
                         sender: msg.sender,
                         message: msg.message,
                         timestamp: msg.timestamp,
-                        profileImage: msg.profileImage
+                        readByReceiver: msg.readByReceiver,
                     }));
                     setMessages(formattedMessages);
                 }
@@ -157,14 +196,16 @@ const ChatRoom: React.FC = () => {
         if (!loginUser) {
             alert('로그인이 필요합니다.');
             return;
-        };
+        }
         if (clientRef.current && input.trim()) {
+            const messageKey = new Date().getTime();
             const message = {
                 roomId: roomId,
                 sender: loginUser.nickname,
                 message: input,
-                messageKey: new Date().getTime()
+                messageKey: messageKey
             };
+
             clientRef.current.publish({
                 destination: `/app/chat/${roomId}/message`,
                 body: JSON.stringify(message)
@@ -183,61 +224,87 @@ const ChatRoom: React.FC = () => {
         return date.toLocaleString('ko-KR', options);
     };
 
-    const convertMessageToLinks = (message: string): (JSX.Element | string)[] => {
-        const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        return message.split(urlPattern).map((part, index) => {
-            if (urlPattern.test(part)) {
-                return (
-                    <a
-                        href={part}
-                        key={index}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => handleLinkClick(e, part)}
-                    >
-                        {part}
-                    </a>
-                );
-            }
-            return part;
-        });
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInput(e.target.value);
+        sendTypingStatus(true);
+        if (typingTimeoutRef.current) {
+            clearTimeout(typingTimeoutRef.current);
+        }
+        typingTimeoutRef.current = setTimeout(() => {
+            sendTypingStatus(false);
+        }, TYPING_TIMEOUT);
     };
 
-
-    const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
-        if (e.ctrlKey || e.metaKey) {
-            window.open(url, '_blank');
-        } else {
-            e.preventDefault();
+    const sendTypingStatus = (isTyping: boolean) => {
+        if (clientRef.current && roomId) {
+            const typingMessage = {
+                roomId: roomId,
+                sender: loginUser?.nickname,
+                typing: isTyping
+            };
+            clientRef.current.publish({
+                destination: `/app/chat/${roomId}/typing`,
+                body: JSON.stringify(typingMessage)
+            });
         }
     };
 
-    const renderMessageContent = (message: Message) => {
-        return convertMessageToLinks(message.message);
+    const handleBackButtonClick = () => {
+        if (clientRef.current && roomId && loginUser) {
+            clientRef.current.publish({
+                destination: `/app/chat/${roomId}/leave`,
+                headers: {},
+                body: JSON.stringify({
+                    username: loginUser.nickname,
+                    message: 'Left the chat room',
+                }),
+            });
+        }
+        window.history.back();
     };
 
-    console.log(senderNickname, nickname);
     return (
         <div className="chat-room">
-            <div>{senderNickname}</div>
+            <div>{nickname}</div>
+            <button onClick={handleBackButtonClick}>뒤로가기</button>
             <div className="messages">
                 {messages.map((msg, index) => (
                     <div key={index} className={`message ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
                         <div className="message-user-container">
                             {msg.sender !== loginUser?.nickname && (
                                 <div className="profile-info">
-                                    <img src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' className='user-profile-image' />
-                                    <div className="nickname">{receiverNickname}</div> {/* 상대방 닉네임 표시 */}
+                                    <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
+                                    <div className="username">{msg.sender}</div>
                                 </div>
                             )}
-                            <div className="message-container">
-                                <div className={`message-content ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
-                                    <div className="text">{renderMessageContent(msg)}</div>
-                                </div>
-                                <div ref={messagesEndRef} />
-                                <div className="timestamp">{formatTimestamp(msg.timestamp)}</div>
-                            </div>
+                            <div className="message-text">{msg.message}</div>
+                            <div className="message-time">{formatTimestamp(msg.timestamp)}</div>
                         </div>
+                        {msg.sender === loginUser?.nickname && !msg.readByReceiver && (
+                            <div className="unread-indicator">(1)</div>
+                        )}
+                    </div>
+                ))}
+                <div ref={messagesEndRef} />
+            </div>
+            <div className="input-container">
+                <input
+                    type="text"
+                    className="message-input"
+                    placeholder="메시지 입력..."
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
+                />
+                <button className="send-button" onClick={sendMessage}>전송</button>
+            </div>
+            <div className="typing-status">
+                {otherUserTyping.length > 0 &&
+                    <div>{otherUserTyping}님이 입력 중입니다...</div>
+                }
+                {otherUserStatus.map((user, index) => (
+                    <div key={index}>
+                        {user.online ? `${user.username}님이 온라인입니다.` : `${user.username}님이 오프라인입니다.`}
                     </div>
                 ))}
             </div>
@@ -257,6 +324,6 @@ const ChatRoom: React.FC = () => {
 </div>
         </div>
     );
-}
+};
 
 export default ChatRoom;

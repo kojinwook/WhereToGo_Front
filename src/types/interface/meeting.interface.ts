@@ -10,5 +10,7 @@ export default interface Meeting{
     createDate : string;
     modifyDate : string;
     maxParticipants : number;
+    tags : string[];
+    areas : string[];
     userNickname : string;
 }

@@ -101,10 +101,6 @@ function App() {
         <Route path="detail/:questionId" element={<InquireDetail />} />
         <Route path="write" element={<InquireWrite />} />
         <Route path="update/:questionId" element={<InquireUpdate />} />
-        <Route path="main" element={<InquireList />} />
-        <Route path="detail" element={<InquireDetail />} />
-        <Route path="write" element={<InquireWrite />} />
-        <Route path="update" element={<InquireUpdate />} />
         <Route path="list" element={<InquireList />} />
       </Route>
 
