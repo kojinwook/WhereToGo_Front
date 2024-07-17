@@ -23,7 +23,9 @@ export default function MeetingList() {
     }
 
     if(!meetingList)
-    return <div>모임이 없습니다.</div>
+    return <div><div className='meeting-list-write-btn'>
+    <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
+  </div></div>
   return (
     <div className='meeting-list-container'>
       <h1>모임 리스트</h1>
