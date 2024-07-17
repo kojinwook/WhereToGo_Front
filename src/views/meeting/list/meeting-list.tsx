@@ -1,7 +1,7 @@
-import { GetMeetingListRequest } from 'apis/apis'
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Meeting } from 'types/interface/interface'
+import { GetMeetingListRequest } from 'apis/apis';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Meeting } from 'types/interface/interface';
 import './style.css';
 
 export default function MeetingList() {
@@ -22,7 +22,8 @@ export default function MeetingList() {
         navigate(`/meeting/detail/${meetingId}`)
     }
 
-    if(!meetingList) return <div>모임이 없습니다.</div>
+    if(!meetingList)
+    return <div>모임이 없습니다.</div>
   return (
     <div className='meeting-list-container'>
       <h1>모임 리스트</h1>
@@ -31,7 +32,9 @@ export default function MeetingList() {
       </div>
       <ul>
         {meetingList.map((meeting) => (
-          <li key={meeting.meetingId} onClick={() => meetingTitleClickHandler(meeting.meetingId)}>{meeting.title}</li>
+          <React.Fragment key={meeting.meetingId}>
+            <li onClick={() => meetingTitleClickHandler(meeting.meetingId)}>{meeting.title}</li>
+          </React.Fragment>
         ))}
       </ul>
     </div>
