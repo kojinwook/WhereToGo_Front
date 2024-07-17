@@ -4,7 +4,7 @@ import SockJS from 'sockjs-client';
 import { GetChatMessageListRequest, GetUserRequest } from 'apis/apis';
 import './style.css';
 import useLoginUserStore from 'store/login-user.store';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import defaultProfileImage from 'assets/images/user.png';
 
@@ -44,6 +44,8 @@ const ChatRoom: React.FC = () => {
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [otherUserTyping, setOtherUserTyping] = useState<string[]>([]);
     const [otherUserStatus, setOtherUserStatus] = useState<UserStatus[]>([]);
+    const navigator = useNavigate();
+    const userId = params.get('userId');
 
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -263,9 +265,16 @@ const ChatRoom: React.FC = () => {
         window.history.back();
     };
 
+    const backPathClickHandler = () => {
+        navigator(`/user/profile/${userId}`);
+    };
+
     return (
         <div className="chat-room">
             <div>{nickname}</div>
+            <div className="back-button"> 
+        <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backPathClickHandler} />
+        </div>
             <button onClick={handleBackButtonClick}>뒤로가기</button>
             <div className="messages">
                 {messages.map((msg, index) => (
