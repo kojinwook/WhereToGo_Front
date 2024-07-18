@@ -20,8 +20,8 @@ export default function MeetingUpdate() {
     const [imageFileList, setImageFileList] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [maxParticipants, setMaxParticipants] = useState(0);
-    const [tags, setTags] = useState<string[]>([]);
-    const [areas, setAreas] = useState<string[]>([]);
+    const [categories, setCategories] = useState<string[]>([]);
+    const [locations, setLocations] = useState<string[]>([]);
     const [cookies] = useCookies();
     const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ export default function MeetingUpdate() {
             try {
                 const response = await GetMeetingRequest(meetingId);
                 if (!response) return;
-                const { title, introduction, content, userNickname, imageList, maxParticipants, tags, areas } = response.meeting;
+                const { title, introduction, content, userNickname, imageList, maxParticipants, categories, locations } = response.meeting;
                 if (response.code === 'SU') {
                     setTitle(title);
                     setIntroduction(introduction);
@@ -40,8 +40,8 @@ export default function MeetingUpdate() {
                     const imageUrls = imageList.map((image: Images) => image.image);
                     setImagePreviews(imageUrls);
                     setMaxParticipants(maxParticipants);
-                    setTags(tags);
-                    setAreas(areas);
+                    setCategories(categories);
+                    setLocations(locations);
                     setMeeting(response.meeting);
                 }
             } catch (error) {
@@ -74,11 +74,11 @@ export default function MeetingUpdate() {
     };
 
     const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTags(e.target.value.split(','));
+        setCategories(e.target.value.split(','));
     }
 
     const handleAreasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAreas(e.target.value.split(','));
+        setLocations(e.target.value.split(','));
     }
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,8 +105,8 @@ export default function MeetingUpdate() {
         if (e.key === 'Enter') {
             e.preventDefault();
             const newTag = e.currentTarget.value.trim();
-            if (newTag && !tags.includes(newTag)) {
-                setTags([...tags, newTag]);
+            if (newTag && !categories.includes(newTag)) {
+                setCategories([...categories, newTag]);
                 e.currentTarget.value = '';
             }
         }
@@ -116,19 +116,19 @@ export default function MeetingUpdate() {
         if (e.key === 'Enter') {
             e.preventDefault();
             const newAreas = e.currentTarget.value.trim();
-            if (newAreas && !tags.includes(newAreas)) {
-                setAreas([...areas, newAreas]);
+            if (newAreas && !locations.includes(newAreas)) {
+                setLocations([...locations, newAreas]);
                 e.currentTarget.value = '';
             }
         }
     };
 
-    const removeTag = (tag: string) => {
-        setTags(tags.filter(t => t !== tag));
+    const removeTag = (category: string) => {
+        setCategories(categories.filter(c => c !== category));
     };
 
-    const removeArea = (area: string) => {
-        setAreas(areas.filter(a => a !== area));
+    const removeArea = (location: string) => {
+        setLocations(locations.filter(l => l !== location));
     };
 
     const updateButtonHandler = async () => {
@@ -147,7 +147,7 @@ export default function MeetingUpdate() {
                 imageList.push(imageUrl);
             }
         }
-        const requestBody = { title, introduction, content, nickname, imageList, maxParticipants, tags, areas };
+        const requestBody = { title, introduction, content, nickname, imageList, maxParticipants, categories, locations };
         const response = await PatchMeetingRequest(meetingId, requestBody, cookies.accessToken);
         if(!response) return;
         if (response.code === 'SU') {
@@ -212,10 +212,10 @@ export default function MeetingUpdate() {
                     name="tags"
                     onKeyDown={handleTagKeyDown} />
                 <div>
-                    {tags.map((tag, index) => (
+                    {categories.map((categories, index) => (
                         <div key={index}>
-                            #{tag}
-                            <span onClick={() => removeTag(tag)}>&times;</span>
+                            #{categories}
+                            <span onClick={() => removeTag(categories)}>&times;</span>
                         </div>
                     ))}
                 </div>
@@ -229,10 +229,10 @@ export default function MeetingUpdate() {
                     name="areas"
                     onKeyDown={handleAreasKeyDown} />
                 <div>
-                    {areas.map((areas, index) => (
+                    {locations.map((locations, index) => (
                         <div key={index}>
-                            #{areas}
-                            <span onClick={() => removeArea(areas)}>&times;</span>
+                            #{locations}
+                            <span onClick={() => removeArea(locations)}>&times;</span>
                         </div>
                     ))}
                 </div>
