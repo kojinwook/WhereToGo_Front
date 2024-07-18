@@ -1,11 +1,13 @@
-import { GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis'
-import React, { useEffect, useState } from 'react'
-import { useCookies } from 'react-cookie';
-import { useNavigate, useParams } from 'react-router-dom'
-import useLoginUserStore from 'store/login-user.store';
-import { Meeting, MeetingRequest } from 'types/interface/interface'
+import { GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
-import Modal from 'react-modal'
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import Modal from 'react-modal';
+import { useNavigate, useParams } from 'react-router-dom';
+import useLoginUserStore from 'store/login-user.store';
+import { Meeting, MeetingRequest } from 'types/interface/interface';
+import './style.css';
+import { ResponseDto } from 'apis/response/response';
 
 Modal.setAppElement('#root');
 
@@ -30,6 +32,7 @@ export default function MeetingDetail() {
     const [meeting, setMeeting] = useState<Meeting>()
     const [cookies, setCookie] = useCookies();
     const [userId, setUserId] = useState<string>('');
+    const [role, setRole] = useState<string>('')
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
@@ -37,11 +40,17 @@ export default function MeetingDetail() {
     const creatorNickname = meeting?.userNickname;
     const roomName = meeting?.userNickname;
     const navigate = useNavigate();
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [activeTab, setActiveTab] = useState('detail');
+
+    const [deletingMeetingId, setDeletingMeetingId] = useState<number | null>(null);
+    const [showOptions, setShowOptions] = useState(false);
 
     useEffect(() => {
         if (loginUser) {
             setNickname(loginUser.nickname)
             setUserId(loginUser.userId)
+            setRole(loginUser.role)
         }
     }, [])
 
@@ -159,52 +168,201 @@ export default function MeetingDetail() {
         setIsModalOpen(false);
     };
 
+    const backgoPathClickHandler = () => {
+        navigate(`/meeting/list`);
+    }
+
+    // 이미지 넘기기 함수
+    const nextImage = () => {
+        if (meeting && meeting.imageList) {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
+        }
+    };
+    
+    const prevImage = () => {
+        if (meeting && meeting.imageList) {
+            setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
+        }
+    };
+    
+    const toggleOptions = () => {
+        setShowOptions((prev) => !prev);
+    };
+    
+
+    // 수정
+    const updatePostClickHandler = (meetingId: number | string | undefined) => {
+        if (!meetingId) return;
+        navigate(`/meeting/update/${meetingId}`);
+    };
+
+    // 삭제
+    const deletePostClickHandler = (meetingId: number | string | undefined) => {
+        if (!window.confirm("삭제하시겠습니까?")) {
+        return;
+    }
+    if (!meetingId) {
+        alert("해당 문의가 없습니다.");
+        return;
+    }
+        // DeleteMeetingRequest(meetingId).then(deleteMeetingResponse);
+    };
+
+    // const deleteMeetingResponse = (
+    //     responseBody: DeleteMeetingResponseDto | ResponseDto | null
+    // ) => {
+    // if (responseBody && responseBody.code === "SU") {
+    //     alert("해당 문의가 삭제되었습니다.");
+    //     navigate("/meeting/list");
+    // } else {
+    //     alert("삭제 실패");
+    // }
+    // setDeletingMeetingId(null);
+    // };
+    
+
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
     return (
-        <div>
-            <h1>모임명: {meeting.title}</h1>
-            <p>한줄소개: {meeting.introduction}</p>
-            <p>모임설명: {meeting.content}</p>
-            <p>개설날짜: {formatDate(meeting.createDate)}</p>
-            <p>인원: {meeting.maxParticipants}</p>
-            <p>대표닉네임: {meeting.userNickname}</p>
-            <p>태그: {meeting.tags.join(', ')}</p>
-            <p>지역: {meeting.areas.join(', ')}</p>
-            <p>모임 이미지</p>
-            <div>
-                {meeting.imageList?.map((image, index) => (
-                    <img key={index} src={image.image} alt={`Meeting image ${index + 1}`} />
-                ))}
+        <div className="meeting-detail-container">
+            <div className='meeting-detail-header'>
+                <div className='meeting-detail-name'>
+                    <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backgoPathClickHandler} />
+                    <h1>{meeting.title}</h1>
+                </div>
+                <img className='meeting-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
+                    try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        alert('링크가 복사되었습니다!'); // 성공 메시지
+                    } catch (err) {
+                        console.error('링크 복사 실패:', err);
+                    }
+                }} />
             </div>
-            <button onClick={handleCreateRoom}>1 : 1 채팅</button>
-            <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>
-            {nickname === creatorNickname && (
-                <button onClick={openModal}>신청 목록</button>
-            )}
+    
+            <div className="tab-menu">
+                <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 상세</button>
+                <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>참가자 목록</button>
+                <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>신청 목록</button>
+            </div>
+
+    
+            <div className="meeting-detail-body">
+                {activeTab === 'detail' && (
+                    <div>
+                        <div className="meeting-detail-in">
+                            <div className="meeting-detail-left">
+                                <div className="carousel">
+                                    {meeting.imageList?.map((image, index) => (
+                                        <img
+                                            key={index}
+                                            src={image.image}
+                                            alt={`Meeting image ${index + 1}`}
+                                            className={currentIndex === index ? 'active' : ''}
+                                        />
+                                    ))}
+                                    <button className="carousel-button left" onClick={prevImage}>◀</button>
+                                    <button className="carousel-button right" onClick={nextImage}>▶</button>
+                                </div>
+                            </div>
+                            <div className="meeting-detail-right">
+                                <div className="more-options">
+                                    {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                        <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                                    )}
+                                    {showOptions && (
+                                        <div className="button-box">
+                                        {meeting.userNickname === nickname && (
+                                            <button
+                                            className="update-button"
+                                            onClick={() => updatePostClickHandler(meeting.meetingId)}
+                                            >
+                                            수정
+                                            </button>
+                                        )}
+                                        {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                            <button
+                                            className="delete-button"
+                                            onClick={() => deletePostClickHandler(meeting.meetingId)}
+                                            >
+                                            삭제
+                                            </button>
+                                        )}
+                                        </div>
+                                    )}
+                                </div>
+                                <p>대표 닉네임</p>
+                                <div className="bordered-div">{meeting.userNickname}</div>
+                                <p>한 줄 소개</p>
+                                <div className="bordered-div">{meeting.introduction}</div>
+                                <p>인원</p>
+                                <div className="bordered-div">/{meeting.maxParticipants}</div>
+                                <div className='meeting-detail-btn'>
+                                    <button onClick={handleCreateRoom}>1 : 1 채팅</button>
+                                    <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>
+                                    {nickname === creatorNickname && (
+                                        <button onClick={openModal}>신청 목록</button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="meeting-detail-description">
+                            <h2>모임 설명</h2>
+                            <p>{meeting.content}</p>
+                            <p>개설날짜: {formatDate(meeting.createDate)}</p>
+                            <p>태그: {meeting.tags}</p>
+                            <p>지역: {meeting.areas}</p>
+                        </div>
+                    </div>
+                )}
+                {activeTab === 'participants' && (
+                    <div className="participants-list">
+                        {/* 참가자 목록을 여기에 추가 */}
+                        <h2>참가자 목록</h2>
+                        {/* 참가자 데이터 표시 */}
+                    </div>
+                )}
+                {activeTab === 'requests' && (
+                    <div className="requests-list">
+                        {/* 신청 목록을 여기에 추가 */}
+                        <h2>신청 목록</h2>
+                        {/* 신청 요청 데이터 표시 */}
+                    </div>
+                )}
+            </div>
+            
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 contentLabel="신청 목록"
                 style={ModalStyle}
             >
-                <h2>참가 요청 목록</h2>
-                {requests.length > 0 ? (
-                    requests.map(request => (
-                        <div key={request.requestId}>
-                            <div className="profile-info">
-                                    <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h2>참가 요청 목록</h2>
+                        <button onClick={closeModal}>닫기</button>
+                    </div>
+                    <div className="modal-body">
+                        {requests.length > 0 ? (
+                            requests.map(request => (
+                                <div key={request.requestId}>
+                                    <div className="profile-info">
+                                        <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
+                                        <p>{request.user.nickname}</p>
+                                    </div>
+                                    <p>요청 날짜: {new Date(request.requestDate).toLocaleString()}</p>
+                                    <button onClick={() => handleRequestResponse(request.requestId, true)}>수락</button>
+                                    <button onClick={() => handleRequestResponse(request.requestId, false)}>거절</button>
                                 </div>
-                            <p>{request.user.nickname}</p>
-                            <p>요청 날짜: {new Date(request.requestDate).toLocaleString()}</p>
-                            <button onClick={() => handleRequestResponse(request.requestId, true)}>수락</button>
-                            <button onClick={() => handleRequestResponse(request.requestId, false)}>거절</button>
-                        </div>
-                    ))
-                ) : (
-                    <p>참가 요청이 없습니다.</p>
-                )}
-                <button onClick={closeModal}>닫기</button>
+                            ))
+                        ) : (
+                            <p>참가 요청이 없습니다.</p>
+                        )}
+                    </div>
+                    <div className="modal-footer">
+                        <button onClick={closeModal}>닫기</button>
+                    </div>
+                </div>
             </Modal>
         </div>
-    )
+    );
 }

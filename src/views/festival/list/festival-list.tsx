@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest, PutFavoriteRequest } from '../../../apis/apis';
+import { GetAllFavoriteRequest, GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest, PutFavoriteRequest } from '../../../apis/apis';
 import { Festival } from 'types/interface/interface';
 import './style.css'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -50,6 +50,21 @@ export default function FestivalPage() {
         const day = dateStr.substring(6, 8);
         return `${year}년 ${month}월 ${day}일`;
     };
+
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            if (!loginUser) return;
+            const response = await GetAllFavoriteRequest(loginUser.nickname, cookies.accessToken);
+            if (response && response.code === 'SU') {
+                const favoriteIds: { [key: string]: boolean } = {};
+                response.favoriteList.forEach((favorite: { contentId: string }) => {
+                    favoriteIds[favorite.contentId] = true;
+                });
+                setFavorites(favoriteIds);
+            }
+        };
+        fetchFavorites();
+    }, [loginUser]);
 
     const getFestivalList = async () => {
         const response = await GetFestivalListRequest();
@@ -181,7 +196,7 @@ export default function FestivalPage() {
                         <div>{festival.startDate} ~ {festival.endDate}</div>
                         <div className="icon-button" onClick={() => onFavoriteClickHandler(festival.contentId)}>
                             {favorites[festival.contentId] ? 
-                                <i className="fas fa-heart favorite-fill-icon" style={{ color: 'red' }}></i> : 
+                                <i className="fas fa-heart favorite-fill-icon" style={{ color: 'red' }}></i> :
                                 <i className="far fa-heart favorite-light-icon" style={{ color: 'grey' }}></i>
                             }
                         </div>

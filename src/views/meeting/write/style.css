@@ -1,0 +1,110 @@
+.meeting-write-container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .meeting-write-container p {
+    font-size: 1.2em;
+    margin: 10px 0;
+  }
+  
+  .meeting-write-container input[type="text"],
+  .meeting-write-container input[type="number"],
+  .meeting-write-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .meeting-write-container input[type="file"] {
+    margin-top: 10px;
+  }
+
+  .meeting-write-container textarea {
+    height: 150px;
+    resize: none;
+    overflow-y: auto;
+  }
+  
+  .meeting-write-container button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  
+  .meeting-write-container button:hover {
+    background-color: #000;
+    color: #fff;
+  }
+  
+  .meeting-write-container .meeting-list-write-btn button {
+    margin-top: 0;
+  }
+  
+  .meeting-write-container .meeting-img {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .meeting-write-container .meeting-img img {
+    width: 100px;
+    height: auto;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .meeting-write-container .meeting-img button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .meeting-write-container .meeting-img .fa-times-circle {
+    font-size: 1.5rem;
+    color: gray;
+  }
+  
+  .meeting-write-container .tag-container,
+  .meeting-write-container .area-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  
+  .meeting-write-container .tag-container div,
+  .meeting-write-container .area-container div {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .meeting-write-container .tag-container div span,
+  .meeting-write-container .area-container div span {
+    margin-left: 8px;
+    cursor: pointer;
+  }
+  
+  .meeting-write-container input[type="text"]::placeholder,
+  .meeting-write-container textarea::placeholder {
+    color: #aaa;
+  }
+  

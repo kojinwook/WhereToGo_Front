@@ -4,7 +4,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images } from 'types/interface/interface';
-// import './style.css';
+import './style.css';
 
 export default function MeetingWrite() {
   const { loginUser } = useLoginUserStore();
@@ -84,6 +84,7 @@ export default function MeetingWrite() {
 
     try {
       const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, areas };
+      console.log(requestBody)
       const response = await PostMeetingRequest(requestBody, cookies.accessToken);
       if (!response) return;
       if (response.code === 'SU') {

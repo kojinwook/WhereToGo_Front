@@ -11,7 +11,7 @@ import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequest
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { GetMeetingListResponseDto, GetMeetingResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingBoardResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { GetMeetingBoardListResponseDto, GetMeetingListResponseDto, GetMeetingResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingBoardResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
@@ -115,6 +115,7 @@ const POST_RESPONSE_URL = (requestId: number, status: boolean) => `${API_DOMAIN}
 const GET_MEETING_REQUESTS_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/requests?meetingId=${meetingId}`;
 const PATCH_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/update/${meetingId}`;
 const POST_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/${meetingId}`;
+const GET_MEETING_BOARD_LIST_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/list/${meetingId}`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -531,6 +532,13 @@ export const PatchMeetingRequest = async (meetingId: string, requestBody: PatchM
 export const PostMeetingBoardRequest = async (meetingId: string, requestBody: PostMeetingBoardRequestDto, accessToken: string) => {
     const result = await axios.post(POST_MEETING_BOARD_URL(meetingId), requestBody, authorization(accessToken))
         .then(responseHandler<PostMeetingBoardResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const GetMeetingBoardListRequest = async (meetingId: string) => {
+    const result = await axios.get(GET_MEETING_BOARD_LIST_URL(meetingId))
+        .then(responseHandler<GetMeetingBoardListResponseDto>)
         .catch(errorHandler);
     return result;
 };

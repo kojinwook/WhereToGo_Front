@@ -1,8 +1,8 @@
-import { Answer, ChatRoom, Favorite, Festival, Meeting, MeetingRequest, Notice, User } from "types/interface/interface";
-import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
+import ChatMessage from "types/interface/chat-message.interface";
+import { Answer, ChatRoom, Favorite, Festival, Meeting, MeetingBoard, MeetingRequest, Notice, User } from "types/interface/interface";
 import Question from "types/interface/question.interface";
 import Review from "types/interface/review.interface";
-import ChatMessage from "types/interface/chat-message.interface";
+import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
 
 export default interface ResponseDto{
     code: ResponseCode;
@@ -29,4 +29,5 @@ export default interface ResponseDto{
     chatRoomList: ChatRoom[];
     users: User[];
     requests: MeetingRequest[];
+    meetingBoardList: MeetingBoard[];
 }
