@@ -73,6 +73,7 @@ ul {
     margin-bottom: 10px;
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
+    justify-content: space-between;
 }
 
 .meeting-item > div {
