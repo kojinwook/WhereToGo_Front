@@ -1,20 +1,23 @@
 import { GetMeetingBoardListRequest } from 'apis/apis';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MeetingBoard from 'types/interface/meeting-board.interface';
+import defaultProfileImage from 'assets/images/user.png';
 
 export default function BoardList() {
 
-    const {meetingId} = useParams();
+    const { meetingId } = useParams();
     const [boardList, setBoardList] = useState<MeetingBoard[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!meetingId) return;
         const fetchBoardList = async () => {
             const response = await GetMeetingBoardListRequest(meetingId);
-            console.log(response?.meetingBoardList.map((board) => board.userDto.nickname));
+            console.log(response)
             if (response && response.code === 'SU') {
                 setBoardList(response.meetingBoardList);
+
             } else {
                 console.error('Failed to fetch board list:');
             }
@@ -22,15 +25,25 @@ export default function BoardList() {
         fetchBoardList();
     }, [])
 
+    const handleCreateBoard = () => {
+        navigate(`/meeting/board/write/${meetingId}`);
+    }
+
     return (
         <div>
             <h1>Board List</h1>
+            <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
             <ul>
                 {boardList.map((board) => (
                     <li key={board.meetingBoardId}>
-                        <h2>{board.title}</h2>
+                        프로필이미지: <img
+                            src={board.userDto.profileImage || defaultProfileImage}
+                            alt="profile"
+                        />
+                        <h2>제목: {board.title}</h2>
                         <p>{board.content}</p>
-                        <p>{board.userDto.nickname}</p>
+                        <p>닉네임: {board.userDto.nickname}</p>
+                        <p>작성날짜: {board.createDate}</p>
                     </li>
                 ))}
             </ul>
