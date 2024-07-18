@@ -75,7 +75,7 @@ export default function BoardWrite() {
             if (!response) return;
             if (response.code === 'SU') {
                 alert('게시물이 성공적으로 등록되었습니다.');
-                navigate('/meeting/board/list');
+                navigate('/meeting/board/list/${meetingId}');
             } else {
                 alert('게시물 등록에 실패했습니다.');
             }

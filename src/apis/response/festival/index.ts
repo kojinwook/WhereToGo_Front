@@ -4,6 +4,7 @@ import GetSearchFestivalListResponseDto from "./get-search-festival-list.respons
 import GetFestivalResponseDto from "./get-festival.response.dto"
 import PatchFestivalResponseDto from "./patch-festival.response.dto"
 import PutFavoriteResponseDto from "./put-favorite.response.dto"
+import GetAllFavoriteResponseDto from "./get-all-favorite.response.dto"
 
 export type {
     PostFestivalResponseDto,
@@ -11,5 +12,6 @@ export type {
     GetSearchFestivalListResponseDto,
     GetFestivalResponseDto,
     PatchFestivalResponseDto,
-    PutFavoriteResponseDto
+    PutFavoriteResponseDto,
+    GetAllFavoriteResponseDto
 }
