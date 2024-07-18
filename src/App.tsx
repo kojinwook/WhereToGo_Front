@@ -38,6 +38,7 @@ import MeetingUpdate from 'views/meeting/update/meeting-update';
 import BoardWrite from 'views/meeting/board/write/board-write';
 import BoardList from 'views/meeting/board/list/board-list';
 import BoardUpdate from 'views/meeting/board/update/board-update';
+import BoardDetail from 'views/meeting/board/detail/board-detail';
 
 function App() {
 
@@ -96,6 +97,7 @@ function App() {
         <Route path='update/:meetingId' element={<MeetingUpdate />} />
         <Route path='board/write/:meetingId' element={<BoardWrite />} />
         <Route path='board/list/:meetingId' element={<BoardList />} />
+        <Route path='board/detail/:meetingId/:meetingBoardId' element={<BoardDetail />} />
         <Route path='board/update/:meetingBoardId' element={<BoardUpdate />} />
       </Route>
 

@@ -29,6 +29,10 @@ export default function BoardList() {
         navigate(`/meeting/board/write/${meetingId}`);
     }
 
+    const handleBoardDetail = (meetingBoardId: string) => {
+        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    }
+
     return (
         <div>
             <h1>Board List</h1>

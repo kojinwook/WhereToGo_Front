@@ -9,6 +9,10 @@ export default function MeetingList() {
   const [meetingList, setMeetingList] = useState<Meeting[]>([])
   const navigate = useNavigate()
 
+  const backGoPathClickHandler = () => {
+    navigate(`/`);
+}
+
   useEffect(() => {
     const getMeetingList = async () => {
       const response = await GetMeetingListRequest()
@@ -51,7 +55,8 @@ export default function MeetingList() {
     <div className='meeting-list-container'>
       <h1>모임 리스트</h1>
       <div className='meeting-list-write-btn'>
-        <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
+        <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
+        <button className='meeting-list-create-btn' onClick={() => navigate('/meeting/write')}>모임 만들기</button>
       </div>
       <div className='meeting-list-header'>
           <div>모임 사진</div>
