@@ -7,7 +7,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Meeting, MeetingRequest } from 'types/interface/interface';
 import './style.css';
-import { ResponseDto } from 'apis/response/response';
 
 Modal.setAppElement('#root');
 
@@ -229,9 +228,9 @@ export default function MeetingDetail() {
             </div>
     
             <div className="tab-menu">
-                <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 상세</button>
-                <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>참가자 목록</button>
-                <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>신청 목록</button>
+                <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
+                <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
+                <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
 
     
@@ -306,14 +305,14 @@ export default function MeetingDetail() {
                 {activeTab === 'participants' && (
                     <div className="participants-list">
                         {/* 참가자 목록을 여기에 추가 */}
-                        <h2>참가자 목록</h2>
+                        <h2>게시판 목록</h2>
                         {/* 참가자 데이터 표시 */}
                     </div>
                 )}
                 {activeTab === 'requests' && (
                     <div className="requests-list">
                         {/* 신청 목록을 여기에 추가 */}
-                        <h2>신청 목록</h2>
+                        <h2>사진첩</h2>
                         {/* 신청 요청 데이터 표시 */}
                     </div>
                 )}
@@ -328,7 +327,6 @@ export default function MeetingDetail() {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h2>참가 요청 목록</h2>
-                        <button onClick={closeModal}>닫기</button>
                     </div>
                     <div className="modal-body">
                         {requests.length > 0 ? (
