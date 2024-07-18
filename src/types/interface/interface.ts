@@ -6,6 +6,7 @@ import Images from "./image.interface";
 import MeetingBoard from "./meeting-board.interface";
 import MeetingRequest from "./meeting-request.interface";
 import Meeting from "./meeting.interface";
+import MeetingUser from "./meetingUsers.interface";
 import Notice from "./notice.interface";
 import Question from "./question.interface";
 import Review from "./review.interface";
@@ -23,5 +24,6 @@ export type {
     Meeting,
     ChatRoom,
     MeetingRequest,
-    MeetingBoard
+    MeetingBoard,
+    MeetingUser
 }
