@@ -1,7 +1,7 @@
 import { GetMeetingListRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Meeting } from 'types/interface/interface';
+import { Images, Meeting } from 'types/interface/interface';
 import './style.css';
 
 export default function MeetingList() {
@@ -28,6 +28,24 @@ export default function MeetingList() {
       <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
     </div>
   </div>
+
+  const ImageSlider: React.FC<{ images: Images[] }> = ({ images }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+      const intervalId = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 3000); // 3초마다 이미지 전환
+
+      return () => clearInterval(intervalId);
+    }, [images.length]);
+
+    return (
+      <div className="image-slider">
+        <img src={images[currentIndex].image} alt={`Meeting Image ${currentIndex + 1}`} className="meeting-image" />
+      </div>
+    );
+  };
   
   return (
     <div className='meeting-list-container'>
@@ -35,16 +53,22 @@ export default function MeetingList() {
       <div className='meeting-list-write-btn'>
         <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
       </div>
+      <div className='meeting-list-header'>
+          <div>모임 사진</div>
+          <div>모임 명</div>
+          <div>대표</div>
+          <div>한 줄 소개</div>
+          <div>인원</div>
+      </div>
       <ul>
         {meetingList.map((meeting) => (
-          <div>
-            <li key={meeting.meetingId} onClick={() => meetingTitleClickHandler(meeting.meetingId)}>{meeting.title}</li>
-            <div className='meeting-images'>
-              {meeting.imageList.map((image, index) => (
-                <img key={index} src={image.image} alt={`Meeting Image ${index + 1}`} className='meeting-image' />
-              ))}
-            </div>
-          </div>
+            <li key={meeting.meetingId} className='meeting-item' onClick={() => meetingTitleClickHandler(meeting.meetingId)}>
+              <ImageSlider images={meeting.imageList} />
+              <div className='meeting-title'>{meeting.title}</div>
+              <div>{meeting.userNickname}</div>
+              <div>{meeting.introduction}</div>
+              <div>{meeting.maxParticipants}</div>
+            </li>
         ))}
       </ul>
     </div>

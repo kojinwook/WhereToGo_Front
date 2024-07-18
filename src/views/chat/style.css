@@ -1,6 +1,7 @@
 body, html {
     height: 100%;
-    overflow: hidden; /* 스크롤을 없애고 한 화면에 꽉 채우기 */
+    overflow: auto;
+    overflow-x: hidden; /*좌우 스크롤 숨김*/
 }
 
 .chat-room {
