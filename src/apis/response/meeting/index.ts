@@ -1,3 +1,4 @@
+import GetMeetingBoardListResponseDto from "./get-meeting-board-list.response.dto";
 import GetMeetingListResponseDto from "./get-meeting-list.response.dto";
 import GetMeetingResponseDto from "./get-meeting.response.dto";
 import PatchMeetingResponseDto from "./patch-meeting.response.dto";
@@ -11,5 +12,6 @@ export type {
     GetMeetingListResponseDto,
     PostJoinMeetingResponseDto,
     PatchMeetingResponseDto,
-    PostMeetingBoardResponseDto
+    PostMeetingBoardResponseDto,
+    GetMeetingBoardListResponseDto
 }
