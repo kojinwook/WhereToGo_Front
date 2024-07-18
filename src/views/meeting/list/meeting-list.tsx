@@ -128,23 +128,23 @@ export default function MeetingList() {
     </div>
   </div>
 
-  // const ImageSlider: React.FC<{ images: Images[] }> = ({ images }) => {
-  //   const [currentIndex, setCurrentIndex] = useState(0);
+  const ImageSlider: React.FC<{ images: Images[] }> = ({ images }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
 
-  //   useEffect(() => {
-  //     const intervalId = setInterval(() => {
-  //       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  //     }, 3000); // 3초마다 이미지 전환
+    useEffect(() => {
+      const intervalId = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 3000); // 3초마다 이미지 전환
 
-  //     return () => clearInterval(intervalId);
-  //   }, [images.length]);
+      return () => clearInterval(intervalId);
+    }, [images.length]);
 
-  //   return (
-  //     <div className="image-slider">
-  //       <img src={images[currentIndex].image} alt={`Meeting Image ${currentIndex + 1}`} className="meeting-image" />
-  //     </div>
-  //   );
-  // };
+    return (
+      <div className="image-slider">
+        <img src={images[currentIndex].image} alt={`Meeting Image ${currentIndex + 1}`} className="meeting-image" />
+      </div>
+    );
+  };
   
   return (
     <div className='meeting-list-container'>
@@ -211,7 +211,7 @@ export default function MeetingList() {
       <ul>
         {meetingList.map((meeting) => (
             <li key={meeting.meetingId} className='meeting-item' onClick={() => meetingTitleClickHandler(meeting.meetingId)}>
-              {/* <ImageSlider images={meeting.imageList} /> */}
+              {<ImageSlider images={meeting.imageList} />}
               <div className='meeting-title'>{meeting.title}</div>
               <div>{meeting.userNickname}</div>
               <div>{meeting.introduction}</div>

@@ -1,11 +1,11 @@
-import { DeleteMeetingRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import { DeleteMeetingRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
+import { Meeting, MeetingRequest } from 'types/interface/interface';
 import './style.css';
 
 Modal.setAppElement('#root');
@@ -33,9 +33,8 @@ export default function MeetingDetail() {
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('')
     const [nickname, setNickname] = useState<string>('');
-    const [profileImages, setProfileImages] = useState<{ [key: number]: string | null }>({});
+    const [profileImage, setProfileImage] = useState<string | null>(null);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
-    const [boardList, setBoardList] = useState<MeetingBoard[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const creatorNickname = meeting?.userNickname;
     const roomName = meeting?.userNickname;
@@ -68,21 +67,6 @@ export default function MeetingDetail() {
         }
         getMeeting()
     }, [meetingId])
-
-    useEffect(() => {
-        if (!meetingId) return;
-        const fetchBoardList = async () => {
-            const response = await GetMeetingBoardListRequest(meetingId);
-            console.log(response?.meetingBoardList.map((board) => board.imageList));
-            if (response && response.code === 'SU') {
-                setBoardList(response.meetingBoardList);
-
-            } else {
-                console.error('Failed to fetch board list:');
-            }
-        }
-        fetchBoardList();
-    }, [])
 
     const formatDate = (createDateTime: string) => {
         const isoDate = createDateTime;
@@ -165,13 +149,8 @@ export default function MeetingDetail() {
             try {
                 const response = await GetMeetingRequests(meetingId, cookies.accessToken);
                 if (!response) return;
-                console.log(response.requests);
                 setRequests(response.requests);
-                const images = response.requests.reduce((acc, request) => {
-                    acc[request.requestId] = request.user.profileImage || defaultProfileImage;
-                    return acc;
-                }, {} as { [key: number]: string | null });
-                setProfileImages(images);
+                setProfileImage(response.requests[0].user.profileImage);
             } catch (error) {
                 console.error('Failed to fetch meeting requests:', error);
             }
@@ -198,17 +177,17 @@ export default function MeetingDetail() {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
         }
     };
-
+    
     const prevImage = () => {
         if (meeting && meeting.imageList) {
             setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
         }
     };
-
+    
     const toggleOptions = () => {
         setShowOptions((prev) => !prev);
     };
-
+    
 
     // 수정
     const updatePostClickHandler = (meetingId: number | string | undefined) => {
@@ -230,14 +209,6 @@ export default function MeetingDetail() {
         }
     }
 
-    const handleCreateBoard = () => {
-        navigate(`/meeting/board/write/${meetingId}`);
-    }
-
-    const handleBoardDetail = (meetingBoardId: string) => {
-        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
-    }
-
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
     return (
         <div className="meeting-detail-container">
@@ -255,14 +226,14 @@ export default function MeetingDetail() {
                     }
                 }} />
             </div>
-
+    
             <div className="tab-menu">
                 <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
                 <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
                 <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
 
-
+    
             <div className="meeting-detail-body">
                 {activeTab === 'detail' && (
                     <div>
@@ -283,27 +254,27 @@ export default function MeetingDetail() {
                             </div>
                             <div className="meeting-detail-right">
                                 <div className="more-options">
-                                    {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
+                                    {(meeting.userNickname === nickname || role === "ADMIN") && (
                                         <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
-                                            {meeting.userNickname === nickname && (
-                                                <button
-                                                    className="update-button"
-                                                    onClick={() => updatePostClickHandler(meeting.meetingId)}
-                                                >
-                                                    수정
-                                                </button>
-                                            )}
-                                            {(meeting.userNickname === nickname || role === "ADMIN") && (
-                                                <button
-                                                    className="delete-button"
-                                                    onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
-                                                >
-                                                    삭제
-                                                </button>
-                                            )}
+                                        {meeting.userNickname === nickname && (
+                                            <button
+                                            className="update-button"
+                                            onClick={() => updatePostClickHandler(meeting.meetingId)}
+                                            >
+                                            수정
+                                            </button>
+                                        )}
+                                        {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                            <button
+                                            className="delete-button"
+                                            onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
+                                            >
+                                            삭제
+                                            </button>
+                                        )}
                                         </div>
                                     )}
                                 </div>
@@ -311,6 +282,10 @@ export default function MeetingDetail() {
                                 <div className="bordered-div">{meeting.userNickname}</div>
                                 <p>한 줄 소개</p>
                                 <div className="bordered-div">{meeting.introduction}</div>
+                                <p>개설 날짜</p>
+                                <div className="bordered-div">{meeting.createDate}</div>
+                                <p>활동 지역</p>
+                                <div className="bordered-div">{meeting.areas}</div>
                                 <p>인원</p>
                                 <div className="bordered-div">/{meeting.maxParticipants}</div>
                                 <div className='meeting-detail-btn'>
@@ -323,11 +298,15 @@ export default function MeetingDetail() {
                             </div>
                         </div>
                         <div className="meeting-detail-description">
-                            <h2>모임 설명</h2>
-                            <p>{meeting.content}</p>
-                            <p>개설날짜: {formatDate(meeting.createDate)}</p>
-                            <p>태그: {meeting.tags}</p>
-                            <p>지역: {meeting.areas}</p>
+                            <p>모임 설명</p>
+                            <div className="meeting-detail-content">
+                                <div>{meeting.content}</div>
+                                <div className="meeting-tags">
+                                    {meeting.tags.map(tag => (
+                                        <span className="tag">{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -335,21 +314,7 @@ export default function MeetingDetail() {
                     <div className="participants-list">
                         {/* 참가자 목록을 여기에 추가 */}
                         <h2>게시판 목록</h2>
-                        <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
-                        <ul>
-                            {boardList.map((board) => (
-                                <div key={board.meetingBoardId} onClick={() => handleBoardDetail(board.meetingBoardId)}>
-                                    프로필이미지: <img
-                                        src={board.userDto.profileImage || defaultProfileImage}
-                                        alt="profile"
-                                    />
-                                    <h2>제목: {board.title}</h2>
-                                    <p>{board.content}</p>
-                                    <p>닉네임: {board.userDto.nickname}</p>
-                                    <p>작성날짜: {board.createDate}</p>
-                                </div>
-                            ))}
-                        </ul>
+                        {/* 참가자 데이터 표시 */}
                     </div>
                 )}
                 {activeTab === 'requests' && (
@@ -360,7 +325,7 @@ export default function MeetingDetail() {
                     </div>
                 )}
             </div>
-
+            
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
@@ -372,11 +337,11 @@ export default function MeetingDetail() {
                         <h2>참가 요청 목록</h2>
                     </div>
                     <div className="modal-body">
-                    {requests.length > 0 ? (
+                        {requests.length > 0 ? (
                             requests.map(request => (
                                 <div key={request.requestId}>
                                     <div className="profile-info">
-                                        <img src={profileImages[request.requestId] || defaultProfileImage} alt="profile" />
+                                        <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
                                         <p>{request.user.nickname}</p>
                                     </div>
                                     <p>요청 날짜: {new Date(request.requestDate).toLocaleString()}</p>
