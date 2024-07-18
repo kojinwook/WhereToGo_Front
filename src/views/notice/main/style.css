@@ -15,7 +15,7 @@ justify-content: flex-end; /* 오른쪽 끝에 정렬 */
 margin-bottom: 20px;
 }
 
-.search-container input[type="text"] {
+.search-input[type="text"] {
 width: 200px;
 padding: 8px;
 border: 1px solid #ccc;
@@ -23,7 +23,7 @@ border-radius: 4px 0 0 4px; /* 왼쪽만 둥글게 */
 height: 36px; /* 높이 통일 */
 }
 
-.search-container button {
+.search-btn {
 padding: 0 16px;
 border: none;
 background-color: #fff;
@@ -34,7 +34,7 @@ height: 36px; /* 높이 통일 */
 margin-left: -1px; /* 경계선 중복 제거 */
 }
 
-.search-container button:hover {
+.search-btn:hover {
 background-color: #000;
 color: #fff;
 }
