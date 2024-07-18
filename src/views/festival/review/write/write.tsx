@@ -86,7 +86,7 @@ export default function ReviewWritePage() {
     };
 
     return (
-        <div className='container'>
+        <div className='review-write-container'>
             <p><strong>별점</strong></p>
             <label>
                 {[...Array(5)].map((_, index) => (
@@ -102,7 +102,7 @@ export default function ReviewWritePage() {
             </label>
             <hr />
             <p><strong>내용</strong></p>
-            <label className='content'>
+            <label className='review-write-content'>
                 <textarea value={review} onChange={handleReviewChange} />
             </label>
             <hr />
@@ -112,11 +112,13 @@ export default function ReviewWritePage() {
                 {imagePreviews.map((preview, index) => (
                     <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
                         <img
+                        className='review-write-img'
                             src={preview}
                             alt={`이미지 미리보기 ${index}`}
                             style={{ width: '100px', height: 'auto', marginRight: '10px' }}
                         />
                         <button
+                            className='review-write-btn'
                             style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
                             onClick={() => handleImageRemove(index)}
                         >
@@ -126,7 +128,7 @@ export default function ReviewWritePage() {
                 ))}
             </div>
             <hr />
-            <button onClick={handleSubmit}>리뷰 등록</button>
+            <button className='review-write-btn' onClick={handleSubmit}>리뷰 등록</button>
         </div>
     );
 };
