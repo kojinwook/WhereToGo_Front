@@ -6,7 +6,7 @@ export default interface MeetingBoard {
     writer: string;
     title: string;
     content: string;
-    createdDate: string;
+    createDate: string;
     modifyDate: string;
     userDto:User;
 }
