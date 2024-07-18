@@ -282,6 +282,10 @@ export default function MeetingDetail() {
                                 <div className="bordered-div">{meeting.userNickname}</div>
                                 <p>한 줄 소개</p>
                                 <div className="bordered-div">{meeting.introduction}</div>
+                                <p>개설 날짜</p>
+                                <div className="bordered-div">{meeting.createDate}</div>
+                                <p>활동 지역</p>
+                                <div className="bordered-div">{meeting.areas}</div>
                                 <p>인원</p>
                                 <div className="bordered-div">/{meeting.maxParticipants}</div>
                                 <div className='meeting-detail-btn'>
@@ -294,11 +298,15 @@ export default function MeetingDetail() {
                             </div>
                         </div>
                         <div className="meeting-detail-description">
-                            <h2>모임 설명</h2>
-                            <p>{meeting.content}</p>
-                            <p>개설날짜: {formatDate(meeting.createDate)}</p>
-                            <p>태그: {meeting.tags}</p>
-                            <p>지역: {meeting.areas}</p>
+                            <p>모임 설명</p>
+                            <div className="meeting-detail-content">
+                                <div>{meeting.content}</div>
+                                <div className="meeting-tags">
+                                    {meeting.tags.map(tag => (
+                                        <span className="tag">{tag}</span>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}
