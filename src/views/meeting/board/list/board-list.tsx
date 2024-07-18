@@ -14,7 +14,7 @@ export default function BoardList() {
         if (!meetingId) return;
         const fetchBoardList = async () => {
             const response = await GetMeetingBoardListRequest(meetingId);
-            console.log(response)
+            console.log(response?.meetingBoardList.map((board) => board.imageList));
             if (response && response.code === 'SU') {
                 setBoardList(response.meetingBoardList);
 
