@@ -118,6 +118,7 @@ const POST_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/me
 const GET_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/detail/${meetingId}`;
 const GET_MEETING_BOARD_LIST_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/list/${meetingId}`;
 const PATCH_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/update/${meetingId}`;
+const DELETE_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/delete/${meetingId}`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -562,6 +563,13 @@ export const PatchMeetingBoardRequest = async (meetingId: string, requestBody: P
 export const GetMeetingBoardListRequest = async (meetingId: string) => {
     const result = await axios.get(GET_MEETING_BOARD_LIST_URL(meetingId))
         .then(responseHandler<GetMeetingBoardListResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const DeleteMeetingBoardRequest = async (meetingId: string, accessToken: string) => {
+    const result = await axios.delete(DELETE_MEETING_BOARD_URL(meetingId), authorization(accessToken))
+        .then(responseHandler<DeleteMeetingResponseDto>)
         .catch(errorHandler);
     return result;
 };

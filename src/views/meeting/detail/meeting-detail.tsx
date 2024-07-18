@@ -168,7 +168,7 @@ export default function MeetingDetail() {
     };
 
     const backGoPathClickHandler = () => {
-        navigate(`/meeting/list/${meetingId}`);
+        navigate(`/meeting/list`);
     }
 
     // 이미지 넘기기 함수
@@ -202,7 +202,7 @@ export default function MeetingDetail() {
         if (response) {
             if (response.code === 'SU') {
                 alert('모임이 삭제되었습니다.');
-                navigate('/meeting/list/${meetingId}');
+                navigate('/meeting/list');
             } else {
                 console.error('Failed to delete meeting:', response.message);
             }

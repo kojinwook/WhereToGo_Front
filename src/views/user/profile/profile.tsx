@@ -7,7 +7,6 @@ import Switch from 'react-switch';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import './style.css';
-
 import defaultProfileImage from 'assets/images/user.png';
 import boardIcon from 'assets/images/board.png';
 import chatIcon from 'assets/images/chat.png';
