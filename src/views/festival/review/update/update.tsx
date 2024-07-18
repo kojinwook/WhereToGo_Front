@@ -1,10 +1,10 @@
+import { FileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/apis';
+import PatchReviewRequestDto from 'apis/request/review/patch-review.request.dto';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { FileUploadRequest, GetReviewRequest, PatchReviewRequest } from 'apis/apis';
 import { useLocation } from 'react-router-dom';
-import PatchReviewRequestDto from 'apis/request/review/patch-review.request.dto';
-import './style.css'
 import { Images } from 'types/interface/interface';
+import './style.css';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -111,7 +111,7 @@ export default function ReviewWritePage() {
             <h1>리뷰 작성</h1>
             <div className='update-write'>
                 <div><strong>별점</strong></div>
-                <label>
+                <label className='review-update-label'>
                     {[...Array(5)].map((_, index) => (
                         <i
                             key={index}
@@ -125,8 +125,8 @@ export default function ReviewWritePage() {
                 </label>
                 <br />
                 <div><strong>내용</strong></div>
-                <label>
-                    <textarea value={review} onChange={handleReviewChange} />
+                <label className='review-update-label'>
+                    <textarea className={'review-update-content'} value={review} onChange={handleReviewChange} />
                 </label>
                 <br />
                 <div><strong>이미지</strong></div>
@@ -137,11 +137,12 @@ export default function ReviewWritePage() {
                         imagePreviews.map((preview, index) => (
                             <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
                                 <img
+                                className='review-update-img'
                                     src={preview}
                                     alt={`이미지 미리보기 ${index}`}
                                     style={{ width: '100px', height: 'auto', marginRight: '10px' }}
                                 />
-                                <button
+                                <button className='review-update-btn'
                                     style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
                                     onClick={() => handleImageRemove(index)}
                                 >
@@ -156,7 +157,7 @@ export default function ReviewWritePage() {
             </div>
 
             <br />
-            <button onClick={handleSubmit}>리뷰 등록</button>
+            <button className='review-update-btn' onClick={handleSubmit}>리뷰 등록</button>
         </div>
     );
 }

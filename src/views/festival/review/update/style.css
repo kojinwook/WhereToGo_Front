@@ -18,14 +18,14 @@
     padding: 20px;
 }
 
-label {
+.review-update-label {
     font-size: 1.2rem;
     color: #333;
     display: block;
     margin-bottom: 10px;
 }
 
-textarea {
+.review-update-content {
     width: 100%;
     height: 100px;
     padding: 10px;
@@ -51,7 +51,7 @@ i.fas.fa-times-circle {
     color: gray;
 }
 
-button {
+review-update-btn {
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
@@ -59,16 +59,16 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+review-update-btn:hover {
     background-color: #000;
     color: #fff;
 }
 
-button i.fas.fa-times-circle:hover {
+review-update-btn i.fas.fa-times-circle:hover {
     color: red;
 }
 
-img {
+review-update-img {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
