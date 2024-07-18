@@ -1,4 +1,4 @@
-import { GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import { DeleteMeetingRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -168,8 +168,8 @@ export default function MeetingDetail() {
         setIsModalOpen(false);
     };
 
-    const backgoPathClickHandler = () => {
-        navigate(`/meeting/list`);
+    const backGoPathClickHandler = () => {
+        navigate(`/meeting/list/${meetingId}`);
     }
 
     // 이미지 넘기기 함수
@@ -197,36 +197,25 @@ export default function MeetingDetail() {
     };
 
     // 삭제
-    const deletePostClickHandler = (meetingId: number | string | undefined) => {
-        if (!window.confirm("삭제하시겠습니까?")) {
-        return;
+    const deleteMeetingButtonClickHandler = async (meetingId: number) => {
+        window.confirm('정말로 삭제하시겠습니까?') && setDeletingMeetingId(meetingId);
+        const response = await DeleteMeetingRequest(meetingId, cookies.accessToken);
+        if (response) {
+            if (response.code === 'SU') {
+                alert('모임이 삭제되었습니다.');
+                navigate('/meeting/list/${meetingId}');
+            } else {
+                console.error('Failed to delete meeting:', response.message);
+            }
+        }
     }
-    if (!meetingId) {
-        alert("해당 문의가 없습니다.");
-        return;
-    }
-        // DeleteMeetingRequest(meetingId).then(deleteMeetingResponse);
-    };
-
-    // const deleteMeetingResponse = (
-    //     responseBody: DeleteMeetingResponseDto | ResponseDto | null
-    // ) => {
-    // if (responseBody && responseBody.code === "SU") {
-    //     alert("해당 문의가 삭제되었습니다.");
-    //     navigate("/meeting/list");
-    // } else {
-    //     alert("삭제 실패");
-    // }
-    // setDeletingMeetingId(null);
-    // };
-    
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
     return (
         <div className="meeting-detail-container">
             <div className='meeting-detail-header'>
                 <div className='meeting-detail-name'>
-                    <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backgoPathClickHandler} />
+                    <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
                     <h1>{meeting.title}</h1>
                 </div>
                 <img className='meeting-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
@@ -282,7 +271,7 @@ export default function MeetingDetail() {
                                         {(meeting.userNickname === nickname || role === "ADMIN") && (
                                             <button
                                             className="delete-button"
-                                            onClick={() => deletePostClickHandler(meeting.meetingId)}
+                                            onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
                                             >
                                             삭제
                                             </button>

@@ -11,20 +11,18 @@ import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequest
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { GetMeetingBoardListResponseDto, GetMeetingListResponseDto, GetMeetingResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingBoardResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { DeleteMeetingResponseDto, GetMeetingBoardListResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingBoardResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
-import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto } from "./response/festival";
+import { GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
 import GetAllFavoriteResponseDto from "./response/festival/get-all-favorite.response.dto";
 import { Images } from "types/interface/interface";
 import PostMeetingRequestDto from "./request/meeting/post-meeting.request.dto";
 import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
-import { PatchMeetingRequestDto, PostJoinMeetingRequestDto } from "./request/meeting";
-import GetMeetingRequestsResponseDto from "./response/meeting/get-meeting-requests.response.dto";
-import PostMeetingBoardRequestDto from "./request/meeting/post-meeting-board.request.dto";
-import PutFavoriteResponseDto from "./response/festival/put-favorite.response.dto";
+import { PatchMeetingRequestDto, PostJoinMeetingRequestDto, PostMeetingBoardRequestDto } from "./request/meeting";
+
 
 const DOMAIN = 'http://localhost:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
@@ -116,6 +114,7 @@ const GET_MEETING_REQUESTS_URL = (meetingId: number | string) => `${API_DOMAIN}/
 const PATCH_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/update/${meetingId}`;
 const POST_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/${meetingId}`;
 const GET_MEETING_BOARD_LIST_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/list/${meetingId}`;
+const DELETE_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/delete/${meetingId}`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -539,6 +538,13 @@ export const PostMeetingBoardRequest = async (meetingId: string, requestBody: Po
 export const GetMeetingBoardListRequest = async (meetingId: string) => {
     const result = await axios.get(GET_MEETING_BOARD_LIST_URL(meetingId))
         .then(responseHandler<GetMeetingBoardListResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const DeleteMeetingRequest = async (meetingId: number, accessToken: string) => {
+    const result = await axios.delete(DELETE_MEETING_URL(meetingId), authorization(accessToken))
+        .then(responseHandler<DeleteMeetingResponseDto>)
         .catch(errorHandler);
     return result;
 };
