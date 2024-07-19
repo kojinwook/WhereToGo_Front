@@ -10,6 +10,7 @@ export default interface ResponseDto{
     success: boolean;
     festivalList:Festival[];
     questions: Question[];
+    notice: Notice
     notices : Notice[];
     festival: Festival;
     review: Review;

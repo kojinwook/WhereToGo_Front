@@ -20,6 +20,7 @@ const NoticeList: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const result = await GetAllNoticeRequest();
+        console.log(result)
         if (!result) return;
         const { code, notices } = result;
         if (code === 'DBE') {
@@ -111,7 +112,7 @@ const NoticeList: React.FC = () => {
               </tr>
             ) : (
               filteredPosts.map((notice) => (
-                <tr key={notice.id} onClick={() => noticeClickHandler(notice.id)}>
+                <tr key={notice.noticeId} onClick={() => noticeClickHandler(notice.noticeId)}>
                   <td>{notice.noticeId}</td>
                   <td>{notice.title}</td>
                   <td>{formatDate(notice.createDateTime)}</td>

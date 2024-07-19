@@ -636,7 +636,7 @@ export const DeleteNoticeRequest = async (noticeId: number | string) => {
         })
     return result;
 }
-export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto) => {
+export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto, accessToken: any) => {
     const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody)
         .then(response => {
             const responseBody: PatchNoticeResponseDto = response.data;

@@ -108,9 +108,9 @@ function App() {
 
       <Route path='/notice'>
         <Route path="" element={<NoticeList />} />
-        <Route path="detail" element={<NoticeDetail />} />
+        <Route path="detail/:noticeId" element={<NoticeDetail />} />
         <Route path="write" element={<NoticeWrite />} />
-        <Route path="update" element={<NoticeUpdate />} />
+        <Route path="update/:noticeId" element={<NoticeUpdate />} />
       </Route>
       <Route path='*' element={<h1>404 Not Found</h1>} />
     </Routes>
@@ -119,3 +119,5 @@ function App() {
 }
 
 export default App;
+
+
