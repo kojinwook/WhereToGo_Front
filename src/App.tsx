@@ -39,6 +39,7 @@ import BoardWrite from 'views/meeting/board/write/board-write';
 import BoardList from 'views/meeting/board/list/board-list';
 import BoardUpdate from 'views/meeting/board/update/board-update';
 import BoardDetail from 'views/meeting/board/detail/board-detail';
+import Main from 'views/main/main';
 
 function App() {
 
@@ -68,6 +69,8 @@ function App() {
 
   return (
     <Routes>
+
+      <Route path="/" element={<Main/>}></Route>
       <Route path='/festival'>
         <Route path="search" element={<FestivalPage />} />
         <Route path="save" element={<SaveFestivalList />} />
@@ -116,9 +119,9 @@ function App() {
 
       <Route path='/notice'>
         <Route path="" element={<NoticeList />} />
-        <Route path="detail" element={<NoticeDetail />} />
+        <Route path="detail/:noticeId" element={<NoticeDetail />} />
         <Route path="write" element={<NoticeWrite />} />
-        <Route path="update" element={<NoticeUpdate />} />
+        <Route path="update/:noticeId" element={<NoticeUpdate />} />
       </Route>
       <Route path='*' element={<h1>404 Not Found</h1>} />
     </Routes>
@@ -127,3 +130,5 @@ function App() {
 }
 
 export default App;
+
+

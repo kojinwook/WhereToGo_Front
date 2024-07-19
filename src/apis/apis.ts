@@ -423,14 +423,20 @@ export const GetSearchNoticeListRequest = async (keyword: string) => {
 
 export const DeleteNoticeRequest = async (noticeId: number | string) => {
     const result = await axios.delete(DELETE_NOTICE_URL(noticeId))
-        .then(responseHandler<DeleteNoticeResponseDto>)
-        .catch(errorHandler);
+        .then(response => {
+            const responseBody: DeleteNoticeResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.data;
+            return responseBody;
+        })
     return result;
 }
-
-export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto) => {
-    const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody)
-        .then(responseHandler<PatchNoticeResponseDto>)
+export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto, accessToken: any) => {
+    const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody, authorization(accessToken))
+        .then(responseHandler<DeleteNoticeResponseDto>)
         .catch(errorHandler);
     return result;
 }

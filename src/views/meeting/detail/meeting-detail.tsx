@@ -185,6 +185,7 @@ export default function MeetingDetail() {
             try {
                 const response = await GetMeetingRequests(meetingId, cookies.accessToken);
                 if (!response) return;
+                setRequests(response.requests);
                 if (response.code === 'SU') {
                     setRequests(response.requests);
                     const images: string[] = response.requests.map(request => request.user?.profileImage || '');
@@ -216,17 +217,17 @@ export default function MeetingDetail() {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
         }
     };
-
+    
     const prevImage = () => {
         if (meeting && meeting.imageList) {
             setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
         }
     };
-
+    
     const toggleOptions = () => {
         setShowOptions((prev) => !prev);
     };
-
+    
 
     // 수정
     const updatePostClickHandler = (meetingId: number | string | undefined) => {
@@ -277,14 +278,14 @@ export default function MeetingDetail() {
                     }
                 }} />
             </div>
-
+    
             <div className="tab-menu">
                 <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
                 <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
                 <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
 
-
+    
             <div className="meeting-detail-body">
                 {activeTab === 'detail' && (
                     <div>
@@ -310,22 +311,22 @@ export default function MeetingDetail() {
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
-                                            {meeting.userNickname === nickname && (
-                                                <button
-                                                    className="update-button"
-                                                    onClick={() => updatePostClickHandler(meeting.meetingId)}
-                                                >
-                                                    수정
-                                                </button>
-                                            )}
-                                            {(meeting.userNickname === nickname || role === "ADMIN") && (
-                                                <button
-                                                    className="delete-button"
-                                                    onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
-                                                >
-                                                    삭제
-                                                </button>
-                                            )}
+                                        {meeting.userNickname === nickname && (
+                                            <button
+                                            className="update-button"
+                                            onClick={() => updatePostClickHandler(meeting.meetingId)}
+                                            >
+                                            수정
+                                            </button>
+                                        )}
+                                        {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                            <button
+                                            className="delete-button"
+                                            onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
+                                            >
+                                            삭제
+                                            </button>
+                                        )}
                                         </div>
                                     )}
                                 </div>
@@ -397,7 +398,7 @@ export default function MeetingDetail() {
                     </div>
                 )}
             </div>
-
+            
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
