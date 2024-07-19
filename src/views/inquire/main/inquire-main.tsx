@@ -77,9 +77,9 @@ const Inquire: React.FC = () => {
           <div className="inquire-notice-list">
           <div className="inquire-count">{notices.length}건</div> {/* 공지사항 수 표시 */}
             <div className="inquire-header">
-              <span className="inquire-num">NO</span>
-              <span className="inquire-title">제목</span>
-              <span className="inquire-date">날짜</span>
+              <div className="inquire-num">NO</div>
+              <div className="inquire-title">제목</div>
+              <div className="inquire-date">날짜</div>
             </div>
             {notices.length === 0 ? (
               <div className="inquire-nothing">공지사항이 없습니다.</div>
@@ -87,9 +87,9 @@ const Inquire: React.FC = () => {
               <>
                 {notices.map((notice) => (
                   <div className="inquire-sort" key={notice.noticeId}>
-                    <span>{notice.noticeId}</span>
-                    <span>{notice.title}</span>
-                    <span>{new Date(notice.createDateTime).toLocaleString()}</span> {/* 작성된 시간을 표시 */}
+                    <div className="inquire-num">{notice.noticeId}</div>
+                    <div className="inquire-title">{notice.title}</div>
+                    <div className="inquire-date">{new Date(notice.createDateTime).toLocaleString()}</div> {/* 작성된 시간을 표시 */}
                   </div>
                 ))}
               </>
