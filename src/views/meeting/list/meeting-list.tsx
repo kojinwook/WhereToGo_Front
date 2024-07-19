@@ -241,7 +241,7 @@ export default function MeetingList() {
         {filteredMeetingList.length > 0 ? (
           filteredMeetingList.map((meeting) => (
             <li key={meeting.meetingId} className='meeting-item' onClick={() => meetingTitleClickHandler(meeting.meetingId)}>
-              <ImageSlider images={meeting.imageList} />
+              {<ImageSlider images={meeting.imageList} />}
               <div className='meeting-title'>{meeting.title}</div>
               <div>{meeting.userNickname}</div>
               <div>{meeting.introduction}</div>

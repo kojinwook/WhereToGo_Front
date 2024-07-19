@@ -1,6 +1,6 @@
+import { GetAllNoticeRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { GetAllNoticeRequest } from 'apis/apis';
 import Notice from 'types/interface/notice.interface';
 import './style.css';
 
@@ -46,6 +46,10 @@ const NoticeList: React.FC = () => {
     setFilteredPosts(filteredNotices);
   }, [searchTerm]);
 
+  const backGoPathClickHandler = () => {
+    navigator(`/inquire/`);
+  }
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -86,42 +90,40 @@ const NoticeList: React.FC = () => {
   return (
     <div className="notice-list">
       <h1>공지사항</h1>
-      <div className="search-container">
-        <input
-          className="search-input"
-          type="text"
-          placeholder="검색"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          onKeyDown={handleKeyPress}
-        />
-        <button className='search-btn' onClick={handleSearchButtonClick}>검색</button>
+      <div className="notice-search-container">
+        <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
+        <div>
+          <input
+            className="notice-search-input"
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onKeyDown={handleKeyPress}
+          />
+          <button className='notice-search-btn' onClick={handleSearchButtonClick}>검색</button>
+        </div>
       </div>
       <div className="notices">
-        <table className="notice-table">
-          <thead>
-            <tr>
-              <th>번호</th>
-              <th>제목</th>
-              <th>날짜</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPosts.length === 0 ? (
-              <tr>
-                <td colSpan={3}>게시물이 없습니다.</td>
-              </tr>
-            ) : (
-              filteredPosts.map((notice) => (
-                <tr key={notice.noticeId} onClick={() => noticeClickHandler(notice.noticeId)}>
-                  <td>{notice.noticeId}</td>
-                  <td>{notice.title}</td>
-                  <td>{formatDate(notice.createDateTime)}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+        <div className='notice-header'>
+            <div>NO.</div>
+            <div>제목</div>
+            <div>날짜</div>
+        </div>
+        <ul className='notice-content'>
+          {filteredPosts.length === 0 ? (
+            <div>
+              <div className='notice-content-non'>게시물이 없습니다.</div>
+            </div> 
+          ) : (
+            filteredPosts.map((notice) => (
+              <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.id)}>
+                <div>{notice.noticeId}</div>
+                <div>{notice.title}</div>
+                <div>{formatDate(notice.createDateTime)}</div>
+              </div>
+            ))
+          )}
+        </ul>
       </div>
     </div>
   );

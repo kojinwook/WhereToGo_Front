@@ -1,149 +1,182 @@
 .inquire {
-    width: 80%;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .inquire-main {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .inquire-enter {
-    width: 100%;
-  }
-  
-  .inquire-question {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .inquire-left, .inquire-right {
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    width: 45%;
-  }
-
-  .inquire-left{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .inquire-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 15px;
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
 }
 
-  .list-left, .list-right {
-    flex: 1; /* 두 버튼의 폭을 동일하게 설정 */
-    display: flex;
-    justify-content: center; /* 버튼 중앙 정렬 */
-  }
-  
-  .inquire-divider {
-    width: 1px; /* 선의 두께 */
-    height: 60px; /* 선의 길이 */
-    background-color: #ccc; /* 선 색상 */
-    margin: 0 15px; /* 좌우 여백 */
-  }
+.inquire-main {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 
-  .inquire-apply, .inquire-li{
-    max-width: 100px; /* 버튼의 최대 너비 설정 */
-    text-align: center;  /* 중앙 정렬 */
-    white-space: normal; /* 자동 줄 바꿈 */
-  }
+.inquire-enter {
+  width: 100%;
+}
 
-  .inquire-apply, .inquire-li, .inquire-url {
-    padding: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-  }
+.inquire-question {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
 
-  .inquire-apply:hover, .inquire-li:hover, .inquire-url:hover {
-    background-color: transparent;
-    color: #000;
-  }
-  
-  .inquire-chat, .inquire-number, .inquire-time, .inquire-rest {
-    font-size: 16px;
-  }
-  
-  .inquire-notice-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .inquire-notice {
-    font-size: 20px;
-    font-weight: bold;
-  }
-  
-  .inquire-plus {
-    font-size: 14px;
-    cursor: pointer;
-    width: 70px;
-    border: none;
-    border-radius: 5px;
-  }
+.inquire-left, .inquire-right {
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  width: 45%;
+}
 
-  .inquire-plus:hover {
-    background-color: transparent;
-    color: #000;
-  }
-  
-  .inquire-notice-list {
-    border: 2px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-  }
+.inquire-left{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .inquire-header {
-    display: flex;
-    justify-content: space-between; /* 양쪽 끝으로 정렬 */
-    font-weight: bold; /* 두꺼운 글씨 */
-    margin-bottom: 10px; /* 목록과 간격 */
-    border-bottom: 1px solid #ccc;
-  }
+.inquire-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 15px;
+}
 
-  .inquire-num, .inquire-title, .inquire-type, .inquire-date {
-      flex: 1; /* 각 항목의 동일한 폭 설정 */
-      text-align: center; /* 중앙 정렬 */
-      margin-bottom: 10px;
-  }
+.list-left, .list-right {
+  flex: 1; /* 두 버튼의 폭을 동일하게 설정 */
+  display: flex;
+  justify-content: center; /* 버튼 중앙 정렬 */
+}
 
-  .inquire-sort {
-      display: flex;
-      justify-content: space-between; /* 각 항목의 정렬 */
-      margin-bottom: 10px; /* 항목 간 간격 */
-  }
-  
-  .inquire-sort {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .inquire-nothing {
-    text-align: center;
-    font-size: 16px;
-  }
-  
-  .inquire-count {
-    margin: 10px;
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
+.inquire-divider {
+  width: 1px; /* 선의 두께 */
+  height: 60px; /* 선의 길이 */
+  background-color: #ccc; /* 선 색상 */
+  margin: 0 15px; /* 좌우 여백 */
+}
+
+.inquire-apply, .inquire-li{
+  max-width: 100px; /* 버튼의 최대 너비 설정 */
+  text-align: center;  /* 중앙 정렬 */
+  white-space: normal; /* 자동 줄 바꿈 */
+}
+
+.inquire-apply, .inquire-li, .inquire-url {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.inquire-apply:hover, .inquire-li:hover, .inquire-url:hover {
+  background-color: transparent;
+  color: #000;
+}
+
+.inquire-chat, .inquire-number, .inquire-time, .inquire-rest {
+  font-size: 16px;
+}
+
+.inquire-notice-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.inquire-notice {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.inquire-plus {
+  font-size: 14px;
+  cursor: pointer;
+  width: 70px;
+  border: none;
+  border-radius: 5px;
+}
+
+.inquire-plus:hover {
+  background-color: transparent;
+  color: #000;
+}
+
+.inquire-notice-list {
+  border: 2px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.inquire-header {
+  width: calc(100% - 40px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 2px solid #ccc;
+  font-weight: bold;
+  margin: 20px 0;
+}
+.inquire-header > div {
+  text-align: center;
+}
+
+.inquire-num {
+  width: 100px; /* NO 칸 너비 */
+}
+
+.inquire-title {
+  width: 300px; /* 제목 칸 너비, 늘려서 공간 확보 */
+}
+
+.inquire-date {
+  width: 200px; /* 날짜 칸 너비, 늘려서 공간 확보 */
+}
+
+.inquire-sort {
+  width: calc(100% - 40px);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #ddd;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+.inquire-sort > div {
+  text-align: center;
+}
+
+.inquire-sort .inquire-num {
+  width: 100px; /* NO 칸 너비 */
+}
+
+.inquire-sort .inquire-title {
+  width: 300px; /* 제목 칸 너비 */
+}
+
+.inquire-sort .inquire-date {
+  width: 200px; /* 날짜 칸 너비 */
+}
+
+.inquire-sort:hover {
+  transform: translateY(-5px);
+}
+
+.inquire-nothing {
+  text-align: center;
+  font-size: 16px;
+}
+
+.inquire-count {
+  margin: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
