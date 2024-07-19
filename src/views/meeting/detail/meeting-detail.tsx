@@ -1,11 +1,11 @@
-import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { Meeting, MeetingRequest } from 'types/interface/interface';
+import { Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
 import './style.css';
 
 Modal.setAppElement('#root');
@@ -43,6 +43,7 @@ export default function MeetingDetail() {
     const [activeTab, setActiveTab] = useState('detail');
     const [joinMemberList, setJoinMemberList] = useState<string[]>([]);
     const [joinMembers, setJoinMembers] = useState<number>();
+    const [boardList, setBoardList] = useState<MeetingBoard[]>([]);
     const [showOptions, setShowOptions] = useState(false);
 
     useEffect(() => {
@@ -59,11 +60,8 @@ export default function MeetingDetail() {
         const fetchJoinMembers = async () => {
             try {
                 const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
-                console.log(response);
                 if (!response) return;
-        
                 const members = response.meetingUsersList.map(member => member.userNickname);
-        
                 setJoinMemberList(members);
                 setJoinMembers(response.meetingUsersList.length);
             } catch (error) {
@@ -87,6 +85,19 @@ export default function MeetingDetail() {
             }
         }
         getMeeting()
+    }, [meetingId])
+
+    useEffect(() => {
+        if (!meetingId) return;
+        const fetchBoardList = async () => {
+            const response = await GetMeetingBoardListRequest(meetingId);
+            if (response && response.code === 'SU') {
+                setBoardList(response.meetingBoardList);
+            } else {
+                console.error('Failed to fetch board list:');
+            }
+        }
+        fetchBoardList();
     }, [meetingId])
 
     const formatDate = (createDateTime: string) => {
@@ -241,6 +252,15 @@ export default function MeetingDetail() {
         }
     }
 
+
+    const handleCreateBoard = () => {
+        navigate(`/meeting/board/write/${meetingId}`);
+    }
+
+    const handleBoardDetail = (meetingBoardId: string) => {
+        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    }
+
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
     return (
         <div className="meeting-detail-container">
@@ -315,7 +335,7 @@ export default function MeetingDetail() {
                                 <p>한 줄 소개</p>
                                 <div className="bordered-div">{meeting.introduction}</div>
                                 <p>개설 날짜</p>
-                                <div className="bordered-div">{meeting.createDate}</div>
+                                <div className="bordered-div">{formatDate(meeting.createDate)}</div>
                                 <p>활동 지역</p>
                                 <div className="bordered-div">
                                     {Array.isArray(meeting.locations) ? meeting.locations.join(', ') : meeting.locations}
@@ -338,8 +358,8 @@ export default function MeetingDetail() {
                             <div className="meeting-detail-content">
                                 <div>{meeting.content}</div>
                                 <div className="meeting-tags">
-                                    {meeting.categories.map(category => (
-                                        <span key={category} className="tag">{category}</span>
+                                    {meeting.tags.map(tag => (
+                                        <span key={tag} className="tag">{tag}</span>
                                     ))}
                                 </div>
                             </div>
@@ -350,7 +370,24 @@ export default function MeetingDetail() {
                     <div className="participants-list">
                         {/* 참가자 목록을 여기에 추가 */}
                         <h2>게시판 목록</h2>
-                        {/* 참가자 데이터 표시 */}
+                        <div>
+
+                            <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
+                            <ul>
+                                {boardList.map((board) => (
+                                    <li key={board.meetingBoardId} onClick={() => handleBoardDetail(board.meetingBoardId)}>
+                                        프로필이미지: <img
+                                            src={board.userDto && board.userDto.profileImage ? board.userDto.profileImage : defaultProfileImage}
+                                            alt="profile"
+                                        />
+                                        <h2>제목: {board.title}</h2>
+                                        <p>{board.content}</p>
+                                        <p>닉네임: {board.userDto ? board.userDto.nickname : 'Unknown'}</p>
+                                        <p>작성날짜: {board.createDate}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 )}
                 {activeTab === 'requests' && (

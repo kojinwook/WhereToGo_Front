@@ -14,7 +14,6 @@ export default function BoardList() {
         if (!meetingId) return;
         const fetchBoardList = async () => {
             const response = await GetMeetingBoardListRequest(meetingId);
-            // console.log(response?.meetingBoardList.map((board) => board.imageList));
             if (response && response.code === 'SU') {
                 setBoardList(response.meetingBoardList);
 
@@ -35,7 +34,7 @@ export default function BoardList() {
 
     return (
         <div>
-            <h1>Board List</h1>
+            
             <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
             <ul>
             {boardList.map((board) => (

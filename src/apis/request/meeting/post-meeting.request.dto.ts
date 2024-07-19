@@ -8,5 +8,6 @@ export default interface PostMeetingRequestDto {
     nickname: string,
     maxParticipants: number,
     tags: string[],
-    areas: string[],
+    categories: string[],
+    locations: string[],
 }
