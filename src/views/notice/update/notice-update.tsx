@@ -31,6 +31,7 @@ const NoticeUpdate: React.FC = () => {
     const fetchNotice = async () => {
       try {
         const response = await GetNoticeRequest(noticeId);
+        if(!response) return;
         const { title, content, nickname, imageList } = response.notice;
         setTitle(title);
         setContent(content);
