@@ -416,8 +416,33 @@ export const GetSearchNoticeListRequest = async (keyword: string) => {
 
 export const DeleteNoticeRequest = async (noticeId: number | string) => {
     const result = await axios.delete(DELETE_NOTICE_URL(noticeId))
+<<<<<<< HEAD
+        .then(response => {
+            const responseBody: DeleteNoticeResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.data;
+            return responseBody;
+        })
+    return result;
+}
+export const PatchNoticeRequest = async (noticeId: number | string | undefined, requestBody: PatchNoticeRequestDto, accessToken: any) => {
+    const result = await axios.patch(PATCH_NOTICE_URL(noticeId), requestBody)
+        .then(response => {
+            const responseBody: PatchNoticeResponseDto = response.data;
+            return responseBody;
+        })
+        .catch(error => {
+            if (!error.response) return null;
+            const responseBody: ResponseDto = error.response.data;
+            return responseBody;
+        })
+=======
         .then(responseHandler<DeleteNoticeResponseDto>)
         .catch(errorHandler);
+>>>>>>> 930c21af9b1917b16cdb2e1483458b130eea5aab
     return result;
 }
 
