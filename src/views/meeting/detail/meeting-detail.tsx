@@ -1,4 +1,4 @@
-import { DeleteMeetingRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -33,7 +33,7 @@ export default function MeetingDetail() {
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('')
     const [nickname, setNickname] = useState<string>('');
-    const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const creatorNickname = meeting?.userNickname;
@@ -41,8 +41,8 @@ export default function MeetingDetail() {
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [activeTab, setActiveTab] = useState('detail');
-
-    const [deletingMeetingId, setDeletingMeetingId] = useState<number | null>(null);
+    const [joinMemberList, setJoinMemberList] = useState<string[]>([]);
+    const [joinMembers, setJoinMembers] = useState<number>();
     const [showOptions, setShowOptions] = useState(false);
 
     useEffect(() => {
@@ -52,6 +52,27 @@ export default function MeetingDetail() {
             setRole(loginUser.role)
         }
     }, [])
+
+    useEffect(() => {
+        if (!meeting) return;
+
+        const fetchJoinMembers = async () => {
+            try {
+                const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
+                console.log(response);
+                if (!response) return;
+        
+                const members = response.meetingUsersList.map(member => member.userNickname);
+        
+                setJoinMemberList(members);
+                setJoinMembers(response.meetingUsersList.length);
+            } catch (error) {
+                console.error('Failed to fetch join members:', error);
+            }
+        };
+        fetchJoinMembers();
+    }, [meeting, cookies.accessToken]);
+
 
     useEffect(() => {
         if (!meetingId) return;
@@ -108,14 +129,18 @@ export default function MeetingDetail() {
 
     const handleJoinMeeting = async () => {
         if (!meetingId || !nickname) return;
+        const isAlreadyJoined = joinMemberList.includes(nickname);
+        if (isAlreadyJoined) {
+            alert('이미 모임에 가입된 멤버입니다.');
+            return;
+        }
         try {
             const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.accessToken);
             if (!response) return;
-            const { code } = response;
-            if (code === 'SU') {
+            if (response.code === 'SU') {
                 alert('모임에 가입 신청이 완료되었습니다.');
             }
-            if (code === "AR") {
+            if (response.code === "AR") {
                 alert("이미 가입 신청이 되었습니다.")
             }
             else {
@@ -150,7 +175,11 @@ export default function MeetingDetail() {
                 const response = await GetMeetingRequests(meetingId, cookies.accessToken);
                 if (!response) return;
                 setRequests(response.requests);
-                setProfileImage(response.requests[0].user.profileImage);
+                if (response.code === 'SU') {
+                    setRequests(response.requests);
+                    const images: string[] = response.requests.map(request => request.user?.profileImage || '');
+                    setProfileImages(images);
+                }
             } catch (error) {
                 console.error('Failed to fetch meeting requests:', error);
             }
@@ -197,12 +226,15 @@ export default function MeetingDetail() {
 
     // 삭제
     const deleteMeetingButtonClickHandler = async (meetingId: number) => {
-        window.confirm('정말로 삭제하시겠습니까?') && setDeletingMeetingId(meetingId);
+        window.confirm('정말로 삭제하시겠습니까?')
         const response = await DeleteMeetingRequest(meetingId, cookies.accessToken);
         if (response) {
             if (response.code === 'SU') {
                 alert('모임이 삭제되었습니다.');
                 navigate('/meeting/list');
+            }
+            if (response.code !== 'SU') {
+                alert('모임 삭제에 실패했습니다.');
             } else {
                 console.error('Failed to delete meeting:', response.message);
             }
@@ -285,12 +317,16 @@ export default function MeetingDetail() {
                                 <p>개설 날짜</p>
                                 <div className="bordered-div">{meeting.createDate}</div>
                                 <p>활동 지역</p>
-                                <div className="bordered-div">{meeting.areas}</div>
+                                <div className="bordered-div">
+                                    {Array.isArray(meeting.locations) ? meeting.locations.join(', ') : meeting.locations}
+                                </div>
                                 <p>인원</p>
-                                <div className="bordered-div">/{meeting.maxParticipants}</div>
+                                <div className="bordered-div">{joinMembers}/{meeting.maxParticipants}</div>
                                 <div className='meeting-detail-btn'>
                                     <button onClick={handleCreateRoom}>1 : 1 채팅</button>
-                                    <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>
+                                    {joinMemberList.includes(nickname) ? (
+                                        <div></div>) : (
+                                        <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>)}
                                     {nickname === creatorNickname && (
                                         <button onClick={openModal}>신청 목록</button>
                                     )}
@@ -302,8 +338,8 @@ export default function MeetingDetail() {
                             <div className="meeting-detail-content">
                                 <div>{meeting.content}</div>
                                 <div className="meeting-tags">
-                                    {meeting.tags.map(tag => (
-                                        <span className="tag">{tag}</span>
+                                    {meeting.categories.map(category => (
+                                        <span key={category} className="tag">{category}</span>
                                     ))}
                                 </div>
                             </div>
@@ -338,21 +374,27 @@ export default function MeetingDetail() {
                     </div>
                     <div className="modal-body">
                         {requests.length > 0 ? (
-                            requests.map(request => (
-                                <div key={request.requestId}>
+                            requests.map((request, index) => (
+                                <div key={request.requestId} className="request-item">
                                     <div className="profile-info">
-                                        <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
-                                        <p>{request.user.nickname}</p>
+                                        <img
+                                            src={profileImages[index] || defaultProfileImage}
+                                            alt="profile"
+                                        />
+                                        <p>{request.user?.nickname || "Unknown User"}</p>
                                     </div>
                                     <p>요청 날짜: {new Date(request.requestDate).toLocaleString()}</p>
-                                    <button onClick={() => handleRequestResponse(request.requestId, true)}>수락</button>
-                                    <button onClick={() => handleRequestResponse(request.requestId, false)}>거절</button>
+                                    <div className="request-buttons">
+                                        <button onClick={() => handleRequestResponse(request.requestId, true)}>수락</button>
+                                        <button onClick={() => handleRequestResponse(request.requestId, false)}>거절</button>
+                                    </div>
                                 </div>
                             ))
                         ) : (
                             <p>참가 요청이 없습니다.</p>
                         )}
                     </div>
+
                     <div className="modal-footer">
                         <button onClick={closeModal}>닫기</button>
                     </div>

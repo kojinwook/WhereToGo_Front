@@ -20,6 +20,7 @@ const NoticeList: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const result = await GetAllNoticeRequest();
+        console.log(result)
         if (!result) return;
         const { code, notices } = result;
         if (code === 'DBE') {
@@ -112,7 +113,7 @@ const NoticeList: React.FC = () => {
           {filteredPosts.length === 0 ? (
             <div>
               <div className='notice-content-non'>게시물이 없습니다.</div>
-            </div>
+            </div> 
           ) : (
             filteredPosts.map((notice) => (
               <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.id)}>

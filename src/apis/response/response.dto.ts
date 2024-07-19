@@ -1,5 +1,5 @@
 import ChatMessage from "types/interface/chat-message.interface";
-import { Answer, ChatRoom, Favorite, Festival, Meeting, MeetingBoard, MeetingRequest, Notice, User } from "types/interface/interface";
+import { Answer, ChatRoom, Favorite, Festival, Meeting, MeetingBoard, MeetingRequest, MeetingUser, Notice, User } from "types/interface/interface";
 import Question from "types/interface/question.interface";
 import Review from "types/interface/review.interface";
 import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
@@ -10,6 +10,7 @@ export default interface ResponseDto{
     success: boolean;
     festivalList:Festival[];
     questions: Question[];
+    notice: Notice
     notices : Notice[];
     festival: Festival;
     review: Review;
@@ -31,4 +32,5 @@ export default interface ResponseDto{
     requests: MeetingRequest[];
     meetingBoardList: MeetingBoard[];
     meetingBoard: MeetingBoard;
+    meetingUsersList: MeetingUser[];
 }
