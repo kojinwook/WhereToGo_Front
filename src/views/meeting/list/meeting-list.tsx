@@ -17,6 +17,7 @@ export default function MeetingList() {
   const [meetingList, setMeetingList] = useState<Meeting[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // 선택된 카테고리 상태
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]); // 선택된 지역 상태
+  const [searchTerms, setSearchTerms] = useState<string[]>([]); // 검색어 배열
   const navigate = useNavigate()
 
   const backGoPathClickHandler = () => {
@@ -62,6 +63,7 @@ export default function MeetingList() {
     { name: '전남' },
     { name: '제주' }
   ];
+
   useEffect(() => {
     const getMeetingList = async () => {
       try {
@@ -138,13 +140,29 @@ export default function MeetingList() {
   const filteredMeetingList = meetingList.filter((meeting) => {
     const meetingLocations = meeting.locations;
     const meetingCategories = meeting.categories;
-  
-    const allSelectedLocationsIncluded = selectedLocations.every(location => meetingLocations.includes(location));
-    const allSelectedCategoriesIncluded = selectedCategories.every(category => meetingCategories.includes(category));
-  
-    return allSelectedLocationsIncluded && allSelectedCategoriesIncluded;
+    const meetingTags = meeting.tags;
+
+    const locationMatch = selectedLocations.length === 0 || selectedLocations.some(location => meetingLocations.includes(location));
+    const categoryMatch = selectedCategories.length === 0 || selectedCategories.some(category => meetingCategories.includes(category));
+    const searchTermMatch = searchTerms.length === 0 || searchTerms.some(term => meetingTags.includes(term));
+
+    return locationMatch && categoryMatch && searchTermMatch;
   });
-  
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const newSearchTerm = e.currentTarget.value.trim();
+      if (newSearchTerm && !searchTerms.includes(newSearchTerm)) {
+        setSearchTerms([...searchTerms, newSearchTerm]);
+        e.currentTarget.value = '';
+      }
+    }
+  };
+
+  const removeSearchTerm = (term: string) => {
+    setSearchTerms(searchTerms.filter(t => t !== term));
+  };
 
   if (!meetingList)
     <div>
@@ -218,14 +236,22 @@ export default function MeetingList() {
               type='text'
               className='category-search-input'
               placeholder='검색'
-              onClick={() => console.log('Search input clicked')}
+              onKeyDown={handleSearchKeyDown}
             />
-            <button
+            <div>
+              {searchTerms.map((term, index) => (
+                <div key={index}>
+                  #{term}
+                  <span onClick={() => removeSearchTerm(term)}>&times;</span>
+                </div>
+              ))}
+            </div>
+            {/* <button
               className='category-search-button'
               onClick={() => console.log('Search button clicked')}
             >
               검색
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
