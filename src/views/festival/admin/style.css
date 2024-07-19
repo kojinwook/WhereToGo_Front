@@ -1,10 +1,29 @@
+.inquire-write-title {
+    margin: 20px 60px 40px 60px;
+}
+
+.festival-container {
+    padding-left: 100px; /* 왼쪽 여백 */
+}
+
 .festival-admin-edit {
-    width: 40px;
+    width: 80px;
+    height: 40px;
     cursor: pointer;
+    background-color: black;
+    color: white;
+    border: 1px solid black; /* 얇은 검은색 실선 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    outline: none;
+    display: flex; /* 플렉스 박스 사용 */
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    margin-top: 30px;
 }
 
 .festival-admin-edit:hover {
-    text-decoration: underline;
+    background-color: white;
+    color: black;
 }
 
 .festival-admin-modal-container {
@@ -23,7 +42,7 @@
 .festival-admin-modal-content {
     background-color: #fefefe;
     padding: 20px;
-    border: 1px solid #888;
+    /* border: 1px solid #888; */
     width: 50%;
     max-height: 80%; /* Adjust as needed */
     overflow-y: auto;
@@ -56,23 +75,30 @@
 }
 
 .festival-admin-modal-form button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
     cursor: pointer;
+    background-color: black;
+    color: white;
+    border: 1px solid black;
+    border-radius: 5px; /* 모서리 둥글게 */
+    outline: none;
+    display: flex;
+    padding: 10px 20px;
     margin-right: 10px;
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: center;
 }
 
 .festival-admin-modal-form button:hover {
-    background-color: #45a049;
+    background-color: white;
+    color: black;
 }
 
 .festival-admin-modal-form button[type="button"] {
-    background-color: #f44336;
+    background-color: white;
+    color: black;
 }
 
 .festival-admin-modal-form button[type="button"]:hover {
-    background-color: #da190b;
+    background-color: black;
+    color: white;
 }

@@ -7,7 +7,6 @@ import Switch from 'react-switch';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import './style.css';
-
 import defaultProfileImage from 'assets/images/user.png';
 import boardIcon from 'assets/images/board.png';
 import chatIcon from 'assets/images/chat.png';
@@ -119,7 +118,7 @@ export default function UserProfile() {
         }
         try {
             const response = await GetAllFavoriteRequest(nickname, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             if (response.code === 'SU') {
                 setFavorites(response.favoriteList);
             } else {
@@ -139,7 +138,7 @@ export default function UserProfile() {
         }
         try {
             const response = await GetChatRoomRequest(nickname, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             if (response.code === 'SU') {
                 setChatRooms(response.chatRoomList);
             } else {

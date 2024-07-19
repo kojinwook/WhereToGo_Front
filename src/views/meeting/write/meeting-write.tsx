@@ -4,7 +4,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images } from 'types/interface/interface';
-// import './style.css';
+import './style.css';
 
 export default function MeetingWrite() {
   const { loginUser } = useLoginUserStore();
@@ -19,6 +19,44 @@ export default function MeetingWrite() {
   const [areas, setAreas] = useState<string[]>([]);
   const [cookies] = useCookies();
   const navigate = useNavigate();
+
+  const tagOptions = [
+    { id: 1, name: '여행' },
+    { id: 2, name: '음식' },
+    { id: 3, name: '문화/공연/축제' },
+    { id: 4, name: '업종/직무' },
+    { id: 5, name: '음악' },
+    { id: 6, name: '댄스/무용' },
+    { id: 7, name: '사교' },
+    { id: 8, name: '독서' },
+    { id: 9, name: '운동' },
+    { id: 10, name: 'e스포츠' },
+    { id: 11, name: '외국어' },
+    { id: 12, name: '스터디' },
+    { id: 13, name: '공예' },
+    { id: 14, name: '봉사' },
+    { id: 15, name: '차/오토바이' }
+  ];
+
+  const areaOptions = [
+    { code: 1, name: '서울' },
+    { code: 2, name: '인천' },
+    { code: 3, name: '대전' },
+    { code: 4, name: '대구' },
+    { code: 5, name: '광주' },
+    { code: 6, name: '부산' },
+    { code: 7, name: '울산' },
+    { code: 8, name: '세종' },
+    { code: 31, name: '경기' },
+    { code: 32, name: '강원' },
+    { code: 33, name: '충북' },
+    { code: 34, name: '충남' },
+    { code: 35, name: '경북' },
+    { code: 36, name: '경남' },
+    { code: 37, name: '전북' },
+    { code: 38, name: '전남' },
+    { code: 39, name: '제주' }
+  ];
 
   useEffect(() => {
     if (!loginUser) return;
@@ -84,7 +122,9 @@ export default function MeetingWrite() {
 
     try {
       const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, areas };
+      console.log(requestBody)
       const response = await PostMeetingRequest(requestBody, cookies.accessToken);
+      if (!response) return;
       if (response.code === 'SU') {
         alert('모임이 성공적으로 등록되었습니다.');
         navigate('/meeting/list');
@@ -97,39 +137,36 @@ export default function MeetingWrite() {
     }
   };
 
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const newTag = e.currentTarget.value.trim();
-      if (newTag && !tags.includes(newTag)) {
-        setTags([...tags, newTag]);
-        e.currentTarget.value = '';
-      }
-    }
+  const handleTagSelect = (tagName: string) => {
+    setTags((prevTags) =>
+      prevTags.includes(tagName) ? prevTags.filter((name) => name !== tagName) : [...prevTags, tagName]
+    );
   };
 
-  const handleAreasKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const newAreas = e.currentTarget.value.trim();
-      if (newAreas && !tags.includes(newAreas)) {
-        setAreas([...areas, newAreas]);
-        e.currentTarget.value = '';
-      }
-    }
+  const handleAreaSelect = (areaName: string) => {
+    setAreas((prevAreas) =>
+      prevAreas.includes(areaName) ? prevAreas.filter((name) => name !== areaName) : [...prevAreas, areaName]
+    );
   };
 
-  const removeTag = (tag: string) => {
-    setTags(tags.filter(t => t !== tag));
+  const isSelectedTag = (tagName: string) => {
+    return tags.includes(tagName);
   };
 
-  const removeArea = (area: string) => {
-    setAreas(areas.filter(a => a !== area));
+  const isSelectedArea = (areaName: string) => {
+    return areas.includes(areaName);
   };
 
+  const handleTagClass = (tagName: string) => {
+    return `category-option ${isSelectedTag(tagName) ? 'selected' : ''}`;
+  };
+
+  const handleAreaClass = (areaName: string) => {
+    return `category-option ${isSelectedArea(areaName) ? 'selected' : ''}`;
+  };
 
   return (
-    <div className='meeting-write-container'>
+    <div className='meeting-write-container' style={{ maxHeight: '100vh', overflowY: 'auto' }}>
       <p><strong>모임 명</strong></p>
       <input
         type="text"
@@ -175,16 +212,22 @@ export default function MeetingWrite() {
       <br />
 
       <p><strong>태그</strong></p>
-      <input
-        type="text"
-        placeholder="태그를 입력해주세요. (Enter로 추가)"
-        name="tags"
-        onKeyDown={handleTagKeyDown} />
+      <div className='category-select'>
+        {tagOptions.map((tag) => (
+          <div
+            key={tag.id}
+            className={handleTagClass(tag.name)}
+            onClick={() => handleTagSelect(tag.name)}
+          >
+            {tag.name}
+          </div>
+        ))}
+      </div>
       <div>
-        {tags.map((tag, index) => (
-          <div key={index}>
-            #{tag}
-            <span onClick={() => removeTag(tag)}>&times;</span>
+        {tags.map((tagName) => (
+          <div key={tagName}>
+            #{tagName}
+            <span onClick={() => handleTagSelect(tagName)}>&times;</span>
           </div>
         ))}
       </div>
@@ -192,16 +235,22 @@ export default function MeetingWrite() {
       <br />
 
       <p><strong>지역</strong></p>
-      <input
-        type="text"
-        placeholder="지역을 입력해주세요. (Enter로 추가)"
-        name="areas"
-        onKeyDown={handleAreasKeyDown} />
+      <div className='category-select'>
+        {areaOptions.map((area) => (
+          <div
+            key={area.code}
+            className={handleAreaClass(area.name)}
+            onClick={() => handleAreaSelect(area.name)}
+          >
+            {area.name}
+          </div>
+        ))}
+      </div>
       <div>
-        {areas.map((areas, index) => (
-          <div key={index}>
-            #{areas}
-            <span onClick={() => removeArea(areas)}>&times;</span>
+        {areas.map((areaName) => (
+          <div key={areaName}>
+            #{areaName}
+            <span onClick={() => handleAreaSelect(areaName)}>&times;</span>
           </div>
         ))}
       </div>

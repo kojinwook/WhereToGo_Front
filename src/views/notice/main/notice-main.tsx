@@ -88,13 +88,14 @@ const NoticeList: React.FC = () => {
       <h1>공지사항</h1>
       <div className="search-container">
         <input
+          className="search-input"
           type="text"
           placeholder="검색"
           value={searchTerm}
           onChange={handleSearchChange}
           onKeyDown={handleKeyPress}
         />
-        <button onClick={handleSearchButtonClick}>검색</button>
+        <button className='search-btn' onClick={handleSearchButtonClick}>검색</button>
       </div>
       <div className="notices">
         <table className="notice-table">

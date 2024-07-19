@@ -1,11 +1,12 @@
-import { GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis'
-import React, { useEffect, useState } from 'react'
-import { useCookies } from 'react-cookie';
-import { useNavigate, useParams } from 'react-router-dom'
-import useLoginUserStore from 'store/login-user.store';
-import { Meeting, MeetingRequest } from 'types/interface/interface'
+import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
-import Modal from 'react-modal'
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import Modal from 'react-modal';
+import { useNavigate, useParams } from 'react-router-dom';
+import useLoginUserStore from 'store/login-user.store';
+import { Meeting, MeetingRequest } from 'types/interface/interface';
+import './style.css';
 
 Modal.setAppElement('#root');
 
@@ -30,27 +31,55 @@ export default function MeetingDetail() {
     const [meeting, setMeeting] = useState<Meeting>()
     const [cookies, setCookie] = useCookies();
     const [userId, setUserId] = useState<string>('');
+    const [role, setRole] = useState<string>('')
     const [nickname, setNickname] = useState<string>('');
-    const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const creatorNickname = meeting?.userNickname;
     const roomName = meeting?.userNickname;
     const navigate = useNavigate();
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [activeTab, setActiveTab] = useState('detail');
+    const [joinMemberList, setJoinMemberList] = useState<string[]>([]);
+    const [joinMembers, setJoinMembers] = useState<number>();
+    const [showOptions, setShowOptions] = useState(false);
 
     useEffect(() => {
         if (loginUser) {
             setNickname(loginUser.nickname)
             setUserId(loginUser.userId)
+            setRole(loginUser.role)
         }
     }, [])
+
+    useEffect(() => {
+        if (!meeting) return;
+
+        const fetchJoinMembers = async () => {
+            try {
+                const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
+                console.log(response);
+                if (!response) return;
+        
+                const members = response.meetingUsersList.map(member => member.userNickname);
+        
+                setJoinMemberList(members);
+                setJoinMembers(response.meetingUsersList.length);
+            } catch (error) {
+                console.error('Failed to fetch join members:', error);
+            }
+        };
+        fetchJoinMembers();
+    }, [meeting, cookies.accessToken]);
+
 
     useEffect(() => {
         if (!meetingId) return;
         const getMeeting = async () => {
             try {
                 const response = await GetMeetingRequest(meetingId)
-                console.log(response)
+                if (!response) return;
                 setMeeting(response.meeting)
             }
             catch (error) {
@@ -77,13 +106,12 @@ export default function MeetingDetail() {
         return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
     };
 
-
     const handleCreateRoom = async () => {
         const meetingTitle = meeting?.title;
         if (!roomName || !nickname || !creatorNickname || !meetingTitle) return;
         try {
             const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorNickname, meetingTitle }, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             if (response.code === 'SU') {
                 const roomId = response.roomId;
                 if (roomId) {
@@ -101,13 +129,18 @@ export default function MeetingDetail() {
 
     const handleJoinMeeting = async () => {
         if (!meetingId || !nickname) return;
+        const isAlreadyJoined = joinMemberList.includes(nickname);
+        if (isAlreadyJoined) {
+            alert('이미 모임에 가입된 멤버입니다.');
+            return;
+        }
         try {
             const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.accessToken);
-            const { code } = response;
-            if (code === 'SU') {
+            if (!response) return;
+            if (response.code === 'SU') {
                 alert('모임에 가입 신청이 완료되었습니다.');
             }
-            if (code === "AR") {
+            if (response.code === "AR") {
                 alert("이미 가입 신청이 되었습니다.")
             }
             else {
@@ -122,7 +155,7 @@ export default function MeetingDetail() {
         try {
             console.log(requestId, status);
             const response = await PostRespondToJoinRequest(requestId, status, cookies.accessToken);
-            console.log(response);
+            if (!response) return;
             const { code } = response;
             if (code === 'SU') {
                 alert('요청이 처리되었습니다.');
@@ -140,9 +173,12 @@ export default function MeetingDetail() {
         const fetchRequests = async () => {
             try {
                 const response = await GetMeetingRequests(meetingId, cookies.accessToken);
-                console.log(response);
-                setRequests(response.requests);
-                setProfileImage(response.requests[0].user.profileImage);
+                if (!response) return;
+                if (response.code === 'SU') {
+                    setRequests(response.requests);
+                    const images: string[] = response.requests.map(request => request.user?.profileImage || '');
+                    setProfileImages(images);
+                }
             } catch (error) {
                 console.error('Failed to fetch meeting requests:', error);
             }
@@ -159,52 +195,210 @@ export default function MeetingDetail() {
         setIsModalOpen(false);
     };
 
+    const backGoPathClickHandler = () => {
+        navigate(`/meeting/list`);
+    }
+
+    // 이미지 넘기기 함수
+    const nextImage = () => {
+        if (meeting && meeting.imageList) {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
+        }
+    };
+
+    const prevImage = () => {
+        if (meeting && meeting.imageList) {
+            setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
+        }
+    };
+
+    const toggleOptions = () => {
+        setShowOptions((prev) => !prev);
+    };
+
+
+    // 수정
+    const updatePostClickHandler = (meetingId: number | string | undefined) => {
+        if (!meetingId) return;
+        navigate(`/meeting/update/${meetingId}`);
+    };
+
+    // 삭제
+    const deleteMeetingButtonClickHandler = async (meetingId: number) => {
+        window.confirm('정말로 삭제하시겠습니까?')
+        const response = await DeleteMeetingRequest(meetingId, cookies.accessToken);
+        if (response) {
+            if (response.code === 'SU') {
+                alert('모임이 삭제되었습니다.');
+                navigate('/meeting/list');
+            }
+            if (response.code !== 'SU') {
+                alert('모임 삭제에 실패했습니다.');
+            } else {
+                console.error('Failed to delete meeting:', response.message);
+            }
+        }
+    }
+
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
     return (
-        <div>
-            <h1>모임명: {meeting.title}</h1>
-            <p>한줄소개: {meeting.introduction}</p>
-            <p>모임설명: {meeting.content}</p>
-            <p>개설날짜: {formatDate(meeting.createDate)}</p>
-            <p>인원: {meeting.maxParticipants}</p>
-            <p>대표닉네임: {meeting.userNickname}</p>
-            <p>태그: {meeting.tags.join(', ')}</p>
-            <p>지역: {meeting.areas.join(', ')}</p>
-            <p>모임 이미지</p>
-            <div>
-                {meeting.imageList?.map((image, index) => (
-                    <img key={index} src={image.image} alt={`Meeting image ${index + 1}`} />
-                ))}
+        <div className="meeting-detail-container">
+            <div className='meeting-detail-header'>
+                <div className='meeting-detail-name'>
+                    <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
+                    <h1>{meeting.title}</h1>
+                </div>
+                <img className='meeting-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
+                    try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        alert('링크가 복사되었습니다!'); // 성공 메시지
+                    } catch (err) {
+                        console.error('링크 복사 실패:', err);
+                    }
+                }} />
             </div>
-            <button onClick={handleCreateRoom}>1 : 1 채팅</button>
-            <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>
-            {nickname === creatorNickname && (
-                <button onClick={openModal}>신청 목록</button>
-            )}
+
+            <div className="tab-menu">
+                <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
+                <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
+                <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
+            </div>
+
+
+            <div className="meeting-detail-body">
+                {activeTab === 'detail' && (
+                    <div>
+                        <div className="meeting-detail-in">
+                            <div className="meeting-detail-left">
+                                <div className="carousel">
+                                    {meeting.imageList?.map((image, index) => (
+                                        <img
+                                            key={index}
+                                            src={image.image}
+                                            alt={`Meeting image ${index + 1}`}
+                                            className={currentIndex === index ? 'active' : ''}
+                                        />
+                                    ))}
+                                    <button className="carousel-button left" onClick={prevImage}>◀</button>
+                                    <button className="carousel-button right" onClick={nextImage}>▶</button>
+                                </div>
+                            </div>
+                            <div className="meeting-detail-right">
+                                <div className="more-options">
+                                    {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                        <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                                    )}
+                                    {showOptions && (
+                                        <div className="button-box">
+                                            {meeting.userNickname === nickname && (
+                                                <button
+                                                    className="update-button"
+                                                    onClick={() => updatePostClickHandler(meeting.meetingId)}
+                                                >
+                                                    수정
+                                                </button>
+                                            )}
+                                            {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                                <button
+                                                    className="delete-button"
+                                                    onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
+                                                >
+                                                    삭제
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                                <p>대표 닉네임</p>
+                                <div className="bordered-div">{meeting.userNickname}</div>
+                                <p>한 줄 소개</p>
+                                <div className="bordered-div">{meeting.introduction}</div>
+                                <p>개설 날짜</p>
+                                <div className="bordered-div">{meeting.createDate}</div>
+                                <p>활동 지역</p>
+                                <div className="bordered-div">
+                                    {Array.isArray(meeting.locations) ? meeting.locations.join(', ') : meeting.locations}
+                                </div>
+                                <p>인원</p>
+                                <div className="bordered-div">{joinMembers}/{meeting.maxParticipants}</div>
+                                <div className='meeting-detail-btn'>
+                                    <button onClick={handleCreateRoom}>1 : 1 채팅</button>
+                                    {joinMemberList.includes(nickname) ? (
+                                        <div></div>) : (
+                                        <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>)}
+                                    {nickname === creatorNickname && (
+                                        <button onClick={openModal}>신청 목록</button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="meeting-detail-description">
+                            <p>모임 설명</p>
+                            <div className="meeting-detail-content">
+                                <div>{meeting.content}</div>
+                                <div className="meeting-tags">
+                                    {meeting.categories.map(category => (
+                                        <span key={category} className="tag">{category}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {activeTab === 'participants' && (
+                    <div className="participants-list">
+                        {/* 참가자 목록을 여기에 추가 */}
+                        <h2>게시판 목록</h2>
+                        {/* 참가자 데이터 표시 */}
+                    </div>
+                )}
+                {activeTab === 'requests' && (
+                    <div className="requests-list">
+                        {/* 신청 목록을 여기에 추가 */}
+                        <h2>사진첩</h2>
+                        {/* 신청 요청 데이터 표시 */}
+                    </div>
+                )}
+            </div>
+
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 contentLabel="신청 목록"
                 style={ModalStyle}
             >
-                <h2>참가 요청 목록</h2>
-                {requests.length > 0 ? (
-                    requests.map(request => (
-                        <div key={request.requestId}>
-                            <div className="profile-info">
-                                    <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h2>참가 요청 목록</h2>
+                    </div>
+                    <div className="modal-body">
+                        {requests.length > 0 ? (
+                            requests.map((request, index) => (
+                                <div key={request.requestId} className="request-item">
+                                    <div className="profile-info">
+                                        <img
+                                            src={profileImages[index] || defaultProfileImage}
+                                            alt="profile"
+                                        />
+                                        <p>{request.user?.nickname || "Unknown User"}</p>
+                                    </div>
+                                    <p>요청 날짜: {new Date(request.requestDate).toLocaleString()}</p>
+                                    <div className="request-buttons">
+                                        <button onClick={() => handleRequestResponse(request.requestId, true)}>수락</button>
+                                        <button onClick={() => handleRequestResponse(request.requestId, false)}>거절</button>
+                                    </div>
                                 </div>
-                            <p>{request.user.nickname}</p>
-                            <p>요청 날짜: {new Date(request.requestDate).toLocaleString()}</p>
-                            <button onClick={() => handleRequestResponse(request.requestId, true)}>수락</button>
-                            <button onClick={() => handleRequestResponse(request.requestId, false)}>거절</button>
-                        </div>
-                    ))
-                ) : (
-                    <p>참가 요청이 없습니다.</p>
-                )}
-                <button onClick={closeModal}>닫기</button>
+                            ))
+                        ) : (
+                            <p>참가 요청이 없습니다.</p>
+                        )}
+                    </div>
+
+                    <div className="modal-footer">
+                        <button onClick={closeModal}>닫기</button>
+                    </div>
+                </div>
             </Modal>
         </div>
-    )
+    );
 }

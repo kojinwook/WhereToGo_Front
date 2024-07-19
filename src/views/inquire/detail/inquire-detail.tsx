@@ -80,6 +80,7 @@ const InquireDetail: React.FC = () => {
     const fetchQuestion = async () => {
       try {
         const response = await GetQuestionRequest(questionId);
+        if (!response) return;
         const { title, content, nickname, type, imageList } = response.question;
         if (!title || !content || !nickname || !type) {
           throw new Error("Invalid response structure");

@@ -1,8 +1,7 @@
-/* ChatRoom.css */
-
 body, html {
     height: 100%;
-    overflow: hidden; /* 스크롤을 없애고 한 화면에 꽉 채우기 */
+    overflow: auto;
+    overflow-x: hidden; /*좌우 스크롤 숨김*/
 }
 
 .chat-room {
@@ -72,7 +71,6 @@ body, html {
 .timestamp {
     font-size: 0.8em;
     color: gray;
-    margin-top: 20px;
     margin-left: 10px;
 }
 
@@ -82,11 +80,39 @@ body, html {
     margin-right: 10px;
 }
 
-.user-profile-image {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    margin-right: 10px;
+.profile-info img {
+    width: 30px; /* 사진의 너비를 30px로 설정 */
+    height: 30px; /* 사진의 높이를 30px로 설정 */
+    border-radius: 50%; /* 원형으로 만들기 위해 반지름을 50%로 설정 */
+    margin-right: 10px; /* 텍스트와 사진 사이의 간격 설정 */
+}
+
+.message-user-container {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column; /* 메시지 내용을 닉네임 아래에 배치 */
+}
+
+.message-header {
+    display: flex;
+    align-items: center; /* 프로필 사진과 닉네임을 수평으로 배치 */
+    margin-bottom: 5px; /* 닉네임과 메시지 내용 사이의 간격 설정 */
+}
+
+.message-body {
+    display: flex;
+    align-items: center; /* 메시지 내용과 시간을 수평으로 배치 */
+}
+
+.message-text {
+    margin-top: 5px; /* 프로필 사진과 메시지 내용 사이의 간격 설정 */
+}
+
+.message-time {
+    font-size: 0.8em;
+    color: gray;
+    margin-left: 10px; /* 메시지와 시간 사이의 간격 설정 */
+    align-self: center; /* 시간 텍스트를 수직 가운데 정렬 */
 }
 
 .input-container {

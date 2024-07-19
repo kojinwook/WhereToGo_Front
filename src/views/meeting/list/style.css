@@ -9,13 +9,23 @@
     color: #333;
 }
 
-.meeting-list-write-btn {
+.meeting-list-write-btn{
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.meeting-list-write-btn button {
+.meeting-list-write-btn img{
+    width: 1.25rem;
+    height: auto;
+    border: none;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.meeting-list-create-btn {
+    width: 150px;
     padding: 10px 20px;
     border: none;
     background-color: #fff;
@@ -25,9 +35,115 @@
     transition: background-color 0.3s;
 }
 
-.meeting-list-write-btn button:hover {
+.meeting-list-create-btn:hover {
     background-color: #000;
     color: #fff;
+}
+
+/* 카테고리 */
+.meeting-list-categories{
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.meeting-list-category {
+    display: flex;
+    margin-bottom: 20px;
+    flex-direction: column; /* 수직 정렬 */
+    align-items: flex-start;
+}
+
+.category-select, .location-select {
+    display: flex;
+    flex-wrap: wrap; /* 여러 줄로 나열 */
+    gap: 10px;
+    margin-top: 10px; /* 제목과 약간의 간격 추가 */
+}
+
+.category-option, .location-option {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.meeting-list-category .category-select,
+.meeting-list-category .location-select{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.meeting-list-category .category-select,
+.meeting-list-category .location-select,
+.meeting-list-category .search-container {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.meeting-list-category .category-option,
+.meeting-list-category .location-option {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.meeting-list-category .category-option:hover,
+.meeting-list-category .location-option:hover {
+    background-color: #f0f0f0;
+}
+
+/* 선택된 카테고리 */
+.category-option.selected {
+    background-color: #000;
+    color: white;
+}
+.category-option.selected:hover {
+    background-color: #000;
+    color: white;
+}
+
+.category-search-container{
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.category-search-input{
+    width: 200PX;
+    border-radius: 8px;
+}
+
+.category-search-button{
+    width: 150px;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.category-search-button:hover{
+    background-color: #000;
+    color: #fff;
+}
+/* 카테고리 끝 */
+
+.meeting-list-header {
+    width: calc(100% - 40px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 2px solid #ccc;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.meeting-list-header > div {
+    width: 150px;
+    text-align: center;
 }
 
 ul {
@@ -35,27 +151,52 @@ ul {
     padding: 0;
 }
 
-ul li {
-    padding: 15px;
-    background-color: #ccc;
+.meeting-item {
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #ddd;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-bottom: 10px;
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
+    justify-content: space-between;
 }
 
-ul li:hover {
+.meeting-item > div {
+    width: 150px;
+    text-align: center;
+}
+
+.meeting-item:hover {
     transform: translateY(-5px);
 }
 
-ul li:last-child {
-    margin-bottom: 0;
+.meeting-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
 }
 
-@media (max-width: 600px) {
+.image-slider {
+    flex-shrink: 0;
+}
+
+.meeting-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+@media (max-width: 100%) {
     .meeting-list-container {
-        width: 95%;
+        width: 100%;
     }
 
     .meeting-list-write-btn {
@@ -65,5 +206,21 @@ ul li:last-child {
     .meeting-list-write-btn button {
         width: 100%;
         padding: 10px;
+    }
+
+    .meeting-item {
+        grid-template-columns: 1fr;
+    }
+
+    .meeting-title {
+        margin-left: 0;
+        margin-top: 10px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .meeting-image {
+        width: 100%;
+        height: auto;
     }
 }
