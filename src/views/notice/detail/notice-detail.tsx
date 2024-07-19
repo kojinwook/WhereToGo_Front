@@ -36,6 +36,7 @@ const NoticeDetail: React.FC = () => {
       try {
         const response = await GetNoticeRequest(noticeId);
         console.log(response)
+        if(!response) return;
         const { title, content, nickname, imageList } = response.notice;
         if (!title || !content || !nickname) {
           throw new Error("Invalid response structure");
