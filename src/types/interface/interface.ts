@@ -1,4 +1,5 @@
 import Answer from "./answer.interface";
+import BoardReply from "./board-reply.interface";
 import ChatRoom from "./chat-room.interface";
 import Favorite from "./favorite.interface";
 import Festival from "./festival.interface";
@@ -9,6 +10,7 @@ import Meeting from "./meeting.interface";
 import MeetingUser from "./meetingUsers.interface";
 import Notice from "./notice.interface";
 import Question from "./question.interface";
+import ReplyReply from "./reply-reply.interface";
 import Review from "./review.interface";
 import User from "./user.interface";
 
@@ -25,5 +27,7 @@ export type {
     ChatRoom,
     MeetingRequest,
     MeetingBoard,
-    MeetingUser
+    MeetingUser,
+    BoardReply,
+    ReplyReply
 }

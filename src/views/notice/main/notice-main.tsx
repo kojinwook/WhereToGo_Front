@@ -108,7 +108,6 @@ const NoticeList: React.FC = () => {
             <div>NO.</div>
             <div>제목</div>
             <div>날짜</div>
-            <div>나는 너무 멍청해</div> 
         </div>
         <ul className='notice-content'>
           {filteredPosts.length === 0 ? (

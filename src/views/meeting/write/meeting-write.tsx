@@ -16,11 +16,12 @@ export default function MeetingWrite() {
   const [nickname, setNickname] = useState<string>('');
   const [maxParticipants, setMaxParticipants] = useState<number>(1);
   const [tags, setTags] = useState<string[]>([]);
-  const [areas, setAreas] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
   const [cookies] = useCookies();
   const navigate = useNavigate();
 
-  const tagOptions = [
+  const categoryOptions = [
     { id: 1, name: '여행' },
     { id: 2, name: '음식' },
     { id: 3, name: '문화/공연/축제' },
@@ -38,7 +39,7 @@ export default function MeetingWrite() {
     { id: 15, name: '차/오토바이' }
   ];
 
-  const areaOptions = [
+  const locationOptions = [
     { code: 1, name: '서울' },
     { code: 2, name: '인천' },
     { code: 3, name: '대전' },
@@ -104,6 +105,21 @@ export default function MeetingWrite() {
     setImagePreviews(newImagePreviews);
   };
 
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const newTag = e.currentTarget.value.trim();
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+        e.currentTarget.value = '';
+      }
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
   const handlePost = async () => {
     const formData = new FormData();
     formData.append('title', title);
@@ -112,16 +128,16 @@ export default function MeetingWrite() {
 
     const imageList: Images[] = [];
     for (const file of imageFileList) {
-        const formData = new FormData();
-        formData.append('file', file);
-        const imageUrl = await FileUploadRequest(formData);
-        if (imageUrl) {
-            imageList.push(imageUrl);
-        }
+      const formData = new FormData();
+      formData.append('file', file);
+      const imageUrl = await FileUploadRequest(formData);
+      if (imageUrl) {
+        imageList.push(imageUrl);
+      }
     }
 
     try {
-      const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, areas };
+      const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, categories, locations };
       console.log(requestBody)
       const response = await PostMeetingRequest(requestBody, cookies.accessToken);
       if (!response) return;
@@ -137,24 +153,24 @@ export default function MeetingWrite() {
     }
   };
 
-  const handleTagSelect = (tagName: string) => {
-    setTags((prevTags) =>
-      prevTags.includes(tagName) ? prevTags.filter((name) => name !== tagName) : [...prevTags, tagName]
+  const handleTagSelect = (categoryName: string) => {
+    setCategories((prevCategories) =>
+      prevCategories.includes(categoryName) ? prevCategories.filter((name) => name !== categoryName) : [...prevCategories, categoryName]
     );
   };
 
-  const handleAreaSelect = (areaName: string) => {
-    setAreas((prevAreas) =>
-      prevAreas.includes(areaName) ? prevAreas.filter((name) => name !== areaName) : [...prevAreas, areaName]
+  const handleAreaSelect = (locationName: string) => {
+    setLocations((prevLocations) =>
+      prevLocations.includes(locationName) ? prevLocations.filter((name) => name !== locationName) : [...prevLocations, locationName]
     );
   };
 
-  const isSelectedTag = (tagName: string) => {
-    return tags.includes(tagName);
+  const isSelectedTag = (categoryName: string) => {
+    return categories.includes(categoryName);
   };
 
-  const isSelectedArea = (areaName: string) => {
-    return areas.includes(areaName);
+  const isSelectedArea = (locationName: string) => {
+    return locations.includes(locationName);
   };
 
   const handleTagClass = (tagName: string) => {
@@ -212,22 +228,39 @@ export default function MeetingWrite() {
       <br />
 
       <p><strong>태그</strong></p>
+      <input
+        type="text"
+        placeholder="태그를 입력해주세요. (Enter로 추가)"
+        name="tags"
+        onKeyDown={handleTagKeyDown} />
+      <div>
+        {tags.map((tag, index) => (
+          <div key={index}>
+            #{tag}
+            <span onClick={() => removeTag(tag)}>&times;</span>
+          </div>
+        ))}
+      </div>
+
+      <br />
+
+      <p><strong>카테고리</strong></p>
       <div className='category-select'>
-        {tagOptions.map((tag) => (
+        {categoryOptions.map((category) => (
           <div
-            key={tag.id}
-            className={handleTagClass(tag.name)}
-            onClick={() => handleTagSelect(tag.name)}
+            key={category.id}
+            className={handleTagClass(category.name)}
+            onClick={() => handleTagSelect(category.name)}
           >
-            {tag.name}
+            {category.name}
           </div>
         ))}
       </div>
       <div>
-        {tags.map((tagName) => (
-          <div key={tagName}>
-            #{tagName}
-            <span onClick={() => handleTagSelect(tagName)}>&times;</span>
+        {categories.map((categoryName) => (
+          <div key={categoryName}>
+            #{categoryName}
+            <span onClick={() => handleTagSelect(categoryName)}>&times;</span>
           </div>
         ))}
       </div>
@@ -236,21 +269,21 @@ export default function MeetingWrite() {
 
       <p><strong>지역</strong></p>
       <div className='category-select'>
-        {areaOptions.map((area) => (
+        {locationOptions.map((location) => (
           <div
-            key={area.code}
-            className={handleAreaClass(area.name)}
-            onClick={() => handleAreaSelect(area.name)}
+            key={location.code}
+            className={handleAreaClass(location.name)}
+            onClick={() => handleAreaSelect(location.name)}
           >
-            {area.name}
+            {location.name}
           </div>
         ))}
       </div>
       <div>
-        {areas.map((areaName) => (
-          <div key={areaName}>
-            #{areaName}
-            <span onClick={() => handleAreaSelect(areaName)}>&times;</span>
+        {locations.map((locationName) => (
+          <div key={locationName}>
+            #{locationName}
+            <span onClick={() => handleAreaSelect(locationName)}>&times;</span>
           </div>
         ))}
       </div>
