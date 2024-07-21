@@ -11,7 +11,7 @@ import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequest
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { DeleteMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { DeleteMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
@@ -117,6 +117,7 @@ const GET_MEETING_REQUESTS_URL = (meetingId: number | string) => `${API_DOMAIN}/
 const PATCH_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/update/${meetingId}`;
 const DELETE_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/delete/${meetingId}`;
 const GET_MEETING_USERS_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/members?meetingId=${meetingId}`;
+const GET_USER_MEETING_LIST_URL = () => `${API_DOMAIN}/meeting/my-meeting-list`;
 
 const POST_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/${meetingId}`;
 const GET_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/detail/${meetingId}`;
@@ -556,6 +557,13 @@ export const DeleteMeetingRequest = async (meetingId: string | number, accessTok
 export const GetJoinMeetingMemberRequest = async (meetingId: string | number, accessToken: string) => {
     const result = await axios.get(GET_MEETING_USERS_URL(meetingId), authorization(accessToken))
         .then(responseHandler<GetJoinMeetingMemberResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const GetUserMeetingListRequest = async (accessToken: string) => {
+    const result = await axios.get(GET_USER_MEETING_LIST_URL(), authorization(accessToken))
+        .then(responseHandler<GetUserMeetingListResponseDto>)
         .catch(errorHandler);
     return result;
 };

@@ -20,6 +20,23 @@ export default function BoardDetail() {
     const [cookies] = useCookies();
     const navigate = useNavigate();
 
+    const formatDate = (createDateTime: string) => {
+        const isoDate = createDateTime;
+        const date = new Date(isoDate);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        let period = hours < 12 ? '오전' : '오후';
+        if (hours === 0) {
+            hours = 12;
+        } else if (hours > 12) {
+            hours -= 12;
+        }
+        return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
+    };
+
     useEffect(() => {
         if (loginUser) {
             setNickname(loginUser.nickname);
@@ -132,16 +149,18 @@ export default function BoardDetail() {
                 {replyList.map((replyItem) => (
                     <div key={replyItem.replyId}>
                         <div>
-                            {/* <p>{replyItem.userDto.nickname}</p> */}
-                            <p>{replyItem.reply}</p>
-                            {/* <p>{replyItem.createDate}</p> */}
+                            <p>프로필 이미지</p>
+                            <p>작성자: {replyItem.userDto.nickname}</p>
+                            <p>댓글: {replyItem.reply}</p>
+                            <p>{formatDate(replyItem.createDate)}</p>
                         </div>
                         <div>
                             {replyItem.replies.map((replyReplyItem) => (
                                 <div key={replyReplyItem.replyReplyId} style={{ marginLeft: '20px' }}>
-                                    <p>{replyReplyItem.userDto.nickname}</p>
-                                    <p>{replyReplyItem.reply}</p>
-                                    <p>{replyReplyItem.createDate}</p>
+                                    <p>프로필 이미지</p>
+                                    <p>작성자: {replyReplyItem.userDto.nickname}</p>
+                                    <p>대댓글: {replyReplyItem.replyReply}</p>
+                                    <p>{formatDate(replyReplyItem.createDate)}</p>
                                 </div>
                             ))}
                         </div>

@@ -1,4 +1,4 @@
-import { Images } from "./interface";
+import { Images, User } from "./interface";
 
 
 export default interface Meeting{
@@ -14,4 +14,5 @@ export default interface Meeting{
     categories : string[];
     locations : string[];
     userNickname : string;
+    userDto: User;
 }
