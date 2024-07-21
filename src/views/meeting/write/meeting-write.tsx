@@ -69,7 +69,10 @@ export default function MeetingWrite() {
   }
 
   const handleIntroduction = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIntroduction(event.target.value);
+    const value = event.target.value;
+    if (value.length <= 20) {
+      setIntroduction(value);
+    }
   }
 
   const handleContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -196,10 +199,13 @@ export default function MeetingWrite() {
       <p><strong>한 줄 소개</strong></p>
       <label>
         <textarea
-          placeholder='한 줄 소개'
+          placeholder='한 줄 소개는 최대 20자로 제한됩니다.'
           value={introduction}
           onChange={handleIntroduction}
         ></textarea>
+        <div className="char-count">
+          {introduction.length}/20
+        </div>
       </label>
 
       <br />

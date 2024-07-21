@@ -252,22 +252,8 @@ const ChatRoom: React.FC = () => {
         }
     };
 
-    const handleBackButtonClick = () => {
-        if (clientRef.current && roomId && loginUser) {
-            clientRef.current.publish({
-                destination: `/app/chat/${roomId}/leave`,
-                headers: {},
-                body: JSON.stringify({
-                    username: loginUser.nickname,
-                    message: 'Left the chat room',
-                }),
-            });
-        }
-        window.history.back();
-    };
-
     const backPathClickHandler = () => {
-        navigator(`/user/profile/${userId}`);
+        window.history.back();
     };
 
     return (
