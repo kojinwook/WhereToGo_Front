@@ -114,7 +114,7 @@ export default function UserProfile() {
     }, [userId, cookies.accessToken, navigator]);
 
     useEffect(() => {
-        if (!loginUser) return;
+        if (!loginUser) {alert('로그인 후 이용해주세요.'); navigate('/authentication/signin'); return;};
         getAllFavorite(loginUser.nickname);
         getChatRooms(loginUser.nickname);
     }, [loginUser]);
