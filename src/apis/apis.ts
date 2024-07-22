@@ -9,7 +9,7 @@ import { ResponseDto } from "./response/response";
 import Festival from "types/interface/festival.interface";
 import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
+import { DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, ReportUserResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
 import { DeleteMeetingResponseDto, Get5RecentMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
@@ -91,6 +91,7 @@ const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
 const FIND_USERID_URL = () => `${API_DOMAIN}/user/find-userId`;
 const WIDTHDRAWAL_USER_URL = () => `${API_DOMAIN}/user/withdrawal`;
 const DELETE_USER_URL = (userId: string) => `${API_DOMAIN}/user/delete-user/${userId}`;
+const REPORT_USER_URL = (userId: string) => `${API_DOMAIN}/user/report-user/${userId}`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
 const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
@@ -237,6 +238,13 @@ export const WithdrawUserRequest = async (requestBody: WithdrawalUserRequestDto)
 export const DeleteUserRequest = async (userId: string, accessToken: string) => {
     const result = await axios.delete(DELETE_USER_URL(userId), authorization(accessToken))
         .then(responseHandler<DeleteUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const ReportUserRequest = async (userId: string, accessToken: string) => {
+    const result = await axios.post(REPORT_USER_URL(userId), null, authorization(accessToken))
+        .then(responseHandler<ReportUserResponseDto>)
         .catch(errorHandler);
     return result;
 };
