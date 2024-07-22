@@ -13,7 +13,8 @@ enum ResponseCode{
     NOT_EXISTED_USER = "NU",
     DUPLICATE_ID = "DI",
     FALSE_AGREEMENT = "FA",
-    ALREADY_REQUESTED = "AR"
+    ALREADY_REQUESTED = "AR",
+    CANNOT_CREATE_MEETING = "CCM",
 };
 
 export default ResponseCode;
