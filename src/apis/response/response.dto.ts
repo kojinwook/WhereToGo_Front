@@ -4,14 +4,14 @@ import Question from "types/interface/question.interface";
 import Review from "types/interface/review.interface";
 import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
 
-export default interface ResponseDto{
+export default interface ResponseDto {
     code: ResponseCode;
     message: ResponseMessage;
     success: boolean;
-    festivalList:Festival[];
+    festivalList: Festival[];
     questions: Question[];
     notice: Notice
-    notices : Notice[];
+    notices: Notice[];
     festival: Festival;
     review: Review;
     reviews: Review[];
