@@ -260,7 +260,6 @@ export default function MeetingDetail() {
         }
     }
 
-
     const handleCreateBoard = () => {
         navigate(`/meeting/board/write/${meetingId}`);
     }
