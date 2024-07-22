@@ -266,10 +266,10 @@ export default function MeetingDetail() {
     }
 
     const handleBoardDetail = (boardId: string) => {
-        if (!joinMemberList.includes(nickname)) {
-            alert('모임에 가입해야 합니다');
-            return;
-        }
+        // if (!joinMemberList.includes(nickname)) {
+        //     alert('모임에 가입해야 합니다');
+        //     return;
+        // }
         navigate(`/meeting/board/detail/${boardId}`);
     }
 
