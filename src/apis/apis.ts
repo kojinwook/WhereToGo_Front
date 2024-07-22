@@ -21,7 +21,7 @@ import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestD
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
 import { PatchMeetingRequestDto, PostJoinMeetingRequestDto, PostMeetingRequestDto } from "./request/meeting";
 import { PatchMeetingBoardRequestDto, PostMeetingBoardRequestDto } from "./request/meeting/board";
-import { GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
+import { GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
 import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from "./request/meeting/board/reply";
 import { PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
 import GetBoardReplyListResponseDto from "./response/meeting/board/reply/get-board-reply-list.response.dto";
@@ -123,6 +123,7 @@ const POST_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/me
 const GET_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/detail/${meetingId}`;
 const GET_MEETING_BOARD_LIST_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/list/${meetingId}`;
 const PATCH_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/update/${meetingId}`;
+const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/meeting/board/my-board-list/${userId}`;
 const DELETE_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/delete/${meetingId}`;
 
 const POST_BOARD_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply`;
@@ -585,6 +586,13 @@ export const GetMeetingBoardRequest = async (meetingId: string | number) => {
 export const PatchMeetingBoardRequest = async (meetingId: string | number, requestBody: PatchMeetingBoardRequestDto, accessToken: string) => {
     const result = await axios.patch(PATCH_MEETING_BOARD_URL(meetingId), requestBody, authorization(accessToken))
         .then(responseHandler<PatchMeetingBoardResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const GetUserBoardListRequest = async (userId: string, accessToken: string) => {
+    const result = await axios.get(GET_USER_BOARD_LIST_URL(userId), authorization(accessToken))
+        .then(responseHandler<GetUserBoardListResponseDto>)
         .catch(errorHandler);
     return result;
 };
