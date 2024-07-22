@@ -7,7 +7,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images, Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
 import './style.css';
-import { log } from 'console';
 
 Modal.setAppElement('#root');
 
@@ -34,10 +33,10 @@ export default function MeetingDetail() {
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
-    const [creatorNickname, setCreatorNickname] = useState<string>('');
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const creatorNickname = meeting?.userNickname;
     const roomName = meeting?.userNickname;
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -80,7 +79,6 @@ export default function MeetingDetail() {
                 const response = await GetMeetingRequest(meetingId)
                 if (!response) return;
                 setMeeting(response.meeting)
-                setCreatorNickname(response.meeting.userDto.nickname)
             }
             catch (error) {
                 console.error("모임 정보를 불러오는 중 오류가 발생했습니다:", error)
@@ -277,12 +275,9 @@ export default function MeetingDetail() {
         navigate(`/meeting/board/write/${meetingId}`);
     }
 
-    const handleBoardDetail = (boardId: string) => {
-        // if (!joinMemberList.includes(nickname)) {
-        //     alert('모임에 가입해야 합니다');
-        //     return;
-        // }
-        navigate(`/meeting/board/detail/${meetingId}/${boardId}`);
+    const handleBoardDetail = (meetingBoardId: string) => {
+        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -355,7 +350,7 @@ export default function MeetingDetail() {
                                     )}
                                 </div>
                                 <p>대표 닉네임</p>
-                                <div className="bordered-div">{creatorNickname}</div>
+                                <div className="bordered-div">{meeting.userNickname}</div>
                                 <p>한 줄 소개</p>
                                 <div className="bordered-div">{meeting.introduction}</div>
                                 <p>개설 날짜</p>
@@ -392,30 +387,38 @@ export default function MeetingDetail() {
                 )}
                 {activeTab === 'participants' && (
                     <div className="participants-list">
-                        {/* 참가자 목록을 여기에 추가 */}
-                        <h2>게시판 목록</h2>
-                        <div>
-                            <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
-                            <ul>
-                                {boardList.map((board) => (
-                                    <li key={board.meetingBoardId} onClick={() => handleBoardDetail(board.meetingBoardId)}>
-                                        프로필이미지: <img
-                                            src={board.userDto && board.userDto.profileImage ? board.userDto.profileImage : defaultProfileImage}
-                                            alt="profile"
-                                        />
-                                        <h2>제목: {board.title}</h2>
-                                        <p>{board.content}</p>
-                                        <p>닉네임: {board.userDto ? board.userDto.nickname : 'Unknown'}</p>
-                                        <p>작성날짜: {board.createDate}</p>
-                                    </li>
-                                ))}
-                            </ul>
+                        <div className='meeting-board-list'>
+                            <button className='meeting-board-add-btn' onClick={handleCreateBoard}>{"게시물 작성"}</button>
+
+                            <div className='meeting-board-header'>
+                            <div className='header-item'>프로필 사진</div>
+                            <div className='header-item'>닉네임</div>
+                            <div className='header-item'>제목</div>
+                            <div className='header-item'>작성 날짜</div>
+                            </div>
+                            {boardList.length === 0 ? (
+                                <div className="no-posts-message">게시물이 없습니다.</div>
+                            ) : (
+                                <div className='board-list-content'>
+                                    {boardList.map((board) => (
+                                        <div key={board.meetingBoardId} className='meeting-board-item' onClick={() => handleBoardDetail(board.meetingBoardId)}>
+                                            <img
+                                                src={board.userDto && board.userDto.profileImage ? board.userDto.profileImage : defaultProfileImage}
+                                                alt="profile"
+                                                className='board-list-profile-image'
+                                            />
+                                            <div className='item-nickname'>{board.userDto ? board.userDto.nickname : 'Unknown'}</div>
+                                            <div className='item-title'>{board.title}</div>
+                                            <div className='item-date'>{board.createDate}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
                 {activeTab === 'requests' && (
                     <div className="requests-list">
-                        <h2>사진첩</h2>
                         <div>
                             {boardImageList.map((image) => (
                                 <div key={image.id} className="image-container">
