@@ -116,7 +116,7 @@ const NoticeList: React.FC = () => {
             </div> 
           ) : (
             filteredPosts.map((notice) => (
-              <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.id)}>
+              <div className='notice-content-item' key={notice.noticeId} onClick={() => noticeClickHandler(notice.noticeId)}>
                 <div>{notice.noticeId}</div>
                 <div>{notice.title}</div>
                 <div>{formatDate(notice.createDateTime)}</div>

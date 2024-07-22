@@ -114,19 +114,30 @@
 }
 
 .category-search-input{
-    width: 200PX;
+    width: 230PX;
+    padding: 10px;
     border-radius: 8px;
 }
 
-.category-search-button{
-    width: 150px;
-    padding: 10px 20px;
-    border-radius: 8px;
+.category-search-content {
+    display: flex;
+    flex-wrap: nowrap; /* 아이템들을 한 줄로 나열 */
+    overflow-x: auto; /* 수평 스크롤 가능 */
+    gap: 10px; /* 아이템 사이의 간격 */
 }
 
-.category-search-button:hover{
+.category-search-content div {
+    display: flex;
+    align-items: center;
     background-color: #000;
-    color: #fff;
+    color: white;
+    border-radius: 30px;
+    padding: 5px 10px;
+}
+
+.category-search-content span {
+    cursor: pointer;
+    margin-left: 5px;
 }
 /* 카테고리 끝 */
 

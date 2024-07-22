@@ -105,23 +105,6 @@ export default function MeetingList() {
     }
   }, [meetingList, cookies.accessToken]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const meetingTitleClickHandler = (meetingId: number) => {
     navigate(`/meeting/detail/${meetingId}`)
   }
@@ -276,10 +259,10 @@ export default function MeetingList() {
             <input
               type='text'
               className='category-search-input'
-              placeholder='검색'
+              placeholder='검색 (Enter로 검색어을 추가해 주세요)'
               onKeyDown={handleSearchKeyDown}
             />
-            <div>
+            <div className='category-search-content'>
               {searchTerms.map((term, index) => (
                 <div key={index}>
                   #{term}
@@ -287,12 +270,6 @@ export default function MeetingList() {
                 </div>
               ))}
             </div>
-            {/* <button
-              className='category-search-button'
-              onClick={() => console.log('Search button clicked')}
-            >
-              검색
-            </button> */}
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import MeetingBoard from 'types/interface/meeting-board.interface';
 import defaultProfileImage from 'assets/images/user.png';
+import './style.css';
 
 export default function BoardList() {
 
@@ -33,8 +34,7 @@ export default function BoardList() {
     }
 
     return (
-        <div>
-            
+        <div className='festival-board-list'>
             <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
             <ul>
             {boardList.map((board) => (

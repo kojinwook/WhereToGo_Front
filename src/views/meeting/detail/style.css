@@ -3,6 +3,7 @@
     margin: 0 auto;
 }
 
+/* 모임 뒤로가기, 공유 */
 .meeting-detail-header {
     display: flex;
     align-items: center;
@@ -28,6 +29,7 @@
     cursor: pointer;
 }
 
+/* 미팅 메뉴 */
 .tab-menu {
     display: flex;
     justify-content: space-between;
@@ -65,6 +67,7 @@
     background-color: #fff;
 }
 
+/* 홈 */
 .meeting-detail-body {
     display: flex;
     flex-direction: column;
@@ -297,21 +300,86 @@ width: 1.25rem;
     margin-left: 10px;
 }
 
-/* 필요 없을것 같음.
-    .carousel {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-}
-
-.carousel img {
-    flex: none;
-    scroll-snap-align: center;
-    margin-right: 10px;
-}
-
-.carousel::-webkit-scrollbar {
-    display: none;
-} */
-
 /* 모임 홈 끝 */
+
+/* 게시판 */
+.meeting-board-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.meeting-board-add-btn{
+    width: 200px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    align-self: flex-end;
+}
+
+.meeting-board-add-btn:hover{
+    background-color: #000;
+    color:#fff;
+}
+
+.meeting-board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 2px solid #ccc;
+    font-weight: bold;
+}
+
+.header-item {
+    flex: 1;
+    text-align: center;
+}
+
+/* 게시물이 없을 때 메시지 스타일 */
+.no-posts-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #666;
+    margin-top: 20px;
+}
+
+/* 게시물 */
+.board-list-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.meeting-board-item {
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #ddd;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    justify-content: space-between;
+}
+
+.board-list-profile-image {
+    width: 50px !important;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+}
+
+.board-list-profile-image,
+.item-title,
+.item-nickname,
+.item-date {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+}
+
+.meeting-board-item:hover {
+    transform: translateY(-5px);
+}
