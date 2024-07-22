@@ -35,4 +35,5 @@ export default interface ResponseDto{
     meetingUsersList: MeetingUser[];
     replyList: BoardReply[];
     boardList: MeetingBoard[];
+    userList: User[];
 }
