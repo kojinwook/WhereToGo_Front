@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import './style.css';
+import { WithdrawUserRequest } from 'apis/apis';
+import { WithdrawalUserRequestDto } from 'apis/request/user';
 
 Modal.setAppElement('#root');
 
@@ -114,7 +116,9 @@ export default function UserModifyProfile() {
         setIsPwModalOpen(false); // 모달 닫기
     };
 
-    const handleWithdrawal = () => {
+    const handleWithdrawal = async () => {
+        console.log('아이디:', userId);
+        console.log('비밀번호:', currentPassword);
         if (!userId) {
             alert('아이디를 적어주세요.');
             return;
@@ -123,11 +127,16 @@ export default function UserModifyProfile() {
             alert('비밀번호를 적어주세요.');
             return;
         }
-        console.log('아이디:', userId);
-        console.log('비밀번호:', currentPassword);
-        alert('탈퇴되었습니다.');
-        setIsWithdrawalModalOpen(false); // 모달 닫기
-        navigate('/'); // 탈퇴 후 홈페이지로 이동
+        const requestBody: WithdrawalUserRequestDto = {userId, password: currentPassword};
+        const response = await WithdrawUserRequest(requestBody)
+        if(!response) return;
+        if (response.code === 'SU') {
+            alert('탈퇴되었습니다.');
+            setIsWithdrawalModalOpen(false); // 모달 닫기
+            navigate('/'); // 탈퇴 후 홈페이지로 이동
+        } else {
+            alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+        }
     };
 
     return (

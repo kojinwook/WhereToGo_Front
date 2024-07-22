@@ -185,7 +185,7 @@ export default function MeetingWrite() {
   };
 
   return (
-    <div className='meeting-write-container' style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+    <div className='meeting-write-container'>
       <p><strong>모임 명</strong></p>
       <input
         type="text"
