@@ -105,23 +105,6 @@ export default function MeetingList() {
     }
   }, [meetingList, cookies.accessToken]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const meetingTitleClickHandler = (meetingId: number) => {
     navigate(`/meeting/detail/${meetingId}`)
   }
