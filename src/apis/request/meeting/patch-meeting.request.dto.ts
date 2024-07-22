@@ -8,5 +8,6 @@ export default interface PatchMeetingRequestDto {
     imageList: Images[],
     maxParticipants: number,
     tags: string[],
-    areas: string[],
+    categories: string[],
+    locations: string[],
 }

@@ -16,9 +16,48 @@ export default function MeetingWrite() {
   const [nickname, setNickname] = useState<string>('');
   const [maxParticipants, setMaxParticipants] = useState<number>(1);
   const [tags, setTags] = useState<string[]>([]);
-  const [areas, setAreas] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
   const [cookies] = useCookies();
   const navigate = useNavigate();
+
+  const categoryOptions = [
+    { id: 1, name: '여행' },
+    { id: 2, name: '음식' },
+    { id: 3, name: '문화/공연/축제' },
+    { id: 4, name: '업종/직무' },
+    { id: 5, name: '음악' },
+    { id: 6, name: '댄스/무용' },
+    { id: 7, name: '사교' },
+    { id: 8, name: '독서' },
+    { id: 9, name: '운동' },
+    { id: 10, name: 'e스포츠' },
+    { id: 11, name: '외국어' },
+    { id: 12, name: '스터디' },
+    { id: 13, name: '공예' },
+    { id: 14, name: '봉사' },
+    { id: 15, name: '차/오토바이' }
+  ];
+
+  const locationOptions = [
+    { code: 1, name: '서울' },
+    { code: 2, name: '인천' },
+    { code: 3, name: '대전' },
+    { code: 4, name: '대구' },
+    { code: 5, name: '광주' },
+    { code: 6, name: '부산' },
+    { code: 7, name: '울산' },
+    { code: 8, name: '세종' },
+    { code: 31, name: '경기' },
+    { code: 32, name: '강원' },
+    { code: 33, name: '충북' },
+    { code: 34, name: '충남' },
+    { code: 35, name: '경북' },
+    { code: 36, name: '경남' },
+    { code: 37, name: '전북' },
+    { code: 38, name: '전남' },
+    { code: 39, name: '제주' }
+  ];
 
   useEffect(() => {
     if (!loginUser) return;
@@ -30,7 +69,10 @@ export default function MeetingWrite() {
   }
 
   const handleIntroduction = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIntroduction(event.target.value);
+    const value = event.target.value;
+    if (value.length <= 20) {
+      setIntroduction(value);
+    }
   }
 
   const handleContent = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -66,6 +108,21 @@ export default function MeetingWrite() {
     setImagePreviews(newImagePreviews);
   };
 
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const newTag = e.currentTarget.value.trim();
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+        e.currentTarget.value = '';
+      }
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setTags(tags.filter(t => t !== tag));
+  };
+
   const handlePost = async () => {
     const formData = new FormData();
     formData.append('title', title);
@@ -74,16 +131,16 @@ export default function MeetingWrite() {
 
     const imageList: Images[] = [];
     for (const file of imageFileList) {
-        const formData = new FormData();
-        formData.append('file', file);
-        const imageUrl = await FileUploadRequest(formData);
-        if (imageUrl) {
-            imageList.push(imageUrl);
-        }
+      const formData = new FormData();
+      formData.append('file', file);
+      const imageUrl = await FileUploadRequest(formData);
+      if (imageUrl) {
+        imageList.push(imageUrl);
+      }
     }
 
     try {
-      const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, areas };
+      const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, categories, locations };
       console.log(requestBody)
       const response = await PostMeetingRequest(requestBody, cookies.accessToken);
       if (!response) return;
@@ -99,36 +156,33 @@ export default function MeetingWrite() {
     }
   };
 
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const newTag = e.currentTarget.value.trim();
-      if (newTag && !tags.includes(newTag)) {
-        setTags([...tags, newTag]);
-        e.currentTarget.value = '';
-      }
-    }
+  const handleTagSelect = (categoryName: string) => {
+    setCategories((prevCategories) =>
+      prevCategories.includes(categoryName) ? prevCategories.filter((name) => name !== categoryName) : [...prevCategories, categoryName]
+    );
   };
 
-  const handleAreasKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const newAreas = e.currentTarget.value.trim();
-      if (newAreas && !tags.includes(newAreas)) {
-        setAreas([...areas, newAreas]);
-        e.currentTarget.value = '';
-      }
-    }
+  const handleAreaSelect = (locationName: string) => {
+    setLocations((prevLocations) =>
+      prevLocations.includes(locationName) ? prevLocations.filter((name) => name !== locationName) : [...prevLocations, locationName]
+    );
   };
 
-  const removeTag = (tag: string) => {
-    setTags(tags.filter(t => t !== tag));
+  const isSelectedTag = (categoryName: string) => {
+    return categories.includes(categoryName);
   };
 
-  const removeArea = (area: string) => {
-    setAreas(areas.filter(a => a !== area));
+  const isSelectedArea = (locationName: string) => {
+    return locations.includes(locationName);
   };
 
+  const handleTagClass = (tagName: string) => {
+    return `category-option ${isSelectedTag(tagName) ? 'selected' : ''}`;
+  };
+
+  const handleAreaClass = (areaName: string) => {
+    return `category-option ${isSelectedArea(areaName) ? 'selected' : ''}`;
+  };
 
   return (
     <div className='meeting-write-container' style={{ maxHeight: '100vh', overflowY: 'auto' }}>
@@ -145,10 +199,13 @@ export default function MeetingWrite() {
       <p><strong>한 줄 소개</strong></p>
       <label>
         <textarea
-          placeholder='한 줄 소개'
+          placeholder='한 줄 소개는 최대 20자로 제한됩니다.'
           value={introduction}
           onChange={handleIntroduction}
         ></textarea>
+        <div className="char-count">
+          {introduction.length}/20
+        </div>
       </label>
 
       <br />
@@ -193,17 +250,46 @@ export default function MeetingWrite() {
 
       <br />
 
-      <p><strong>지역</strong></p>
-      <input
-        type="text"
-        placeholder="지역을 입력해주세요. (Enter로 추가)"
-        name="areas"
-        onKeyDown={handleAreasKeyDown} />
+      <p><strong>카테고리</strong></p>
+      <div className='category-select'>
+        {categoryOptions.map((category) => (
+          <div
+            key={category.id}
+            className={handleTagClass(category.name)}
+            onClick={() => handleTagSelect(category.name)}
+          >
+            {category.name}
+          </div>
+        ))}
+      </div>
       <div>
-        {areas.map((areas, index) => (
-          <div key={index}>
-            #{areas}
-            <span onClick={() => removeArea(areas)}>&times;</span>
+        {categories.map((categoryName) => (
+          <div key={categoryName}>
+            #{categoryName}
+            <span onClick={() => handleTagSelect(categoryName)}>&times;</span>
+          </div>
+        ))}
+      </div>
+
+      <br />
+
+      <p><strong>지역</strong></p>
+      <div className='category-select'>
+        {locationOptions.map((location) => (
+          <div
+            key={location.code}
+            className={handleAreaClass(location.name)}
+            onClick={() => handleAreaSelect(location.name)}
+          >
+            {location.name}
+          </div>
+        ))}
+      </div>
+      <div>
+        {locations.map((locationName) => (
+          <div key={locationName}>
+            #{locationName}
+            <span onClick={() => handleAreaSelect(locationName)}>&times;</span>
           </div>
         ))}
       </div>

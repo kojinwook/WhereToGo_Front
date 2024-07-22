@@ -1,18 +1,12 @@
-.container {
-    max-width: 50%;
-    width: 100%;
-    margin: 30px auto;
+.review-write-container {
+    width: 80%;
+    margin: 0 auto;
     padding: 20px ;
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #f9f9f9;
     box-sizing: border-box; /* 패딩 포함한 크기 계산 */
     text-align: center; /* 내부 텍스트 및 요소 가운데 정렬 */
-}
-
-h1 {
-    text-align: center;
-    color: #333;
 }
 
 hr {
@@ -27,12 +21,12 @@ p {
     color: #555;
 }
 
-label {
+.review-write-content {
     display: block;
     margin: 10px 0;
 }
 
-textarea {
+.review-write-content textarea {
     width: 90%;
     height: 100px;
     padding: 10px;
@@ -44,14 +38,14 @@ input[type="file"] {
     margin: 10px 0;
 }
 
-img {
+.review-write-img {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 5px;
     background-color: #fff;
 }
 
-button {
+.review-write-btn {
     display: block;
     width: 100%;
     padding: 10px;
@@ -62,17 +56,17 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+.review-write-btn:hover {
     background-color: #000;
     color: #fff;
 }
 
-button i {
+.review-write-btn i {
     font-size: 1.5rem;
     color: gray;
 }
 
-button i:hover {
+.review-write-btn i:hover {
     color: red;
 }
 

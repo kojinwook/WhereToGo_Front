@@ -1,4 +1,4 @@
-import { Images } from "./interface";
+import { Images, User } from "./interface";
 
 
 export default interface Meeting{
@@ -11,6 +11,8 @@ export default interface Meeting{
     modifyDate : string;
     maxParticipants : number;
     tags : string[];
-    areas : string[];
+    categories : string[];
+    locations : string[];
     userNickname : string;
+    userDto: User;
 }

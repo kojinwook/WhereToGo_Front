@@ -14,7 +14,6 @@ export default function BoardList() {
         if (!meetingId) return;
         const fetchBoardList = async () => {
             const response = await GetMeetingBoardListRequest(meetingId);
-            console.log(response?.meetingBoardList.map((board) => board.imageList));
             if (response && response.code === 'SU') {
                 setBoardList(response.meetingBoardList);
 
@@ -35,18 +34,18 @@ export default function BoardList() {
 
     return (
         <div>
-            <h1>Board List</h1>
+            
             <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
             <ul>
-                {boardList.map((board) => (
-                    <li key={board.meetingBoardId}>
+            {boardList.map((board) => (
+                    <li key={board.meetingBoardId} onClick={() => handleBoardDetail(board.meetingBoardId)}>
                         프로필이미지: <img
-                            src={board.userDto.profileImage || defaultProfileImage}
+                            src={board.userDto && board.userDto.profileImage ? board.userDto.profileImage : defaultProfileImage}
                             alt="profile"
                         />
                         <h2>제목: {board.title}</h2>
                         <p>{board.content}</p>
-                        <p>닉네임: {board.userDto.nickname}</p>
+                        <p>닉네임: {board.userDto ? board.userDto.nickname : 'Unknown'}</p>
                         <p>작성날짜: {board.createDate}</p>
                     </li>
                 ))}

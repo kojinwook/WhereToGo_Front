@@ -4,6 +4,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store'
 import { Images } from 'types/interface/interface';
+import './style.css';
 
 export default function BoardWrite() {
     const { meetingId } = useParams()
@@ -75,7 +76,7 @@ export default function BoardWrite() {
             if (!response) return;
             if (response.code === 'SU') {
                 alert('게시물이 성공적으로 등록되었습니다.');
-                navigate('/meeting/board/list/${meetingId}');
+                navigate(`/meeting/detail/${meetingId}`);
             } else {
                 alert('게시물 등록에 실패했습니다.');
             }
@@ -86,8 +87,9 @@ export default function BoardWrite() {
     };
 
     return (
-        <div>
-            <div>
+        <div className='board-write-container'>
+            <p>게시물 작성</p>
+            <div className='board-write-list'>
                 <p><strong>제목</strong></p>
                 <input
                     type="text"
@@ -122,19 +124,15 @@ export default function BoardWrite() {
 
                 <p><strong>사진</strong></p>
                 <input type="file" multiple onChange={handleImageChange} />
-                <div style={{ display: 'flex', marginTop: '10px' }}>
+                <div className='image-preview-container'>
                     {imagePreviews.map((preview, index) => (
-                        <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
+                        <div key={index} className='image-preview'>
                             <img
                                 src={preview}
                                 alt={`이미지 미리보기 ${index}`}
-                                style={{ width: '100px', height: 'auto', marginRight: '10px' }}
                             />
-                            <button
-                                style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
-                                onClick={() => handleImageRemove(index)}
-                            >
-                                <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
+                            <button onClick={() => handleImageRemove(index)}>
+                                <i className="fas fa-times-circle" />
                             </button>
                         </div>
                     ))}
@@ -144,3 +142,4 @@ export default function BoardWrite() {
         </div>
     )
 }
+    

@@ -1,4 +1,4 @@
-import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserMeetingListRequest, GetUserRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -15,7 +15,7 @@ import heartIcon from 'assets/images/heartIcon.png';
 import settingIcon from 'assets/images/setting.png';
 import starIcon from 'assets/images/star.png';
 import { ResponseDto } from 'apis/response/response';
-import { ChatRoom, Favorite } from 'types/interface/interface';
+import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -39,16 +39,16 @@ const modalStyle = {
 };
 
 export default function UserProfile() {
-    const { userId } = useParams();
     const { loginUser } = useLoginUserStore();
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies();
-
+    const userId = loginUser?.userId;
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
     const [favorites, setFavorites] = useState<Favorite[]>([]);
     const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+    const [meetingList, setMeetingList] = useState<Meeting[]>([]); // 모임 목록
 
     const [isHeartModalOpen, setIsHeartModalOpen] = useState<boolean>(false); // 찜 모달 열림 상태
     const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false); // 모임 모달 열림 상태
@@ -70,6 +70,24 @@ export default function UserProfile() {
         removeCookie('accessToken');
         navigate('/');
     };
+
+    useEffect(() => {
+        const fetchUserMeetingList = async () => {
+            try {
+                const response = await GetUserMeetingListRequest(cookies.accessToken);
+                console.log(response);
+                if (!response) return;
+                if (response.code === 'SU') {
+                    setMeetingList(response.meetingList);
+                } else {
+                    console.log('모임 목록을 불러오는데 실패했습니다.');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchUserMeetingList();
+    }, [userId, cookies.accessToken]);
 
     useEffect(() => {
         if (!userId) return;
@@ -96,7 +114,7 @@ export default function UserProfile() {
     }, [userId, cookies.accessToken, navigator]);
 
     useEffect(() => {
-        if (!loginUser) return;
+        if (!loginUser) {alert('로그인 후 이용해주세요.'); navigate('/authentication/signin'); return;};
         getAllFavorite(loginUser.nickname);
         getChatRooms(loginUser.nickname);
     }, [loginUser]);
@@ -127,7 +145,6 @@ export default function UserProfile() {
         } catch (error) {
             console.error(error);
         }
-        console.log(favorites)
     };
 
     const getChatRooms = async (nickname: string) => {
@@ -147,12 +164,15 @@ export default function UserProfile() {
         } catch (error) {
             console.error(error);
         }
-        console.log(chatRooms)
     }
 
-    const handleTitleClick = (contentId: string) => {
+    const handleFestivalTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`);
     };
+
+    const handleMeetingTitleClick = (meetingId: string | number) => {
+        navigate(`/meeting/detail/${meetingId}`);
+    }
 
     const handleChatRoomClick = (roomId: string, userId: string) => {
         navigate(`/chat?roomId=${roomId}&userId=${userId}`);
@@ -206,7 +226,7 @@ export default function UserProfile() {
                     {favorites.map((favorite) => (
                         <div key={favorite.id} className='favorite-item'>
                             {/* 여기에 각 찜 목록 항목의 내용을 출력 */}
-                            <span onClick={() => handleTitleClick(favorite.contentId)}>{favorite.title}</span>
+                            <span onClick={() => handleFestivalTitleClick(favorite.contentId)}>{favorite.title}</span>
                         </div>
                     ))}
                 </div>
@@ -237,6 +257,23 @@ export default function UserProfile() {
                     ))}
                 </div>
                 <button onClick={toggleChatModal}>닫기</button>
+            </Modal>
+            <Modal
+                isOpen={isGroupModalOpen}
+                onRequestClose={toggleGroupModal}
+                style={modalStyle}
+                contentLabel='내 모임'
+            >
+                <h2>내 모임 목록</h2>
+                <div className='meeting-list'>
+                    {meetingList.map((meeting) => (
+                        <div key={meeting.meetingId} className='meeting-item'>
+                            {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
+                            <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
+                        </div>
+                    ))}
+                </div>
+                <button onClick={toggleGroupModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isSettingModalOpen}
