@@ -1,4 +1,4 @@
-import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserMeetingListRequest, GetUserRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -49,6 +49,7 @@ export default function UserProfile() {
     const [favorites, setFavorites] = useState<Favorite[]>([]);
     const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
     const [meetingList, setMeetingList] = useState<Meeting[]>([]); // 모임 목록
+    const [boardList, setBoardList] = useState<any[]>([]); // 게시물 목록
 
     const [isHeartModalOpen, setIsHeartModalOpen] = useState<boolean>(false); // 찜 모달 열림 상태
     const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false); // 모임 모달 열림 상태
@@ -72,10 +73,27 @@ export default function UserProfile() {
     };
 
     useEffect(() => {
+        if (!userId) return;
+        const fetchUserBoardList = async () => {
+            try {
+                const response = await GetUserBoardListRequest(userId, cookies.accessToken);
+                if (!response) return;
+                if (response.code === 'SU') {
+                    setBoardList(response.boardList);
+                } else {
+                    console.log('게시물 목록을 불러오는데 실패했습니다.');
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchUserBoardList();
+    }, [userId, cookies.accessToken]);
+
+    useEffect(() => {
         const fetchUserMeetingList = async () => {
             try {
                 const response = await GetUserMeetingListRequest(cookies.accessToken);
-                console.log(response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setMeetingList(response.meetingList);
@@ -114,7 +132,7 @@ export default function UserProfile() {
     }, [userId, cookies.accessToken, navigator]);
 
     useEffect(() => {
-        if (!loginUser) {alert('로그인 후 이용해주세요.'); navigate('/authentication/signin'); return;};
+        if (!loginUser) { alert('로그인 후 이용해주세요.'); navigate('/authentication/signin'); return; };
         getAllFavorite(loginUser.nickname);
         getChatRooms(loginUser.nickname);
     }, [loginUser]);
@@ -140,7 +158,7 @@ export default function UserProfile() {
             if (response.code === 'SU') {
                 setFavorites(response.favoriteList);
             } else {
-                alert('찜 목록을 불러오는데 실패했습니다.');
+                console.log ('찜 목록을 불러오는데 실패했습니다.');
             }
         } catch (error) {
             console.error(error);
@@ -159,7 +177,7 @@ export default function UserProfile() {
             if (response.code === 'SU') {
                 setChatRooms(response.chatRoomList);
             } else {
-                alert('채팅 목록을 불러오는데 실패했습니다.');
+                console.log ('채팅 목록을 불러오는데 실패했습니다.');
             }
         } catch (error) {
             console.error(error);
@@ -172,6 +190,10 @@ export default function UserProfile() {
 
     const handleMeetingTitleClick = (meetingId: string | number) => {
         navigate(`/meeting/detail/${meetingId}`);
+    }
+
+    const handleBoardTitleClick = (meetingBoardId: string | number, meetingId: string | number) => {
+        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
     }
 
     const handleChatRoomClick = (roomId: string, userId: string) => {
@@ -239,7 +261,18 @@ export default function UserProfile() {
                 contentLabel='내 게시물'
             >
                 <h2>내 게시물</h2>
-                <p>여기에 내 게시물 목록을 추가하세요.</p>
+                <div className='board-list'>
+                    {boardList.map((board) => (
+                        <div key={board.meetingBoardId} className='board-item'>
+                            <div onClick={() => handleBoardTitleClick(board.meetingBoardId, board.meetingId)}>{board.title}</div>
+                            {/* <div>{board.content}</div> */}
+                            {/* 이미지가 있다면 출력 */}
+                            {/* {board.imageList && board.imageList.length > 0 && (
+                                <img src={board.imageList[0].image} alt='게시물 이미지' className='board-image' />
+                            )} */}
+                        </div>
+                    ))}
+                </div>
                 <button onClick={toggleBoardModal}>닫기</button>
             </Modal>
             <Modal

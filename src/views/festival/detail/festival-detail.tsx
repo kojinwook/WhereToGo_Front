@@ -1,9 +1,10 @@
-import { GetAllReviewRequest, GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest } from 'apis/apis';
+import { GetAllReviewRequest, GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest, PutFavoriteRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
 import Review from 'types/interface/review.interface';
 import './style.css'
+import { useCookies } from 'react-cookie';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -14,11 +15,14 @@ export default function FestivalDetail() {
     const query = useQuery();
     const contentId = query.get('contentId');
     const navigate = useNavigate();
+    const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
     const [festival, setFestival] = useState<Festival>();
     const [averageRate, setAverageRate] = useState<number>(0);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [showMap, setShowMap] = useState<boolean>(true);
     const [showReviews, setShowReviews] = useState<boolean>(false);
+    const [nickname, setNickname] = useState<string>('');
+    const [cookies, setCookies] = useCookies();
 
     const formatDate = (dateStr: string) => {
         const year = dateStr.substring(0, 4);
@@ -156,69 +160,116 @@ export default function FestivalDetail() {
         navigate(`/festival/review/write?contentId=${contentId}`)
     }
 
+    // 찜
+    const onFavoriteClickHandler = async (contentId: string) => {
+        if (!nickname) return;
+        try {
+            const response = await PutFavoriteRequest(contentId, nickname, cookies.accessToken);
+            if (!response) return;
+            if (response.code === 'SU') {
+                setFavorites(prevFavorites => ({
+                    ...prevFavorites,
+                    [contentId]: !prevFavorites[contentId]
+                }));
+            } else {
+                console.error('Failed to toggle favorite:', response.message);
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+        }
+    };
+
+    const backGoPathClickHandler = () => {
+        navigate(`/festival/search`);
+    }
+
     if (!festival) return null;
     return (
         <div className="festival-detail-container">
-            <div className='festival-main'>
-                <div className="festival-image">
-                    <img src={festival.firstImage} alt={festival.title} />
+            <div className='festival-detail-header'>
+                <div className='festival-detail-name'>
+                    <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
+                </div>
+                <div className='festival-detail-option'>
+                    <img className='festival-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
+                        try {
+                            await navigator.clipboard.writeText(window.location.href);
+                            alert('링크가 복사되었습니다!'); // 성공 메시지
+                        } catch (err) {
+                            console.error('링크 복사 실패:', err);
+                        }
+                    }} />
+                    <div className="icon-button" onClick={() => onFavoriteClickHandler(festival.contentId)}>
+                        {favorites[festival.contentId] ? 
+                            <i className="fas fa-heart favorite-fill-icon" style={{ color: 'red' }}></i> :
+                            <i className="far fa-heart favorite-light-icon" style={{ color: 'grey' }}></i>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div className='festival-detail-body'>
+                <div className='festival-main'>
+                    <div className="festival-image">
+                        <img src={festival.firstImage} alt={festival.title} />
+                    </div>
+
+                    <div className="festival-title">{festival.title}</div>
+                    <div><strong>{renderStars(averageRate, true)}</strong></div>
                 </div>
 
-                <div className="festival-title">{festival.title}</div>
-                <div><strong>{renderStars(averageRate, true)}</strong></div>
-            </div>
+                <div className='festival-btn'>
+                    <button onClick={() => { setShowMap(true); setShowReviews(false); }}>정보</button>
+                    <button onClick={() => { setShowMap(false); setShowReviews(true); }}>후기</button>
+                </div>
 
-            <div className='festival-btn'>
-                <button onClick={() => { setShowMap(true); setShowReviews(false); }}>정보</button>
-                <button onClick={() => { setShowMap(false); setShowReviews(true); }}>후기</button>
-            </div>
-
-            <div className="festival-details">
-                {showMap && (
-                    <div>
-                        <div className='festival-information'>
-                            <p><strong>주소 | </strong>{festival.address1}</p>
-                            <p><strong>기간 | </strong>{festival.startDate} ~ {festival.endDate}</p>
-                            <p><strong>시간 | </strong></p>
-                            <p><strong>번호 | </strong>{festival.tel}</p>
-                            <p><strong>웹사이트 | </strong>{festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
-                            <p><strong>태그:</strong> {Array.isArray(festival.tags) ? festival.tags.map(tag => `#${tag}`).join(' ') : `#${festival.tags}`}</p>
+                <div className="festival-details">
+                    {showMap && (
+                        <div>
+                            <div className='festival-information'>
+                                <p><strong>주소 | </strong>{festival.address1}</p>
+                                <p><strong>기간 | </strong>{festival.startDate} ~ {festival.endDate}</p>
+                                <p><strong>시간 | </strong></p>
+                                <p><strong>번호 | </strong>{festival.tel}</p>
+                                <p><strong>웹사이트 | </strong>{festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
+                                <p><strong>태그:</strong> {Array.isArray(festival.tags) ? festival.tags.map(tag => `#${tag}`).join(' ') : `#${festival.tags}`}</p>
+                            </div>
+                            <div className="map-container">
+                                <button onClick={handleNavigateClick}>길찾기</button>
+                                <div id="map"></div>
+                            </div>
                         </div>
-                        <div className="map-container">
-                            <button onClick={handleNavigateClick}>길찾기</button>
-                            <div id="map"></div>
-                        </div>
-                    </div>
-                )}
-            </div>
+                    )}
+                </div>
 
-            <div className="festival-review">
-                {showReviews && (
-                    <div>
-                        <button className='review-btn' onClick={() => reviewWriteButtonClickHandler(festival.contentId)}>리뷰 작성</button>
-                        <h2>리뷰 리스트</h2>
-                        {reviews.length > 0 ? (
-                            reviews.map((review, index) => (
-                                <div key={index}>
-                                    <p>{renderStars(review.rate)} {review.writeDatetime}</p>
-                                    <p><strong>작성자:</strong> {review.nickname}</p>
-                                    <div className="review-images">
-                                        {review.images && review.images.length > 0 ? (
-                                            review.images.map((image, idx) => (
-                                                <img key={idx} src={image.image} alt={`리뷰 이미지 ${idx}`} className="review-image" />
-                                            ))
-                                        ) : (
-                                            <p><strong>사진:</strong> 없음</p>
-                                        )}
+                <div className="festival-review">
+                    {showReviews && (
+                        <div>
+                            <button className='review-btn' onClick={() => reviewWriteButtonClickHandler(festival.contentId)}>리뷰 작성</button>
+                            <h2>리뷰 리스트</h2>
+                            {reviews.length > 0 ? (
+                                reviews.map((review, index) => (
+                                    <div key={index}>
+                                        <p>{renderStars(review.rate)} {review.writeDatetime}</p>
+                                        <p><strong>작성자:</strong> {review.nickname}</p>
+                                        <div className="review-images">
+                                            {review.images && review.images.length > 0 ? (
+                                                review.images.map((image, idx) => (
+                                                    <img key={idx} src={image.image} alt={`리뷰 이미지 ${idx}`} className="review-image" />
+                                                ))
+                                            ) : (
+                                                <p><strong>사진:</strong> 없음</p>
+                                            )}
+                                        </div>
+                                        <p><strong>Review:</strong> {review.review}</p>
                                     </div>
-                                    <p><strong>Review:</strong> {review.review}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>리뷰가 없습니다.</p>
-                        )}
-                    </div>
-                )}
+                                ))
+                            ) : (
+                                <p>리뷰가 없습니다.</p>
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     )
