@@ -21,7 +21,7 @@ import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestD
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
 import { PatchMeetingRequestDto, PostJoinMeetingRequestDto, PostMeetingRequestDto } from "./request/meeting";
 import { PatchMeetingBoardRequestDto, PostMeetingBoardRequestDto } from "./request/meeting/board";
-import { GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
+import { GetMeetingBoardImageListResponseDto, GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
 import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from "./request/meeting/board/reply";
 import { PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
 import GetBoardReplyListResponseDto from "./response/meeting/board/reply/get-board-reply-list.response.dto";
@@ -127,6 +127,7 @@ const GET_MEETING_BOARD_LIST_URL = (meetingId: number | string) => `${API_DOMAIN
 const PATCH_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/update/${meetingId}`;
 const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/meeting/board/my-board-list/${userId}`;
 const DELETE_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/delete/${meetingId}`;
+const GET_MEETING_BOARD_IMAGE_LIST_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/imageList/${meetingId}`;
 
 const POST_BOARD_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply`;
 const POST_REPLY_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply/reply`;
@@ -626,6 +627,13 @@ export const DeleteMeetingBoardRequest = async (meetingId: string | number, acce
         .catch(errorHandler);
     return result;
 };
+
+export const GetMeetingBoardImageListRequest = async (meetingId: string | number) => {
+    const result = await axios.get(GET_MEETING_BOARD_IMAGE_LIST_URL(meetingId))
+        .then(responseHandler<GetMeetingBoardImageListResponseDto>)
+        .catch(errorHandler);
+    return result;
+}
 
 export const PostBoardReplyRequest = async (requestBody: PostBoardReplyRequestDto, accessToken: string) => {
     const result = await axios.post(POST_BOARD_REPLY_URL(), requestBody, authorization(accessToken))
