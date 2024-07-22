@@ -40,6 +40,7 @@ import BoardList from 'views/meeting/board/list/board-list';
 import BoardUpdate from 'views/meeting/board/update/board-update';
 import BoardDetail from 'views/meeting/board/detail/board-detail';
 import Main from 'views/main/main';
+import Management from 'views/admin/management/management';
 
 function App() {
 
@@ -91,6 +92,7 @@ function App() {
 
       <Route path='/admin'>
         <Route path='profile' element={<AdminProfile />} />
+        <Route path='management' element={<Management />}/>
       </Route>
 
       <Route path='/meeting'>

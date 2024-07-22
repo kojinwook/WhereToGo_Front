@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import logoImage from 'assets/images/logo.png';
 import inquiryIcon from 'assets/images/inquiry.png';
 import noticeIcon from 'assets/images/notice.png';
@@ -6,17 +6,55 @@ import managementIcon from 'assets/images/management.png';
 import festivalIcon from 'assets/images/festival.png';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
+import useLoginUserStore from 'store/login-user.store';
+import { log } from 'console';
+import { GetUserRequest } from 'apis/apis';
+import { useCookies } from 'react-cookie';
 
 
 
 export default function AdminProfile() {
+    const { loginUser } = useLoginUserStore();
+    const [userId, setUserId] = useState('');
+    const [nickname, setNickname] = useState<string>('');
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [email, setEmail] = useState<string>('');
+    const [cookies] = useCookies()
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (!loginUser) {
+            alert('로그인이 필요합니다.');
+            navigate('/authentication/signin');
+            return;
+        }
+        if (loginUser && loginUser.role !== 'ROLE_ADMIN') {
+            alert('관리자만 접근 가능합니다.');
+            navigate('/');
+        }
+        setUserId(loginUser.userId);
+    }, [loginUser]);
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            const response = await GetUserRequest(userId, cookies.accessToken);
+            if(!response) return;
+            const { nickname, email, profileImage } = response;
+            setNickname(nickname);
+            setEmail(email);
+            setProfileImage(profileImage);
+        }
+        fetchUser();
+    }, [userId]);
+
+    const handleFestivalClickHandler = () => {
+        navigate('/festival/admin');
+    }
 
     const inquirePathClickHandler = () => {
-        navigate("/notice/write");
-    }    
+        navigate("/notice");
+    }
+
     return (
         <div className='admin-profile-wrapper'>
             <div className='admin-profile-container'>
@@ -32,7 +70,7 @@ export default function AdminProfile() {
                     <img src={inquiryIcon} alt="문의 아이콘" className='inquiry-icon' />
                     <div className='inquiry-text' >문의</div>
                 </div>
-                <div className='notice-button'  onClick={inquirePathClickHandler}>
+                <div className='notice-button' onClick={inquirePathClickHandler}>
                     <img src={noticeIcon} alt="공지사항 아이콘" className='notice-icon' />
                     <div className='notice-text'>공지사항</div>
                 </div>
@@ -41,7 +79,7 @@ export default function AdminProfile() {
                     <div className='management-text'>회원관리</div>
                 </div>
                 <div className='festival-button'>
-                    <img src={festivalIcon} alt="축제 아이콘" className='festival-icon' />
+                    <img src={festivalIcon} alt="축제 아이콘" className='festival-icon' onClick={handleFestivalClickHandler}/>
                     <div className='festival-text'>축제</div>
                 </div>
             </div>

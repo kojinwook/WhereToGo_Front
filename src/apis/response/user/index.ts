@@ -5,6 +5,8 @@ import PatchPasswordResponseDto from "./patch-password.response.dto";
 import WithdrawalUserResponseDto from "./withdrawal-user.response.dto";
 import PasswordRecoveryResponseDto from "./password-recovery.response.dto";
 import FindUserIdResponseDto from "./find-userId.response.dto";
+import GetUserListResponseDto from "./get-user-list.response.dto";
+import DeleteUserResponseDto from "./delete-user.response.dto";
 
 export type { 
     GetUserResponseDto,
@@ -13,5 +15,7 @@ export type {
     PatchNicknameResponseDto,
     PatchPasswordResponseDto,
     PasswordRecoveryResponseDto,
-    FindUserIdResponseDto
+    FindUserIdResponseDto,
+    GetUserListResponseDto,
+    DeleteUserResponseDto
 }

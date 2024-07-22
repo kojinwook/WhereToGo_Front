@@ -1,11 +1,11 @@
-import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingBoardImageListRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
+import { Images, Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
 import './style.css';
 
 Modal.setAppElement('#root');
@@ -27,11 +27,11 @@ const ModalStyle = {
 export default function MeetingDetail() {
 
     const { loginUser } = useLoginUserStore();
-    const { meetingId } = useParams<{ meetingId: string }>()
-    const [meeting, setMeeting] = useState<Meeting>()
+    const { meetingId } = useParams<{ meetingId: string }>();
+    const [meeting, setMeeting] = useState<Meeting>();
     const [cookies, setCookie] = useCookies();
     const [userId, setUserId] = useState<string>('');
-    const [role, setRole] = useState<string>('')
+    const [role, setRole] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
@@ -44,6 +44,7 @@ export default function MeetingDetail() {
     const [joinMemberList, setJoinMemberList] = useState<string[]>([]);
     const [joinMembers, setJoinMembers] = useState<number>();
     const [boardList, setBoardList] = useState<MeetingBoard[]>([]);
+    const [boardImageList, setBoardImageList] = useState<Images[]>([]);
     const [showOptions, setShowOptions] = useState(false);
 
     useEffect(() => {
@@ -56,7 +57,6 @@ export default function MeetingDetail() {
 
     useEffect(() => {
         if (!meeting) return;
-
         const fetchJoinMembers = async () => {
             try {
                 const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
@@ -98,6 +98,20 @@ export default function MeetingDetail() {
             }
         }
         fetchBoardList();
+    }, [meetingId])
+
+    useEffect(() => {
+        if (!meetingId) return;
+        const fetchMeetingBoardImageList = async () => {
+            const response = await GetMeetingBoardImageListRequest(meetingId);
+            console.log(response)
+            if (response && response.code === 'SU') {
+                setBoardImageList(response.imageList);
+            } else {
+                console.error('Failed to fetch board list:');
+            }
+        }
+        fetchMeetingBoardImageList();
     }, [meetingId])
 
     const formatDate = (createDateTime: string) => {
@@ -145,6 +159,11 @@ export default function MeetingDetail() {
             alert('이미 모임에 가입된 멤버입니다.');
             return;
         }
+        if (joinMembers === meeting?.maxParticipants) {
+            alert('모임 인원이 꽉 찼습니다.');
+            return;
+        }
+
         try {
             const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.accessToken);
             if (!response) return;
@@ -217,17 +236,17 @@ export default function MeetingDetail() {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
         }
     };
-    
+
     const prevImage = () => {
         if (meeting && meeting.imageList) {
             setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
         }
     };
-    
+
     const toggleOptions = () => {
         setShowOptions((prev) => !prev);
     };
-    
+
 
     // 수정
     const updatePostClickHandler = (meetingId: number | string | undefined) => {
@@ -252,13 +271,13 @@ export default function MeetingDetail() {
         }
     }
 
-
     const handleCreateBoard = () => {
         navigate(`/meeting/board/write/${meetingId}`);
     }
 
     const handleBoardDetail = (meetingBoardId: string) => {
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -278,14 +297,14 @@ export default function MeetingDetail() {
                     }
                 }} />
             </div>
-    
+
             <div className="tab-menu">
                 <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
                 <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
                 <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
 
-    
+
             <div className="meeting-detail-body">
                 {activeTab === 'detail' && (
                     <div>
@@ -311,22 +330,22 @@ export default function MeetingDetail() {
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
-                                        {meeting.userNickname === nickname && (
-                                            <button
-                                            className="update-button"
-                                            onClick={() => updatePostClickHandler(meeting.meetingId)}
-                                            >
-                                            수정
-                                            </button>
-                                        )}
-                                        {(meeting.userNickname === nickname || role === "ADMIN") && (
-                                            <button
-                                            className="delete-button"
-                                            onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
-                                            >
-                                            삭제
-                                            </button>
-                                        )}
+                                            {meeting.userNickname === nickname && (
+                                                <button
+                                                    className="update-button"
+                                                    onClick={() => updatePostClickHandler(meeting.meetingId)}
+                                                >
+                                                    수정
+                                                </button>
+                                            )}
+                                            {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                                <button
+                                                    className="delete-button"
+                                                    onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
+                                                >
+                                                    삭제
+                                                </button>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -400,11 +419,18 @@ export default function MeetingDetail() {
                 )}
                 {activeTab === 'requests' && (
                     <div className="requests-list">
-                        <h2>사진첩</h2>
+                        <div>
+                            {boardImageList.map((image) => (
+                                <div key={image.id} className="image-container">
+                                    <img src={image.image} alt="image" />
+                                </div>
+                            ))}
+                        </div>
+
                     </div>
                 )}
             </div>
-            
+
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}

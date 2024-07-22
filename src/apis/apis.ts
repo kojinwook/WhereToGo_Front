@@ -9,7 +9,7 @@ import { ResponseDto } from "./response/response";
 import Festival from "types/interface/festival.interface";
 import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { FindUserIdResponseDto, GetSignInUserResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
+import { DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
 import { DeleteMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
@@ -21,7 +21,7 @@ import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestD
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
 import { PatchMeetingRequestDto, PostJoinMeetingRequestDto, PostMeetingRequestDto } from "./request/meeting";
 import { PatchMeetingBoardRequestDto, PostMeetingBoardRequestDto } from "./request/meeting/board";
-import { GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
+import { GetMeetingBoardImageListResponseDto, GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
 import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from "./request/meeting/board/reply";
 import { PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
 import GetBoardReplyListResponseDto from "./response/meeting/board/reply/get-board-reply-list.response.dto";
@@ -82,12 +82,14 @@ const EMAIL_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/email-certification`;
 const CHECK_CERTIFICATION_URL = () => `${API_DOMAIN}/auth/check-certification`;
 
 const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
+const GET_USER_LIST_URL = () => `${API_DOMAIN}/user/user-list`;
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const PATCH_PASSWORD_URL = (userId: string) => `${API_DOMAIN}/user/change-password/${userId}`;
 const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
 const FIND_USERID_URL = () => `${API_DOMAIN}/user/find-userId`;
-const WIDTHDRAWAL_USER_URL = (userId: string) => `${API_DOMAIN}/user/withdrawal/${userId}`;
+const WIDTHDRAWAL_USER_URL = () => `${API_DOMAIN}/user/withdrawal`;
+const DELETE_USER_URL = (userId: string) => `${API_DOMAIN}/user/delete-user/${userId}`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
 const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
@@ -125,6 +127,7 @@ const GET_MEETING_BOARD_LIST_URL = (meetingId: number | string) => `${API_DOMAIN
 const PATCH_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/update/${meetingId}`;
 const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/meeting/board/my-board-list/${userId}`;
 const DELETE_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/delete/${meetingId}`;
+const GET_MEETING_BOARD_IMAGE_LIST_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/imageList/${meetingId}`;
 
 const POST_BOARD_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply`;
 const POST_REPLY_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply/reply`;
@@ -193,6 +196,13 @@ export const GetSignInUserRequest = async (accessToken: string) => {
     return result;
 };
 
+export const GetUserListRequest = async (accessToken: string) => {
+    const result = await axios.get(GET_USER_LIST_URL(), authorization(accessToken))
+        .then(responseHandler<GetUserListResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
 export const PatchNicknameRequest = async (requestBody: PatchNicknameRequestDto, accessToken: string) => {
     const result = await axios.patch(PATCH_NICKNAME_URL(), requestBody, authorization(accessToken))
         .then(responseHandler<PatchNicknameResponseDto>)
@@ -214,10 +224,17 @@ export const PatchPasswordRequest = async (userId: string, requestBody: PatchPas
     return result;
 };
 
-export const WithdrawUserRequest = async (userId: string, requestBody: WithdrawalUserRequestDto) => {
+export const WithdrawUserRequest = async (requestBody: WithdrawalUserRequestDto) => {
     const config = { data: requestBody };
-    const result = await axios.delete(WIDTHDRAWAL_USER_URL(userId), config)
+    const result = await axios.delete(WIDTHDRAWAL_USER_URL(), config)
         .then(responseHandler<WithdrawalUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const DeleteUserRequest = async (userId: string, accessToken: string) => {
+    const result = await axios.delete(DELETE_USER_URL(userId), authorization(accessToken))
+        .then(responseHandler<DeleteUserResponseDto>)
         .catch(errorHandler);
     return result;
 };
@@ -610,6 +627,13 @@ export const DeleteMeetingBoardRequest = async (meetingId: string | number, acce
         .catch(errorHandler);
     return result;
 };
+
+export const GetMeetingBoardImageListRequest = async (meetingId: string | number) => {
+    const result = await axios.get(GET_MEETING_BOARD_IMAGE_LIST_URL(meetingId))
+        .then(responseHandler<GetMeetingBoardImageListResponseDto>)
+        .catch(errorHandler);
+    return result;
+}
 
 export const PostBoardReplyRequest = async (requestBody: PostBoardReplyRequestDto, accessToken: string) => {
     const result = await axios.post(POST_BOARD_REPLY_URL(), requestBody, authorization(accessToken))
