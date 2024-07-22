@@ -148,7 +148,7 @@ export default function MeetingDetail() {
             alert('이미 모임에 가입된 멤버입니다.');
             return;
         }
-        if(joinMembers === meeting?.maxParticipants) {
+        if (joinMembers === meeting?.maxParticipants) {
             alert('모임 인원이 꽉 찼습니다.');
             return;
         }
@@ -225,17 +225,17 @@ export default function MeetingDetail() {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
         }
     };
-    
+
     const prevImage = () => {
         if (meeting && meeting.imageList) {
             setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
         }
     };
-    
+
     const toggleOptions = () => {
         setShowOptions((prev) => !prev);
     };
-    
+
 
     // 수정
     const updatePostClickHandler = (meetingId: number | string | undefined) => {
@@ -266,11 +266,11 @@ export default function MeetingDetail() {
     }
 
     const handleBoardDetail = (boardId: string) => {
-        if (!joinMemberList.includes(nickname)) {
-            alert('모임에 가입해야 합니다');
-            return;
-        }
-        navigate(`/meeting/board/detail/${boardId}`);
+        // if (!joinMemberList.includes(nickname)) {
+        //     alert('모임에 가입해야 합니다');
+        //     return;
+        // }
+        navigate(`/meeting/board/detail/${meetingId}/${boardId}`);
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -290,14 +290,14 @@ export default function MeetingDetail() {
                     }
                 }} />
             </div>
-    
+
             <div className="tab-menu">
                 <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
                 <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
                 <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
 
-    
+
             <div className="meeting-detail-body">
                 {activeTab === 'detail' && (
                     <div>
@@ -318,27 +318,27 @@ export default function MeetingDetail() {
                             </div>
                             <div className="meeting-detail-right">
                                 <div className="more-options">
-                                    {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                    {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
                                         <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
-                                        {meeting.userNickname === nickname && (
-                                            <button
-                                            className="update-button"
-                                            onClick={() => updatePostClickHandler(meeting.meetingId)}
-                                            >
-                                            수정
-                                            </button>
-                                        )}
-                                        {(meeting.userNickname === nickname || role === "ADMIN") && (
-                                            <button
-                                            className="delete-button"
-                                            onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
-                                            >
-                                            삭제
-                                            </button>
-                                        )}
+                                            {meeting.userNickname !== nickname && (
+                                                <button
+                                                    className="update-button"
+                                                    onClick={() => updatePostClickHandler(meeting.meetingId)}
+                                                >
+                                                    수정
+                                                </button>
+                                            )}
+                                            {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
+                                                <button
+                                                    className="delete-button"
+                                                    onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
+                                                >
+                                                    삭제
+                                                </button>
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -410,7 +410,7 @@ export default function MeetingDetail() {
                     </div>
                 )}
             </div>
-            
+
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}

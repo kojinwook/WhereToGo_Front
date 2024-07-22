@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Notice from 'types/interface/notice.interface';
 import './style.css';
+import useLoginUserStore from 'store/login-user.store';
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();
@@ -15,6 +16,22 @@ const NoticeList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Notice[]>([]);
+  const {loginUser} = useLoginUserStore();
+  const [userId, setUserId]= useState("");
+  const [role, setRole] = useState<string>("");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+
+  useEffect(() => {
+    const userId = loginUser?.userId;
+    const role = loginUser?.role;
+    console.log("userId", userId, "role", role);
+    if(!userId || !role) return;
+    setUserId(userId);
+    setRole(role);
+    setIsLoggedIn(true);
+  }, [loginUser]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -77,6 +94,9 @@ const NoticeList: React.FC = () => {
   const noticeClickHandler = (noticeId: number | string | undefined) => {
     navigator(`/notice/detail/${noticeId}`);
   };
+  const writePathClickHandler = () => {
+    navigator(`/notice/write`);
+  }
 
   const handleSearchButtonClick = () => {
     const filteredNotices = handleSearch();
@@ -92,6 +112,9 @@ const NoticeList: React.FC = () => {
       <h1>공지사항</h1>
       <div className="notice-search-container">
         <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
+        {role === "ROLE_ADMIN" && (
+        <button onClick={writePathClickHandler}>작성</button>
+        )}
         <div>
           <input
             className="notice-search-input"
@@ -116,7 +139,7 @@ const NoticeList: React.FC = () => {
             </div> 
           ) : (
             filteredPosts.map((notice) => (
-              <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.id)}>
+              <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.noticeId)}>
                 <div>{notice.noticeId}</div>
                 <div>{notice.title}</div>
                 <div>{formatDate(notice.createDateTime)}</div>

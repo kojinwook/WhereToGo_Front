@@ -129,7 +129,7 @@ const NoticeDetail: React.FC = () => {
           )}
           {showOptions && (
             <div className="button-box">
-              {notice.nickname === nickname && (
+              {(notice.nickname === nickname || role === "ADMIN") && (
                 <button
                   className="update-button"
                   onClick={() => updatePostClickHandler(notice.noticeId)}

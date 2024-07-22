@@ -107,7 +107,6 @@ const InquireList: React.FC = () => {
                 {post.title}
               </p>
               <p>{post.modifyDateTime ? formatDate(post.modifyDateTime) : formatDate(post.createDateTime)}</p>
-              {/* <p>답변: {post.answers && Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p> */}
               <p>{post.answered ? '유' : '무'}</p>
             </div>
           ))}
