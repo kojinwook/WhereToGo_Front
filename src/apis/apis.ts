@@ -15,7 +15,7 @@ import { DeleteMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingLi
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
-import { GetAllFavoriteResponseDto, GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
+import { GetAllFavoriteResponseDto, GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, GetTop5FestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
 import { Images } from "types/interface/interface";
 import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
@@ -56,6 +56,7 @@ const GET_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival
 const PATCH_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/patchFestival?contentId=${contentId}`;
 const PUT_FAVORITE_URL = (contentId: string | number, nickname: string) => `${API_DOMAIN}/favorite/putFavorite?contentId=${contentId}&nickname=${nickname}`;
 const GET_ALL_FAVORITE_URL = (nickname: string) => `${API_DOMAIN}/favorite/getAllFavoriteList?nickname=${nickname}`;
+const GET_TOP5_FESTIVAL_LIST_URL = () => `${API_DOMAIN}/festival/getTop5FestivalList`;
 
 const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
 const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
@@ -298,6 +299,13 @@ export const PutFavoriteRequest = async (contentId: string | number, nickname: s
 export const GetAllFavoriteRequest = async (nickname: string, accessToken: string) => {
     const result = await axios.get(GET_ALL_FAVORITE_URL(nickname), authorization(accessToken))
         .then(responseHandler<GetAllFavoriteResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const GetTop5FestivalListRequest = async () => {
+    const result = await axios.get(GET_TOP5_FESTIVAL_LIST_URL())
+        .then(responseHandler<GetTop5FestivalListResponseDto>)
         .catch(errorHandler);
     return result;
 };
