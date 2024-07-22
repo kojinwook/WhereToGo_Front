@@ -1,8 +1,9 @@
-import { GetMeetingListRequest } from 'apis/apis';
+import { GetJoinMeetingMemberRequest, GetMeetingListRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Images, Meeting } from 'types/interface/interface';
 import './style.css';
+import { useCookies } from 'react-cookie';
 
 export interface Category {
   name: string;
@@ -18,6 +19,8 @@ export default function MeetingList() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // 선택된 카테고리 상태
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]); // 선택된 지역 상태
   const [searchTerms, setSearchTerms] = useState<string[]>([]); // 검색어 배열
+  const [joinMembersMap, setJoinMembersMap] = useState<{ [key: number]: number }>({});
+  const [cookies] = useCookies();
   const navigate = useNavigate()
 
   const backGoPathClickHandler = () => {
@@ -80,6 +83,44 @@ export default function MeetingList() {
     };
     getMeetingList();
   }, []);
+
+  useEffect(() => {
+    const fetchJoinMembersForAllMeetings = async () => {
+      const joinMembersCount: { [key: number]: number } = {};
+      for (const meeting of meetingList) {
+        try {
+          const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
+          if (response && response.meetingUsersList) {
+            joinMembersCount[meeting.meetingId] = response.meetingUsersList.length;
+          }
+        } catch (error) {
+          console.error(`Failed to fetch join members for meeting ${meeting.meetingId}:`, error);
+        }
+      }
+      setJoinMembersMap(joinMembersCount);
+    };
+
+    if (meetingList.length > 0) {
+      fetchJoinMembersForAllMeetings();
+    }
+  }, [meetingList, cookies.accessToken]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const meetingTitleClickHandler = (meetingId: number) => {
     navigate(`/meeting/detail/${meetingId}`)
@@ -271,7 +312,7 @@ export default function MeetingList() {
               <div className='meeting-title'>{meeting.title}</div>
               <div>{meeting.userNickname}</div>
               <div>{meeting.introduction}</div>
-              <div>{meeting.maxParticipants}</div>
+              <div>{joinMembersMap[meeting.meetingId]}/{meeting.maxParticipants}</div>
             </li>
           ))
         ) : (

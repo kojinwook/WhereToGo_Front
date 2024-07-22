@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
 import './style.css';
+import { log } from 'console';
 
 Modal.setAppElement('#root');
 
@@ -33,10 +34,11 @@ export default function MeetingDetail() {
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('')
     const [nickname, setNickname] = useState<string>('');
+    const [creatorNickname, setCreatorNickname] = useState<string>('');
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const creatorNickname = meeting?.userNickname;
+    // const creatorNickname = meeting?.userNickname;
     const roomName = meeting?.userNickname;
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -79,6 +81,7 @@ export default function MeetingDetail() {
                 const response = await GetMeetingRequest(meetingId)
                 if (!response) return;
                 setMeeting(response.meeting)
+                setCreatorNickname(response.meeting.userDto.nickname)
             }
             catch (error) {
                 console.error("모임 정보를 불러오는 중 오류가 발생했습니다:", error)
@@ -145,6 +148,11 @@ export default function MeetingDetail() {
             alert('이미 모임에 가입된 멤버입니다.');
             return;
         }
+        if(joinMembers === meeting?.maxParticipants) {
+            alert('모임 인원이 꽉 찼습니다.');
+            return;
+        }
+
         try {
             const response = await PostJoinMeetingRequest({ meetingId: Number(meetingId), nickname }, cookies.accessToken);
             if (!response) return;
@@ -257,8 +265,12 @@ export default function MeetingDetail() {
         navigate(`/meeting/board/write/${meetingId}`);
     }
 
-    const handleBoardDetail = (meetingBoardId: string) => {
-        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    const handleBoardDetail = (boardId: string) => {
+        if (!joinMemberList.includes(nickname)) {
+            alert('모임에 가입해야 합니다');
+            return;
+        }
+        navigate(`/meeting/board/detail/${boardId}`);
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -331,7 +343,7 @@ export default function MeetingDetail() {
                                     )}
                                 </div>
                                 <p>대표 닉네임</p>
-                                <div className="bordered-div">{meeting.userNickname}</div>
+                                <div className="bordered-div">{creatorNickname}</div>
                                 <p>한 줄 소개</p>
                                 <div className="bordered-div">{meeting.introduction}</div>
                                 <p>개설 날짜</p>

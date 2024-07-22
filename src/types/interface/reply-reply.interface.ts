@@ -2,7 +2,7 @@ import { User } from "./interface";
 
 export default interface ReplyReply {
     replyReplyId: number,
-    reply: string,
+    replyReply: string,
     createDate: string,
     modifyDate: string,
     userDto: User,
