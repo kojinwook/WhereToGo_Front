@@ -12,10 +12,12 @@ import { useNavigate } from 'react-router-dom';
 export default function AdminProfile() {
     const navigate = useNavigate();
 
-
-
     const inquirePathClickHandler = () => {
-        navigate("/notice/write");
+        navigate('/inquire')
+    }
+
+    const noticePathClickHandler = () => {
+        navigate("/notice");
     }    
     return (
         <div className='admin-profile-wrapper'>
@@ -28,11 +30,11 @@ export default function AdminProfile() {
                 </div>
             </div>
             <div className='admin-setting-button'>
-                <div className='inquiry-button'>
+                <div className='inquiry-button' onClick={inquirePathClickHandler}>
                     <img src={inquiryIcon} alt="문의 아이콘" className='inquiry-icon' />
                     <div className='inquiry-text' >문의</div>
                 </div>
-                <div className='notice-button'  onClick={inquirePathClickHandler}>
+                <div className='notice-button'  onClick={noticePathClickHandler}>
                     <img src={noticeIcon} alt="공지사항 아이콘" className='notice-icon' />
                     <div className='notice-text'>공지사항</div>
                 </div>
