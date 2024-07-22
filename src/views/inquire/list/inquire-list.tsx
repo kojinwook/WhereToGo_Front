@@ -86,7 +86,7 @@ const InquireList: React.FC = () => {
       <div className="back-button"> 
         <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backPathClickHandler} />
       </div>
-      <div className='inquire-header'>
+      <div className='inquire-list-header'>
         <div>NO</div>
         <div>문의 유형</div>
         <div>제목</div>

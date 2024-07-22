@@ -27,7 +27,7 @@ h1 {
 }
 
 /* 목록 헤더 */
-.inquire-header {
+.inquire-list-header {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -36,7 +36,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-.inquire-header div,
+.inquire-list-header div,
 .post p {
   flex: 1; /* 동일한 비율로 공간 차지 */
   text-align: center; /* 중앙 정렬 */

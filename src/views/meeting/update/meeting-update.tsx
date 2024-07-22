@@ -1,10 +1,8 @@
 import { FileUploadRequest, GetMeetingRequest, PatchMeetingRequest } from 'apis/apis';
-import { log } from 'console';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import useMeetingStore from 'store/meeting.store';
 import Images from 'types/interface/image.interface';
 import Meeting from 'types/interface/meeting.interface';
 
@@ -20,10 +18,49 @@ export default function MeetingUpdate() {
     const [imageFileList, setImageFileList] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [maxParticipants, setMaxParticipants] = useState(0);
+    const [tags, setTags] = useState<string[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [locations, setLocations] = useState<string[]>([]);
     const [cookies] = useCookies();
     const navigate = useNavigate();
+
+    const categoryOptions = [
+        { id: 1, name: '여행' },
+        { id: 2, name: '음식' },
+        { id: 3, name: '문화/공연/축제' },
+        { id: 4, name: '업종/직무' },
+        { id: 5, name: '음악' },
+        { id: 6, name: '댄스/무용' },
+        { id: 7, name: '사교' },
+        { id: 8, name: '독서' },
+        { id: 9, name: '운동' },
+        { id: 10, name: 'e스포츠' },
+        { id: 11, name: '외국어' },
+        { id: 12, name: '스터디' },
+        { id: 13, name: '공예' },
+        { id: 14, name: '봉사' },
+        { id: 15, name: '차/오토바이' }
+    ];
+
+    const locationOptions = [
+        { code: 1, name: '서울' },
+        { code: 2, name: '인천' },
+        { code: 3, name: '대전' },
+        { code: 4, name: '대구' },
+        { code: 5, name: '광주' },
+        { code: 6, name: '부산' },
+        { code: 7, name: '울산' },
+        { code: 8, name: '세종' },
+        { code: 31, name: '경기' },
+        { code: 32, name: '강원' },
+        { code: 33, name: '충북' },
+        { code: 34, name: '충남' },
+        { code: 35, name: '경북' },
+        { code: 36, name: '경남' },
+        { code: 37, name: '전북' },
+        { code: 38, name: '전남' },
+        { code: 39, name: '제주' }
+    ];
 
     useEffect(() => {
         if (!meetingId) return;
@@ -31,7 +68,7 @@ export default function MeetingUpdate() {
             try {
                 const response = await GetMeetingRequest(meetingId);
                 if (!response) return;
-                const { title, introduction, content, userNickname, imageList, maxParticipants, categories, locations } = response.meeting;
+                const { title, introduction, content, userNickname, imageList, maxParticipants, tags, categories, locations } = response.meeting;
                 if (response.code === 'SU') {
                     setTitle(title);
                     setIntroduction(introduction);
@@ -40,6 +77,7 @@ export default function MeetingUpdate() {
                     const imageUrls = imageList.map((image: Images) => image.image);
                     setImagePreviews(imageUrls);
                     setMaxParticipants(maxParticipants);
+                    setTags(tags);
                     setCategories(categories);
                     setLocations(locations);
                     setMeeting(response.meeting);
@@ -73,14 +111,6 @@ export default function MeetingUpdate() {
         }
     };
 
-    const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCategories(e.target.value.split(','));
-    }
-
-    const handleAreasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLocations(e.target.value.split(','));
-    }
-
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (!event.target.files) return;
         const files = Array.from(event.target.files);
@@ -100,35 +130,19 @@ export default function MeetingUpdate() {
         setImagePreviews(newImagePreviews);
     };
 
-
     const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
             const newTag = e.currentTarget.value.trim();
-            if (newTag && !categories.includes(newTag)) {
-                setCategories([...categories, newTag]);
+            if (newTag && !tags.includes(newTag)) {
+                setTags([...tags, newTag]);
                 e.currentTarget.value = '';
             }
         }
     };
 
-    const handleAreasKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const newAreas = e.currentTarget.value.trim();
-            if (newAreas && !locations.includes(newAreas)) {
-                setLocations([...locations, newAreas]);
-                e.currentTarget.value = '';
-            }
-        }
-    };
-
-    const removeTag = (category: string) => {
-        setCategories(categories.filter(c => c !== category));
-    };
-
-    const removeArea = (location: string) => {
-        setLocations(locations.filter(l => l !== location));
+    const removeTag = (tag: string) => {
+        setTags(tags.filter(t => t !== tag));
     };
 
     const updateButtonHandler = async () => {
@@ -147,9 +161,9 @@ export default function MeetingUpdate() {
                 imageList.push(imageUrl);
             }
         }
-        const requestBody = { title, introduction, content, nickname, imageList, maxParticipants, categories, locations };
+        const requestBody = { title, introduction, content, nickname, imageList, maxParticipants, tags, categories, locations };
         const response = await PatchMeetingRequest(meetingId, requestBody, cookies.accessToken);
-        if(!response) return;
+        if (!response) return;
         if (response.code === 'SU') {
             alert('성공적으로 수정되었습니다.');
             navigate(`/meeting/detail/${meetingId}`);
@@ -157,6 +171,34 @@ export default function MeetingUpdate() {
             alert('수정에 실패했습니다.');
         }
     }
+
+    const handleTagSelect = (categoryName: string) => {
+        setCategories((prevCategories) =>
+            prevCategories.includes(categoryName) ? prevCategories.filter((name) => name !== categoryName) : [...prevCategories, categoryName]
+        );
+    };
+
+    const handleAreaSelect = (locationName: string) => {
+        setLocations((prevLocations) =>
+            prevLocations.includes(locationName) ? prevLocations.filter((name) => name !== locationName) : [...prevLocations, locationName]
+        );
+    };
+
+    const isSelectedTag = (categoryName: string) => {
+        return categories.includes(categoryName);
+    };
+
+    const isSelectedArea = (locationName: string) => {
+        return locations.includes(locationName);
+    };
+
+    const handleTagClass = (tagName: string) => {
+        return `category-option ${isSelectedTag(tagName) ? 'selected' : ''}`;
+    };
+
+    const handleAreaClass = (areaName: string) => {
+        return `category-option ${isSelectedArea(areaName) ? 'selected' : ''}`;
+    };
 
     return (
         <div>
@@ -212,10 +254,33 @@ export default function MeetingUpdate() {
                     name="tags"
                     onKeyDown={handleTagKeyDown} />
                 <div>
-                    {categories.map((categories, index) => (
+                    {tags.map((tag, index) => (
                         <div key={index}>
-                            #{categories}
-                            <span onClick={() => removeTag(categories)}>&times;</span>
+                            #{tag}
+                            <span onClick={() => removeTag(tag)}>&times;</span>
+                        </div>
+                    ))}
+                </div>
+
+                <br />
+
+                <p><strong>카테고리</strong></p>
+                <div className='category-select'>
+                    {categoryOptions.map((category) => (
+                        <div
+                            key={category.id}
+                            className={handleTagClass(category.name)}
+                            onClick={() => handleTagSelect(category.name)}
+                        >
+                            {category.name}
+                        </div>
+                    ))}
+                </div>
+                <div>
+                    {categories.map((categoryName) => (
+                        <div key={categoryName}>
+                            #{categoryName}
+                            <span onClick={() => handleTagSelect(categoryName)}>&times;</span>
                         </div>
                     ))}
                 </div>
@@ -223,16 +288,22 @@ export default function MeetingUpdate() {
                 <br />
 
                 <p><strong>지역</strong></p>
-                <input
-                    type="text"
-                    placeholder="지역을 입력해주세요. (Enter로 추가)"
-                    name="areas"
-                    onKeyDown={handleAreasKeyDown} />
+                <div className='category-select'>
+                    {locationOptions.map((location) => (
+                        <div
+                            key={location.code}
+                            className={handleAreaClass(location.name)}
+                            onClick={() => handleAreaSelect(location.name)}
+                        >
+                            {location.name}
+                        </div>
+                    ))}
+                </div>
                 <div>
-                    {locations.map((locations, index) => (
-                        <div key={index}>
-                            #{locations}
-                            <span onClick={() => removeArea(locations)}>&times;</span>
+                    {locations.map((locationName) => (
+                        <div key={locationName}>
+                            #{locationName}
+                            <span onClick={() => handleAreaSelect(locationName)}>&times;</span>
                         </div>
                     ))}
                 </div>
@@ -257,7 +328,7 @@ export default function MeetingUpdate() {
                     ))}
                 </div>
 
-                <button onClick={updateButtonHandler}>등록</button>
+                <button onClick={updateButtonHandler}>수정</button>
             </div>
         </div>
     )
