@@ -270,7 +270,7 @@ export default function MeetingDetail() {
         //     alert('모임에 가입해야 합니다');
         //     return;
         // }
-        navigate(`/meeting/board/detail/${boardId}`);
+        navigate(`/meeting/board/detail/${meetingId}/${boardId}`);
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -404,9 +404,9 @@ export default function MeetingDetail() {
                 )}
                 {activeTab === 'requests' && (
                     <div className="requests-list">
-                        {/* 신청 목록을 여기에 추가 */}
+                        
                         <h2>사진첩</h2>
-                        {/* 신청 요청 데이터 표시 */}
+                        
                     </div>
                 )}
             </div>
