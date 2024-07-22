@@ -77,7 +77,6 @@ export default function UserProfile() {
         const fetchUserBoardList = async () => {
             try {
                 const response = await GetUserBoardListRequest(userId, cookies.accessToken);
-                console.log(response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setBoardList(response.boardList);
@@ -95,7 +94,6 @@ export default function UserProfile() {
         const fetchUserMeetingList = async () => {
             try {
                 const response = await GetUserMeetingListRequest(cookies.accessToken);
-                console.log(response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setMeetingList(response.meetingList);
@@ -160,7 +158,7 @@ export default function UserProfile() {
             if (response.code === 'SU') {
                 setFavorites(response.favoriteList);
             } else {
-                alert('찜 목록을 불러오는데 실패했습니다.');
+                console.log ('찜 목록을 불러오는데 실패했습니다.');
             }
         } catch (error) {
             console.error(error);
@@ -179,7 +177,7 @@ export default function UserProfile() {
             if (response.code === 'SU') {
                 setChatRooms(response.chatRoomList);
             } else {
-                alert('채팅 목록을 불러오는데 실패했습니다.');
+                console.log ('채팅 목록을 불러오는데 실패했습니다.');
             }
         } catch (error) {
             console.error(error);
@@ -201,8 +199,6 @@ export default function UserProfile() {
     const handleChatRoomClick = (roomId: string, userId: string) => {
         navigate(`/chat?roomId=${roomId}&userId=${userId}`);
     };
-
-    console.log(favorites)
 
     return (
         <div id='user-profile-wrapper'>
