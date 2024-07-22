@@ -1,11 +1,7 @@
 .meeting-write-container {
-    width: 80%;
-    max-width: 800px;
+    width: 50%;
     margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px 0;
   }
   
   .meeting-write-container p {
@@ -36,6 +32,7 @@
   
   .meeting-write-container button {
     display: inline-block;
+    width: 100%;
     padding: 10px 20px;
     margin-top: 20px;
     border-radius: 8px;
