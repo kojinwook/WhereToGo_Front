@@ -1,3 +1,4 @@
+import GetMeetingBoardImageListResponseDto from "./get-meeting-board-image-list.response.dto";
 import GetMeetingBoardListResponseDto from "./get-meeting-board-list.response.dto";
 import GetMeetingBoardResponseDto from "./get-meeting-board.response.dto";
 import GetUserBoardListResponseDto from "./get-user-board-list.response.dto";
@@ -9,5 +10,6 @@ export type {
     PostMeetingBoardResponseDto,
     PatchMeetingBoardResponseDto,
     GetMeetingBoardResponseDto,
-    GetUserBoardListResponseDto
+    GetUserBoardListResponseDto,
+    GetMeetingBoardImageListResponseDto
 }

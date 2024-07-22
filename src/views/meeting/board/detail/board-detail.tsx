@@ -1,11 +1,12 @@
-import { DeleteMeetingBoardRequest, GetBoardReplyRequest, GetMeetingBoardRequest, PostBoardReplyRequest, PostReplyReplyRequest } from 'apis/apis';
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
-import { BoardReply, MeetingBoard } from 'types/interface/interface';
-import defaultProfileImage from 'assets/images/user.png';
-import { useCookies } from 'react-cookie';
+import { DeleteMeetingBoardRequest, DeleteMeetingRequest, GetBoardReplyRequest, GetMeetingBoardRequest, PostBoardReplyRequest, PostReplyReplyRequest } from 'apis/apis';
 import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from 'apis/request/meeting/board/reply';
+import defaultProfileImage from 'assets/images/user.png';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
+import { BoardReply, MeetingBoard } from 'types/interface/interface';
+import './style.css';
 
 export default function BoardDetail() {
     const { meetingId, meetingBoardId } = useParams();
@@ -18,6 +19,9 @@ export default function BoardDetail() {
     const [replyList, setReplyList] = useState<BoardReply[]>([]);
     const [replyReply, setReplyReply] = useState<string>('');
     const [cookies] = useCookies();
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [role, setRole] = useState<string>('')
+    const [showOptions, setShowOptions] = useState(false);
     const navigate = useNavigate();
 
     const formatDate = (createDateTime: string) => {
@@ -121,31 +125,127 @@ export default function BoardDetail() {
         }
     }
 
+    const backGoPathClickHandler = () => {
+        navigate(`/meeting/detail/${meetingId}`);
+    }
+
+    // 이미지 넘기기 함수
+    const nextImage = () => {
+        if (board && board.imageList) {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % board.imageList.length);
+        }
+    };
+    
+    const prevImage = () => {
+        if (board && board.imageList) {
+            setCurrentIndex((prevIndex) => (prevIndex - 1 + board.imageList.length) % board.imageList.length);
+        }
+    };
+    
+    // 더보기
+    const toggleOptions = () => {
+        setShowOptions((prev) => !prev);
+    };
+
+    // 수정
+    const updatePostClickHandler = (meetingId: number | string | undefined) => {
+        if (!meetingId) return;
+        navigate(`/meeting/update/${meetingId}`);
+    };
+
+    // 삭제
+    const deleteMeetingButtonClickHandler = async (meetingId: number) => {
+        window.confirm('정말로 삭제하시겠습니까?')
+        const response = await DeleteMeetingRequest(meetingId, cookies.accessToken);
+        if (response) {
+            if (response.code === 'SU') {
+                alert('모임이 삭제되었습니다.');
+                navigate('/meeting/list');
+            }
+            if (response.code !== 'SU') {
+                alert('모임 삭제에 실패했습니다.');
+            } else {
+                console.error('Failed to delete meeting:', response.message);
+            }
+        }
+    }
+    
     return (
-        <div>
-            <h1>Board Detail</h1>
-            {board && (
-                <div>
-                    프로필이미지: <img src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
-                    <p>닉네임: {writerNickname}</p>
-                    <ul>사진:
-                        {board.imageList.map((image, index) => (
-                            <li key={index}>
-                                <img src={image.image} alt="image" />
-                            </li>
+        <div className='board-detail-container'>
+            <div className='board-detail-header'>
+                <div className='board-detail-name'>
+                    <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
+                </div>
+                <img className='board-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
+                    try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        alert('링크가 복사되었습니다!'); // 성공 메시지
+                    } catch (err) {
+                        console.error('링크 복사 실패:', err);
+                    }
+                }} />
+            </div>
+
+            <div className='board-detail-body'>
+                <div className="board-detail-left">
+                    <div className="board-img">
+                        {board?.imageList?.map((image, index) => (
+                            <img
+                                key={index}
+                                src={image.image}
+                                alt={`Board image ${index + 1}`}
+                                className={currentIndex === index ? 'active' : ''}
+                            />
                         ))}
-                    </ul>
-                    <p>제목: {board.title}</p>
-                    <p>주소: {board.address}</p>
-                    <p>내용: {board.content}</p>
-                    <div>
-                        <input type="text" value={reply} onChange={(e) => setReply(e.target.value)} />
-                        <button onClick={onReplyButtonClickHandler}>댓글 작성</button>
+                        <button className="board-img-button left" onClick={prevImage}>◀</button>
+                        <button className="board-img-button right" onClick={nextImage}>▶</button>
                     </div>
                 </div>
-            )}
 
-            <div>
+                <div className="board-detail-right">
+                    <div className="board-more-options">
+                        {(writerNickname === nickname || role === "ADMIN") && (
+                            <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                        )}
+                        {showOptions && (
+                            <div className="board-button-box">
+                                {writerNickname === nickname && (
+                                    <button
+                                        className="update-button"
+                                        onClick={() => updatePostClickHandler(board?.meetingId)}
+                                    >
+                                        수정
+                                    </button>
+                                )}
+                                {(writerNickname === nickname || role === "ADMIN") && (
+                                    <button
+                                        className="delete-button"
+                                        onClick={() => deleteMeetingButtonClickHandler(Number(board?.meetingId))}
+                                    >
+                                        삭제
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    <div>
+                    <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
+                    <p>{writerNickname}</p>
+                    <p>제목</p>
+                    <div className="board-info-div">{board?.title}</div>
+                    <p>주소</p>
+                    <div className="board-info-div">{board?.address}</div>
+                    <p>내용</p>
+                    <div className="board-info-div">{board?.content}</div>
+                </div>
+                </div>
+            </div>
+        
+            <div className='board-answer'>
+                <div className='board-answer-add'>
+                    <input className='board-answer-input' type="text" value={reply} onChange={(e) => setReply(e.target.value)} />
+                    <button className='board-answer-btn' onClick={onReplyButtonClickHandler}>댓글 등록</button>
+                </div>
                 {replyList.map((replyItem) => (
                     <div key={replyItem.replyId}>
                         <div>

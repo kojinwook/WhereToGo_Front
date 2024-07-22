@@ -4,5 +4,6 @@ export default interface User {
     email: string;
     nickname: string;
     profileImage: string | null;
+    createDate: string;
     role: string;
 }
