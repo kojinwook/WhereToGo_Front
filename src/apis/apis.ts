@@ -87,7 +87,7 @@ const GET_USER_URL = (userId: string) => `${API_DOMAIN}/user/${userId}`;
 const PATCH_PASSWORD_URL = (userId: string) => `${API_DOMAIN}/user/change-password/${userId}`;
 const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
 const FIND_USERID_URL = () => `${API_DOMAIN}/user/find-userId`;
-const WIDTHDRAWAL_USER_URL = (userId: string) => `${API_DOMAIN}/user/withdrawal/${userId}`;
+const WIDTHDRAWAL_USER_URL = () => `${API_DOMAIN}/user/withdrawal`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
 const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
@@ -214,9 +214,9 @@ export const PatchPasswordRequest = async (userId: string, requestBody: PatchPas
     return result;
 };
 
-export const WithdrawUserRequest = async (userId: string, requestBody: WithdrawalUserRequestDto) => {
+export const WithdrawUserRequest = async (requestBody: WithdrawalUserRequestDto) => {
     const config = { data: requestBody };
-    const result = await axios.delete(WIDTHDRAWAL_USER_URL(userId), config)
+    const result = await axios.delete(WIDTHDRAWAL_USER_URL(), config)
         .then(responseHandler<WithdrawalUserResponseDto>)
         .catch(errorHandler);
     return result;
