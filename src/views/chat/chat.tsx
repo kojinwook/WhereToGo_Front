@@ -112,7 +112,7 @@ const ChatRoom: React.FC = () => {
     const fetchChatPartnerNickname = async () => {
         if (!userId) return; // userId가 없으면 함수 종료
         try {
-            const response = await GetUserRequest(userId, cookies.accessToken);
+            const response = await GetUserRequest(userId);
             if (response) {
                 if (response.code === 'SU') {
                     setChatPartnerNickname(response.nickname);
