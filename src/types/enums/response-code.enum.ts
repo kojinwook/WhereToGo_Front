@@ -15,6 +15,7 @@ enum ResponseCode{
     FALSE_AGREEMENT = "FA",
     ALREADY_REQUESTED = "AR",
     CANNOT_CREATE_MEETING = "CCM",
+    BLOCKED_USER = "BU",
 };
 
 export default ResponseCode;

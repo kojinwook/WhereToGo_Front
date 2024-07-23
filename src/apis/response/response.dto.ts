@@ -37,4 +37,5 @@ export default interface ResponseDto {
     boardList: MeetingBoard[];
     userList: User[];
     imageList: Images[];
+    blockReleaseDate: string | null;
 }
