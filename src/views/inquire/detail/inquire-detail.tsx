@@ -281,7 +281,7 @@ const InquireDetail: React.FC = () => {
 
       <div className="title-content-container">
         <div className="more-options">
-          {(question.nickname === nickname || role === "ADMIN") && (
+          {(question.nickname === nickname || role === "ROLE_ADMIN") && (
             <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
           )}
           {showOptions && (
@@ -294,7 +294,7 @@ const InquireDetail: React.FC = () => {
                   수정
                 </button>
               )}
-              {(question.nickname === nickname || role === "ADMIN") && (
+              {(question.nickname === nickname || role === "ROLE_ADMIN") && (
                 <button
                   className="delete-button"
                   onClick={() => deletePostClickHandler(question.questionId)}
@@ -322,7 +322,7 @@ const InquireDetail: React.FC = () => {
           ))}
         </div>
       </div>
-
+      {role === "ADMIN" && (
       <div className="answer-section">
         <button className="add-answer-button" onClick={toggleAnswerSection}>
           {answerVisible ? "답변 닫기" : "답변 작성"}
@@ -355,7 +355,7 @@ const InquireDetail: React.FC = () => {
               <div>{formatDate(answer.modifyDateTime)}</div> */}
               <div>{answer.createDateTime === answer.modifyDateTime ? formatDate(answer.createDateTime) : formatDate(answer.modifyDateTime)}</div>
               <div className="answer-actions">
-                {role !== "ADMIN" && (
+                {role === "ADMIN" && (
                   <>
                     <button
                       className="edit-answer-button"
@@ -380,7 +380,7 @@ const InquireDetail: React.FC = () => {
                       value={answerContent}
                       onChange={handleAnswerContentChange}
                     />
-                    {role !== "ADMIN" && (
+                    {role === "ADMIN" && (
                       <button
                         className="submit-edit-answer-button"
                         onClick={updateAnswerHandler}
@@ -395,6 +395,7 @@ const InquireDetail: React.FC = () => {
           ))
         )}
       </div>
+      )}
     </div>
   );
 };

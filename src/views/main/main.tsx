@@ -14,12 +14,13 @@ const Main: React.FC = () => {
   useEffect(() => {
     const fetchTop5FestivalList = async () => {
       const response = await GetTop5FestivalListRequest();
+      console.log(response)
       if (!response) return;
       setTop5FestivalList(response.festivalList);
       setLoading(false);
     }
     fetchTop5FestivalList();
-  }, []);
+  }, []); 
 
   useEffect(() => {
     const fetchRecent5MeetingList = async () => {
