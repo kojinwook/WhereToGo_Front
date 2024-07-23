@@ -101,10 +101,13 @@
 
 /* 게시판 수정 삭제 */
 .board-more-options {
-    align-self: flex-end;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding-right: .625rem;
     position: relative;
 }
+
 
 .board-more-button {
     border: none;
@@ -153,18 +156,109 @@
     border-radius: 10px;
     margin-bottom: 20px;
     padding: 10px;
+    overflow-y: auto;
 }
 
 .board-answer-add{
+    display: flex;
     width: 100%;
 }
 
 .board-answer-input{
-    padding: 10px 20px;
-    border-radius: 5px 0 0 5px;
+    flex: 2;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 5px;
 }
 .board-answer-btn{
-    width: 200px;
-    padding: 10px 20px;
-    border-radius: 0 5px 5px 0;
+    padding: 8px 16px;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+.board-answer-btn:hover{
+    background-color: #000;
+    color: #fff;
+}
+
+/* 댓글 리스트 */
+.board-answer-item{
+    margin-bottom: 20px;
+}
+.board-answer-list{
+    width: calc(100% - 20px);
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #E6E6E6;
+}
+
+.board-answer-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.answer-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.answer-nickname {
+    flex: 1;
+    font-weight: bold;
+}
+
+.answer-date {
+    color: #999;
+    font-size: 12px;
+}
+
+.answer-more-options {
+    align-self: flex-end;
+    padding-right: .625rem;
+    position: relative;
+}
+
+.answer-reply-content {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.answer-reply-reply {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.answer-reply-reply-input {
+    flex: 1;
+    padding: 5px;
+    margin-right: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+.answer-reply-reply-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.answer-reply-reply-btn:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.board-replies{
+    margin-top: 20px;
+}
+
+.board-reply-reply-item {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
 }
