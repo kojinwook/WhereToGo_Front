@@ -41,6 +41,7 @@ import BoardUpdate from 'views/meeting/board/update/board-update';
 import BoardDetail from 'views/meeting/board/detail/board-detail';
 import Main from 'views/main/main';
 import Management from 'views/admin/management/management';
+import Container from 'layout/Container';
 import ReviewList from 'views/user/review/review-list';
 
 function App() {
@@ -71,7 +72,7 @@ function App() {
 
   return (
     <Routes>
-
+      <Route element={<Container />}>
       <Route path="/" element={<Main/>}></Route>
       <Route path='/festival'>
         <Route path="search" element={<FestivalPage />} />
@@ -129,6 +130,7 @@ function App() {
         <Route path="update/:noticeId" element={<NoticeUpdate />} />
       </Route>
       <Route path='*' element={<h1>404 Not Found</h1>} />
+      </Route>
     </Routes>
 
   );
