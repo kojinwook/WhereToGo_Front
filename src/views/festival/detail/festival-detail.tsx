@@ -1,10 +1,12 @@
-import { GetAllReviewRequest, GetAverageRateRequest, GetFestivalRequest, GetReviewListRequest, PutFavoriteRequest } from 'apis/apis';
+import { GetAllReviewRequest, GetAverageRateRequest, GetFestivalRequest, PutFavoriteRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
 import Review from 'types/interface/review.interface';
 import './style.css'
 import { useCookies } from 'react-cookie';
+import useLoginUserStore from 'store/login-user.store';
+import { log } from 'console';
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -15,6 +17,7 @@ export default function FestivalDetail() {
     const query = useQuery();
     const contentId = query.get('contentId');
     const navigate = useNavigate();
+    const {loginUser} = useLoginUserStore();
     const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
     const [festival, setFestival] = useState<Festival>();
     const [averageRate, setAverageRate] = useState<number>(0);
@@ -30,6 +33,12 @@ export default function FestivalDetail() {
         const day = dateStr.substring(6, 8);
         return `${year}년 ${month}월 ${day}일`;
     }
+
+    useEffect(() => {
+        if(loginUser){
+            setNickname(loginUser.nickname);
+        }
+    }, [cookies.accessToken])
 
     useEffect(() => {
         const fetchFestivalData = async () => {
@@ -162,9 +171,9 @@ export default function FestivalDetail() {
 
     // 찜
     const onFavoriteClickHandler = async (contentId: string) => {
-        if (!nickname) return;
         try {
             const response = await PutFavoriteRequest(contentId, nickname, cookies.accessToken);
+            console.log(response)
             if (!response) return;
             if (response.code === 'SU') {
                 setFavorites(prevFavorites => ({

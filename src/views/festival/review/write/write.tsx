@@ -21,7 +21,7 @@ export default function ReviewWritePage() {
     const [review, setReview] = useState<string>('');
     const [imageFileList, setImageFileList] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-    const [cookies] = useCookies(['accessToken']);
+    const [cookies] = useCookies();
 
     const handleRateChange = (newRate: number) => {
         setRate(newRate);

@@ -34,12 +34,13 @@ export default function Management() {
 
         const fetchUserList = async () => {
             const response = await GetUserListRequest(cookies.accessToken);
+            console.log(response)
             if (!response) return;
             setUserList(response.userList);
             setFilteredUserList(response.userList);
         };
         fetchUserList();
-    }, [userList]);
+    }, [userList.length]);
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
@@ -57,9 +58,14 @@ export default function Management() {
         );
         if (sortOrder === 'newest') {
             filteredUsers.sort((a, b) => new Date(b.createDate).getTime() - new Date(a.createDate).getTime());
-        } else {
+        } else if (sortOrder === 'oldest') {
             filteredUsers.sort((a, b) => new Date(a.createDate).getTime() - new Date(b.createDate).getTime());
+        } else if (sortOrder === 'temperature-asc') {
+            filteredUsers.sort((a, b) => a.temperature - b.temperature);
+        } else if (sortOrder === 'temperature-desc') {
+            filteredUsers.sort((a, b) => b.temperature - a.temperature);
         }
+
         setFilteredUserList(filteredUsers);
     };
 
@@ -107,7 +113,7 @@ export default function Management() {
         if (!response) return;
         alert('블랙 처리되었습니다.');
         closeModal();
-        const updatedUserList = userList.map(user => 
+        const updatedUserList = userList.map(user =>
             user.userId === currentUserId ? { ...user, isBlocked: true } : user
         );
         setUserList(updatedUserList);
@@ -127,7 +133,7 @@ export default function Management() {
         navigate(`/user/profile?userId=${userId}`);
     };
 
-    if(loginUser?.role !== "ROLE_ADMIN") return null;
+    if (loginUser?.role !== "ROLE_ADMIN") return null;
 
     return (
         <div>
@@ -142,6 +148,8 @@ export default function Management() {
                 <select value={sortOrder} onChange={handleSortChange}>
                     <option value="newest">가입 최신순</option>
                     <option value="oldest">가입 오래된순</option>
+                    <option value="temperature-asc">온도 낮은 순</option>
+                    <option value="temperature-desc">온도 높은 순</option>
                 </select>
             </div>
             <div>
@@ -165,7 +173,7 @@ export default function Management() {
                                 <td>{user.email}</td>
                                 <td onClick={() => nicknameClickHandler(user.userId)}>{user.nickname}</td>
                                 <td>{formatDate(user.createDate)}</td>
-                                <td>{user.temperature}</td>
+                                <td>{user.temperature} ℃</td>
                                 <td>{user.reportCount} 회</td>
                                 <td>{user.isBlocked ? 'O' : 'X'}</td>
                                 <td>

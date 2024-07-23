@@ -25,6 +25,7 @@ import { GetMeetingBoardImageListResponseDto, GetMeetingBoardListResponseDto, Ge
 import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from "./request/meeting/board/reply";
 import { PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
 import GetBoardReplyListResponseDto from "./response/meeting/board/reply/get-board-reply-list.response.dto";
+import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
 
 const DOMAIN = 'http://localhost:8080';
@@ -62,7 +63,7 @@ const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
 const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
 const GET_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/getReview?reviewId=${reviewId}`;
 const PATCH_REVIEW_URL = (reviewId: string | number) => `${API_DOMAIN}/review/patchReview?reviewId=${reviewId}`;
-const GET_REVIEW_LIST_URL = (userId: string | number) => `${API_DOMAIN}/review/getReviewList?userId=${userId}`;
+const GET_REVIEW_LIST_URL = (nickname: string | number) => `${API_DOMAIN}/review/getReviewList?nickname=${nickname}`;
 const GET_ALL_REVIEW_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAllReview?contentId=${contentId}`;
 
 const POST_CHAT_MESSAGE_URL = () => `${API_DOMAIN}/chat/message`;
@@ -93,6 +94,7 @@ const WIDTHDRAWAL_USER_URL = () => `${API_DOMAIN}/user/withdrawal`;
 const DELETE_USER_URL = (userId: string) => `${API_DOMAIN}/user/delete-user/${userId}`;
 const REPORT_USER_URL = (userId: string) => `${API_DOMAIN}/user/report-user/${userId}`;
 const BLOCK_USER_URL = (userId: string) => `${API_DOMAIN}/user/block-user/${userId}`;
+const GET_TOP5_TEMPERATURE_USER_LIST_URL = () => `${API_DOMAIN}/user/temperature-top5`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
 const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
@@ -256,6 +258,13 @@ export const BlockUserRequest = async (userId: string, requestBody: BlockUserReq
         .catch(errorHandler);
     return result;
 };
+
+export const Top5TemperatureUserRequest = async () => {
+    const result = await axios.get(GET_TOP5_TEMPERATURE_USER_LIST_URL())
+        .then(responseHandler<GetTop5TemperatureUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+}
 
 export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryRequestDto): Promise<ResponseBody<PasswordRecoveryResponseDto>> => {
     const result = await axios.post(RECOVER_PASSWORD_URL(), requestBody)
@@ -421,8 +430,8 @@ export const PatchReviewRequest = async (reviewId: string | number, requestBody:
     return result;
 };
 
-export const GetReviewListRequest = async (userId: string | number) => {
-    const result = await axios.get(GET_REVIEW_LIST_URL(userId))
+export const GetReviewListRequest = async (nickname: string | number) => {
+    const result = await axios.get(GET_REVIEW_LIST_URL(nickname))
         .then(responseHandler<GetReviewListResponseDto>)
         .catch(errorHandler);
     return result;
