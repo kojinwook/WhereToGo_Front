@@ -8,6 +8,7 @@ import FindUserIdResponseDto from "./find-userId.response.dto";
 import GetUserListResponseDto from "./get-user-list.response.dto";
 import DeleteUserResponseDto from "./delete-user.response.dto";
 import ReportUserResponseDto from "./report-user.response.dto";
+import BlockUserResponseDto from "./block-user.response.dto";
 
 export type { 
     GetUserResponseDto,
@@ -19,5 +20,6 @@ export type {
     FindUserIdResponseDto,
     GetUserListResponseDto,
     DeleteUserResponseDto,
-    ReportUserResponseDto
+    ReportUserResponseDto,
+    BlockUserResponseDto
 }

@@ -9,7 +9,7 @@ import { ResponseDto } from "./response/response";
 import Festival from "types/interface/festival.interface";
 import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, ReportUserResponseDto, WithdrawalUserResponseDto } from "./response/user";
+import { BlockUserResponseDto, DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, ReportUserResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
 import { DeleteMeetingResponseDto, Get5RecentMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
@@ -17,7 +17,7 @@ import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { GetAllFavoriteResponseDto, GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, GetTop5FestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
 import { Images } from "types/interface/interface";
-import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
+import { BlockUserRequestDto, FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
 import { PatchMeetingRequestDto, PostJoinMeetingRequestDto, PostMeetingRequestDto } from "./request/meeting";
 import { PatchMeetingBoardRequestDto, PostMeetingBoardRequestDto } from "./request/meeting/board";
@@ -92,6 +92,7 @@ const FIND_USERID_URL = () => `${API_DOMAIN}/user/find-userId`;
 const WIDTHDRAWAL_USER_URL = () => `${API_DOMAIN}/user/withdrawal`;
 const DELETE_USER_URL = (userId: string) => `${API_DOMAIN}/user/delete-user/${userId}`;
 const REPORT_USER_URL = (userId: string) => `${API_DOMAIN}/user/report-user/${userId}`;
+const BLOCK_USER_URL = (userId: string) => `${API_DOMAIN}/user/block-user/${userId}`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
 const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
@@ -213,8 +214,8 @@ export const PatchNicknameRequest = async (requestBody: PatchNicknameRequestDto,
     return result;
 };
 
-export const GetUserRequest = async (userId: string, accessToken: string) => {
-    const result = await axios.get(GET_USER_URL(userId), authorization(accessToken))
+export const GetUserRequest = async (userId: string) => {
+    const result = await axios.get(GET_USER_URL(userId))
         .then(responseHandler<GetUserResponseDto>)
         .catch(errorHandler);
     return result;
@@ -245,6 +246,13 @@ export const DeleteUserRequest = async (userId: string, accessToken: string) => 
 export const ReportUserRequest = async (userId: string, accessToken: string) => {
     const result = await axios.post(REPORT_USER_URL(userId), null, authorization(accessToken))
         .then(responseHandler<ReportUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const BlockUserRequest = async (userId: string, requestBody: BlockUserRequestDto, accessToken: string) => {
+    const result = await axios.post(BLOCK_USER_URL(userId), requestBody, authorization(accessToken))
+        .then(responseHandler<BlockUserResponseDto>)
         .catch(errorHandler);
     return result;
 };
