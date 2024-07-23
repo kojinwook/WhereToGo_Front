@@ -383,3 +383,19 @@ width: 1.25rem;
 .meeting-board-item:hover {
     transform: translateY(-5px);
 }
+
+.requests-list > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* 이미지 간의 간격을 조절할 수 있습니다 */
+}
+
+.image-container {
+    flex: 1 1 calc(33.333% - 16px); /* 3개의 이미지가 한 줄에 보이도록 설정 */
+    box-sizing: border-box;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto; /* 이미지의 비율을 유지하면서 크기를 조절 */
+}
