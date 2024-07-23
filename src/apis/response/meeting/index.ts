@@ -1,4 +1,5 @@
 import DeleteMeetingResponseDto from "./delete-meeting.response.dtp";
+import Get5RecentMeetingResponseDto from "./get-5recent-meeting.response.dto";
 import GetJoinMeetingMemberResponseDto from "./get-join-meeting-member.response.dto";
 import GetMeetingListResponseDto from "./get-meeting-list.response.dto";
 import GetMeetingRequestsResponseDto from "./get-meeting-requests.response.dto";
@@ -19,5 +20,6 @@ export type {
     PostMeetingResponseDto,
     PostResponseToJoinResponseDto,
     GetJoinMeetingMemberResponseDto,
-    GetUserMeetingListResponseDto
+    GetUserMeetingListResponseDto,
+    Get5RecentMeetingResponseDto
 }

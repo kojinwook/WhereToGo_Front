@@ -147,6 +147,8 @@ export default function MeetingWrite() {
       if (response.code === 'SU') {
         alert('모임이 성공적으로 등록되었습니다.');
         navigate('/meeting/list');
+      } else if (response.code === 'CCM') {
+        alert('모임 생성 권한이 없습니다.');
       } else {
         alert('모임 등록에 실패했습니다.');
       }
