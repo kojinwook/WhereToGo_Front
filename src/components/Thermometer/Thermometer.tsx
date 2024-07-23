@@ -17,18 +17,7 @@ const Thermometer: React.FC<ThermometerProps> = ({ temperature }) => {
             if (temp <= 80) return 'high';
             return 'very-high';
         };
-
         setStatus(getStatus(temperature));
-
-        // 액체의 너비를 계산
-        const widthMap: { [key: string]: number } = {
-            'very-low': 10,
-            'low': 30,
-            'moderate': 50,
-            'high': 70,
-            'very-high': 99,
-        };
-
     }, [temperature, status]);
 
     const statusColors: { [key: string]: string } = {
