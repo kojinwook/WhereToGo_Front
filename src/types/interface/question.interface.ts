@@ -1,6 +1,7 @@
 import { Answer, Images } from "./interface";
 
 export default interface Question{
+    userId: number;
     answered : boolean;
     answers: Answer[];
     questionId : number | string;

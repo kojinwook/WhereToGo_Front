@@ -68,12 +68,13 @@ export default function MeetingUpdate() {
             try {
                 const response = await GetMeetingRequest(meetingId);
                 if (!response) return;
-                const { title, introduction, content, userNickname, imageList, maxParticipants, tags, categories, locations } = response.meeting;
+                const { title, introduction, content, userDto, imageList, maxParticipants, tags, categories, locations } = response.meeting;
+                console.log(response.meeting)
                 if (response.code === 'SU') {
                     setTitle(title);
                     setIntroduction(introduction);
                     setContent(content);
-                    setNickname(userNickname);
+                    setNickname(userDto.nickname);
                     const imageUrls = imageList.map((image: Images) => image.image);
                     setImagePreviews(imageUrls);
                     setMaxParticipants(maxParticipants);
