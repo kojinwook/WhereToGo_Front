@@ -44,8 +44,9 @@ const ChatRoom: React.FC = () => {
     const [isTyping, setIsTyping] = useState<boolean>(false);
     const [otherUserTyping, setOtherUserTyping] = useState<string[]>([]);
     const [otherUserStatus, setOtherUserStatus] = useState<UserStatus[]>([]);
+    const [chatPartnerNickname, setChatPartnerNickname] = useState<string>(''); // 상대방 닉네임 상태 변수 추가
     const navigator = useNavigate();
-    const userId = params.get('userId');
+    const userId = params.get('userId'); // userId를 URL에서 가져오기
 
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -83,6 +84,9 @@ const ChatRoom: React.FC = () => {
                     }),
                 });
                 fetchMessages();
+                if (userId) {
+                    fetchChatPartnerNickname(); // userId가 유효할 때만 호출
+                }
             },
             onDisconnect: () => {
                 console.log('Disconnected');
@@ -103,7 +107,25 @@ const ChatRoom: React.FC = () => {
                 clientRef.current.deactivate();
             }
         };
-    }, [roomId, loginUser]);
+    }, [roomId, loginUser, userId]);
+
+    const fetchChatPartnerNickname = async () => {
+        if (!userId) return; // userId가 없으면 함수 종료
+        try {
+            const response = await GetUserRequest(userId);
+            if (response) {
+                if (response.code === 'SU') {
+                    setChatPartnerNickname(response.nickname);
+                } else {
+                    console.error('Failed to get chat partner:', response.message);
+                }
+            } else {
+                console.error('Failed to get chat partner: Response is null');
+            }
+        } catch (error) {
+            console.error('Failed to get chat partner:', error);
+        }
+    };
 
     const handleChatMessage = (message: IMessage) => {
         if (!loginUser) return;
@@ -258,56 +280,56 @@ const ChatRoom: React.FC = () => {
 
     return (
         <div className="chat-room">
-    <div>{nickname}</div>
-    <div className="back-button">
-        <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backPathClickHandler} />
-    </div>
-    <div className="messages">
-        {messages.map((msg, index) => (
-            <div key={index} className={`message ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
-                <div className="message-user-container">
-                    {msg.sender !== loginUser?.nickname && (
-                        <div className="message-header">
-                            <div className="profile-info">
-                                <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
-                                <div className="username">{msg.sender}</div>
+            <div className="back-button">
+                <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backPathClickHandler} />
+                <div className="message-nickname">{chatPartnerNickname || '채팅 상대'}</div>
+            </div>
+            <div className="messages">
+                {messages.map((msg, index) => (
+                    <div key={index} className={`message ${msg.sender === loginUser?.nickname ? 'sender' : 'receiver'}`}>
+                        <div className="message-user-container">
+                            {msg.sender !== loginUser?.nickname && (
+                                <div className="message-header">
+                                    <div className="profile-info">
+                                        <img src={profileImage ? profileImage : defaultProfileImage} alt="profile" />
+                                        <div className="username">{msg.sender}</div>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="message-body">
+                                <div className="message-text">{msg.message}</div>
+                                <div className="message-time">{formatTimestamp(msg.timestamp)}</div>
                             </div>
                         </div>
-                    )}
-                    <div className="message-body">
-                        <div className="message-text">{msg.message}</div>
-                        <div className="message-time">{formatTimestamp(msg.timestamp)}</div>
+                        {msg.sender === loginUser?.nickname && !msg.readByReceiver && (
+                            <div className="unread-indicator"></div>
+                        )}
                     </div>
-                </div>
-                {msg.sender === loginUser?.nickname && !msg.readByReceiver && (
-                    <div className="unread-indicator">(1)</div>
-                )}
+                ))}
+                <div ref={messagesEndRef} />
             </div>
-        ))}
-        <div ref={messagesEndRef} />
-    </div>
-    <div className="input-container">
-        <input
-            type="text"
-            className="message-input"
-            placeholder="메시지 입력..."
-            value={input}
-            onChange={handleInputChange}
-            onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
-        />
-        <button className="send-button" onClick={sendMessage}>전송</button>
-    </div>
-    <div className="typing-status">
-        {otherUserTyping.length > 0 &&
-            <div>{otherUserTyping}님이 입력 중입니다...</div>
-        }
-        {otherUserStatus.map((user, index) => (
-            <div key={index}>
-                {user.online ? `${user.username}님이 온라인입니다.` : `${user.username}님이 오프라인입니다.`}
+            <div className="input-container">
+                <input
+                    type="text"
+                    className="message-input"
+                    placeholder="메시지 입력..."
+                    value={input}
+                    onChange={handleInputChange}
+                    onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
+                />
+                <button className="send-button" onClick={sendMessage}>전송</button>
             </div>
-        ))}
-    </div>
-</div>
+            <div className="typing-status">
+                {otherUserTyping.length > 0 &&
+                    <div>{otherUserTyping}님이 입력 중입니다...</div>
+                }
+                {otherUserStatus.map((user, index) => (
+                    <div key={index}>
+                        {user.online ? `${user.username}님이 온라인입니다.` : `${user.username}님이 오프라인입니다.`}
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 };
 
