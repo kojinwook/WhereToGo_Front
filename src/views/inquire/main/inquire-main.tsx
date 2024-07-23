@@ -43,14 +43,10 @@ const Inquire: React.FC = () => {
   const noticeListClickHandler = () => {
     navigator(`/notice`);
   }
-  const backPathClickHandler = () => {
-    navigator(`/`);
-  }
 
   return (
     <div className="inquire">
       <div className="inquire-main"> 1 : 1 문의 </div>
-        <div onClick={backPathClickHandler}>취소</div>
         <div className="inquire-enter">
           <div className="inquire-question">
             <div className="inquire-left">

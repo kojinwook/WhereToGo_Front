@@ -2,17 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="93b38d47-c9be-480d-bd70-bba32a3b6cda" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/views/chat/chat.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/chat/chat.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/chat/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/chat/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/apis/response/festival/get-top5-festival-list.response.dto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/apis/apis.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/apis/apis.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/apis/response/festival/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/apis/response/festival/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/apis/response/response.dto.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/apis/response/response.dto.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/admin/profile/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/admin/profile/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/main/main.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/main/main.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2jLl9D7rCLlPN2Kst7O1VA5IaW8" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -22,6 +29,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "adminnotice 병합 중",
     "kotlin-language-version-configured": "true"
   }
 }]]></component>
