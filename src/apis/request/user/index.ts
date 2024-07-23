@@ -1,3 +1,4 @@
+import BlockUserRequestDto from "./block-user.request.dto"
 import FindUserIdRequestDto from "./find-userId.requset.dto"
 import PasswordRecoveryRequestDto from "./password-recovery.request.dto"
 import PatchNicknameRequestDto from "./patch-nickname.request.dto"
@@ -9,5 +10,6 @@ export type {
     PatchNicknameRequestDto,
     PatchPasswordRequestDto,
     WithdrawalUserRequestDto,
-    FindUserIdRequestDto
+    FindUserIdRequestDto,
+    BlockUserRequestDto
 }

@@ -109,7 +109,7 @@ export default function UserProfile() {
 
     useEffect(() => {
         if (!userId) return;
-        GetUserRequest(userId, cookies.accessToken).then((responseBody: GetUserResponseDto | ResponseDto | null) => {
+        GetUserRequest(userId).then((responseBody: GetUserResponseDto | ResponseDto | null) => {
             if (!responseBody) return;
             const { code } = responseBody;
             if (code === 'NU') {

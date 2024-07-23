@@ -43,7 +43,7 @@ export default function AdminProfile() {
     useEffect(() => {
         if (!userId) return;
         const fetchUser = async () => {
-            const response = await GetUserRequest(userId, cookies.accessToken);
+            const response = await GetUserRequest(userId);
             if(!response) return;
             const { nickname, email, profileImage } = response;
             setNickname(nickname);

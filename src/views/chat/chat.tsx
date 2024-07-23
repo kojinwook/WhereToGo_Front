@@ -149,7 +149,7 @@ const ChatRoom: React.FC = () => {
         if (!roomId || !loginUser) return;
         const getUserRequest = async () => {
             try {
-                const response = await GetUserRequest(loginUser.userId, cookies.accessToken);
+                const response = await GetUserRequest(loginUser.userId);
                 if (!response) return;
                 if (response.code === 'SU') {
                     const { nickname, profileImage } = response;
