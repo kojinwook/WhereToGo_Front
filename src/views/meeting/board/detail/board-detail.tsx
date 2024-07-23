@@ -12,6 +12,8 @@ export default function BoardDetail() {
     const { meetingId, meetingBoardId } = useParams();
     const { loginUser } = useLoginUserStore();
     const [board, setBoard] = useState<MeetingBoard>();
+    const [answer, setAnswer] = useState(); //댓글
+    const [reAnswer, setReAnswer] = useState(); //대댓글
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [nickname, setNickname] = useState<string>("");
     const [writerNickname, setWriterNickname] = useState<string>("");
@@ -111,20 +113,6 @@ export default function BoardDetail() {
         navigate(`/meeting/board/update/${meetingBoardId}`);
     }
 
-    const deleteBoardButtonClickHandler = async () => {
-        if (!meetingBoardId) return;
-        const response = await DeleteMeetingBoardRequest(meetingBoardId, cookies.accessToken);
-        if (!response) return;
-        if (response && response.code === 'SU') {
-            alert('게시물이 삭제되었습니다.');
-            navigate(`/meeting/board/list/${meetingId}`);
-        } else if (response.code === 'DHP') {
-            alert('게시물을 삭제할 수 있는 권한이 없습니다.');
-        } else {
-            console.error('Failed to delete board');
-        }
-    }
-
     const backGoPathClickHandler = () => {
         navigate(`/meeting/detail/${meetingId}`);
     }
@@ -148,25 +136,61 @@ export default function BoardDetail() {
     };
 
     // 수정
-    const updatePostClickHandler = (meetingId: number | string | undefined) => {
-        if (!meetingId) return;
-        navigate(`/meeting/update/${meetingId}`);
+    const updateBoardClickHandler = (meetingBoardId: number | string | undefined) => {
+        if (!meetingBoardId) return;
+        navigate(`/meeting/board/update/${meetingBoardId}`);
+    };
+
+    const updateAnswerClickHandler = (answer: number | string | undefined) => {
+        if (!answer) return;
+        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    };
+    
+    const updateReAnswerClickHandler = (reAnswer: number | string | undefined) => {
+        if (!reAnswer) return;
+        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
     };
 
     // 삭제
-    const deleteMeetingButtonClickHandler = async (meetingId: number) => {
+    const deleteBoardButtonClickHandler = async (meetingBoardId: number) => {
         window.confirm('정말로 삭제하시겠습니까?')
-        const response = await DeleteMeetingRequest(meetingId, cookies.accessToken);
-        if (response) {
-            if (response.code === 'SU') {
-                alert('모임이 삭제되었습니다.');
-                navigate('/meeting/list');
-            }
-            if (response.code !== 'SU') {
-                alert('모임 삭제에 실패했습니다.');
-            } else {
-                console.error('Failed to delete meeting:', response.message);
-            }
+        const response = await DeleteMeetingBoardRequest(meetingBoardId, cookies.accessToken);
+        if (!response) return;
+        if (response && response.code === 'SU') {
+            alert('게시물이 삭제되었습니다.');
+            navigate(`/meeting/board/list/${meetingId}`);
+        } else if (response.code === 'DHP') {
+            alert('게시물을 삭제할 수 있는 권한이 없습니다.');
+        } else {
+            console.error('Failed to delete board');
+        }
+    }
+
+    const deleteAnswerButtonClickHandler = async (answer: number) => {
+        window.confirm('정말로 삭제하시겠습니까?')
+        const response = await DeleteMeetingBoardRequest(answer, cookies.accessToken);
+        if (!response) return;
+        if (response && response.code === 'SU') {
+            alert('댓글이 삭제되었습니다.');
+            navigate(`/meeting/board/detail/${meetingId}/%{meetingBoardId}`);
+        } else if (response.code === 'DHP') {
+            alert('댓글을 삭제할 수 있는 권한이 없습니다.');
+        } else {
+            console.error('Failed to delete board');
+        }
+    }
+
+    const deleteReAnswerButtonClickHandler = async (reAnswer: number) => {
+        window.confirm('정말로 삭제하시겠습니까?')
+        const response = await DeleteMeetingBoardRequest(reAnswer, cookies.accessToken);
+        if (!response) return;
+        if (response && response.code === 'SU') {
+            alert('대댓글이 삭제되었습니다.');
+            navigate(`/meeting/board/detail/${meetingId}/%{meetingBoardId}`);
+        } else if (response.code === 'DHP') {
+            alert('대댓글을 삭제할 수 있는 권한이 없습니다.');
+        } else {
+            console.error('Failed to delete board');
         }
     }
     
@@ -204,7 +228,9 @@ export default function BoardDetail() {
 
                 <div className="board-detail-right">
                     <div className="board-more-options">
-                        {(writerNickname === nickname || role === "ADMIN") && (
+                        <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
+
+                        {(writerNickname === nickname || role === "ROLE_ADMIN") && (
                             <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
                         )}
                         {showOptions && (
@@ -212,15 +238,15 @@ export default function BoardDetail() {
                                 {writerNickname === nickname && (
                                     <button
                                         className="update-button"
-                                        onClick={() => updatePostClickHandler(board?.meetingId)}
+                                        onClick={() => updateBoardClickHandler(board?.meetingBoardId)}
                                     >
                                         수정
                                     </button>
                                 )}
-                                {(writerNickname === nickname || role === "ADMIN") && (
+                                {(writerNickname === nickname || role === "ROLE_ADMIN") && (
                                     <button
                                         className="delete-button"
-                                        onClick={() => deleteMeetingButtonClickHandler(Number(board?.meetingId))}
+                                        onClick={() => deleteBoardButtonClickHandler(Number(board?.meetingBoardId))}
                                     >
                                         삭제
                                     </button>
@@ -229,15 +255,14 @@ export default function BoardDetail() {
                         )}
                     </div>
                     <div>
-                    <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
-                    <p>{writerNickname}</p>
-                    <p>제목</p>
-                    <div className="board-info-div">{board?.title}</div>
-                    <p>주소</p>
-                    <div className="board-info-div">{board?.address}</div>
-                    <p>내용</p>
-                    <div className="board-info-div">{board?.content}</div>
-                </div>
+                        <p>{writerNickname}</p>
+                        <p>제목</p>
+                        <div className="board-info-div">{board?.title}</div>
+                        <p>주소</p>
+                        <div className="board-info-div">{board?.address}</div>
+                        <p>내용</p>
+                        <div className="board-info-div">{board?.content}</div>
+                    </div>
                 </div>
             </div>
         
@@ -247,26 +272,82 @@ export default function BoardDetail() {
                     <button className='board-answer-btn' onClick={onReplyButtonClickHandler}>댓글 등록</button>
                 </div>
                 {replyList.map((replyItem) => (
-                    <div key={replyItem.replyId}>
-                        <div>
-                            <p>프로필 이미지</p>
-                            <p>작성자: {replyItem.userDto.nickname}</p>
-                            <p>댓글: {replyItem.reply}</p>
-                            <p>{formatDate(replyItem.createDate)}</p>
-                        </div>
-                        <div>
-                            {replyItem.replies.map((replyReplyItem) => (
-                                <div key={replyReplyItem.replyReplyId} style={{ marginLeft: '20px' }}>
-                                    <p>프로필 이미지</p>
-                                    <p>작성자: {replyReplyItem.userDto.nickname}</p>
-                                    <p>대댓글: {replyReplyItem.replyReply}</p>
-                                    <p>{formatDate(replyReplyItem.createDate)}</p>
+                    <div key={replyItem.replyId} className='board-answer-item'>
+                        <div className='board-answer-list'>
+                            <div className='board-answer-header'>
+                                <img className='answer-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
+                                <p className='answer-nickname'>{replyItem.userDto.nickname}</p>
+                                <div className='answer-date'>{formatDate(replyItem.createDate)}</div>
+                                
+                                <div className="answer-more-options">
+                                    {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
+                                        <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                                    )}
+                                    {showOptions && (
+                                        <div className="board-button-box">
+                                            {replyItem.userDto.nickname === nickname && (
+                                                <button
+                                                    className="update-button"
+                                                    // onClick={() => updateAnswerClickHandler(answer?.answerId)}
+                                                >
+                                                    수정
+                                                </button>
+                                            )}
+                                            {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
+                                                <button
+                                                    className="delete-button"
+                                                    // onClick={() => deleteAnswerButtonClickHandler(answer?.answerId)}
+                                                >
+                                                    삭제
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
-                            ))}
-                        </div>
-                        <div style={{ marginLeft: '20px' }}>
-                            <input type="text" value={replyReply} onChange={(e) => setReplyReply(e.target.value)} />
-                            <button onClick={() => onReplyReplyButtonClickHandler(replyItem.replyId)}>대댓글 작성</button>
+                            </div>
+                            <div className='answer-reply-content'>{replyItem.reply}</div>
+                            <div className='answer-reply-reply'>
+                                <input className='answer-reply-reply-input' type="text" value={replyReply} onChange={(e) => setReplyReply(e.target.value)} />
+                                <button className='answer-reply-reply-btn' onClick={() => onReplyReplyButtonClickHandler(replyItem.replyId)}>대댓글 작성</button>
+                            </div>
+                            <div className='board-replies'>
+                                {replyItem.replies.map((replyReplyItem) => (
+                                    <div key={replyReplyItem.replyReplyId} className='board-reply-reply-item'>
+                                        <div className='board-answer-header'>
+                                            <img className='answer-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
+                                            <p className='answer-nickname'>{replyReplyItem.userDto.nickname}</p>
+                                            <div className='answer-date'>{formatDate(replyReplyItem.createDate)}</div>
+
+                                            <div className="answer-more-options">
+                                                {(replyReplyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
+                                                    <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                                                )}
+                                                {showOptions && (
+                                                    <div className="board-button-box">
+                                                        {replyReplyItem.userDto.nickname === nickname && (
+                                                            <button
+                                                                className="update-button"
+                                                                // onClick={() => updateReAnswerClickHandler(reAnswer.reAnswerId)}
+                                                            >
+                                                                수정
+                                                            </button>
+                                                        )}
+                                                        {(replyReplyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
+                                                            <button
+                                                                className="delete-button"
+                                                                // onClick={() => deleteReAnswerButtonClickHandler(Number(board?.meetingId))}
+                                                            >
+                                                                삭제
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <p className='answer-reply-content'>{replyReplyItem.replyReply}</p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 ))}
