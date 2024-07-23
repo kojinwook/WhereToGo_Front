@@ -188,6 +188,10 @@ export default function MeetingList() {
     setSearchTerms(searchTerms.filter(t => t !== term));
   };
 
+  const createMeetingClickHandler = () => {
+    navigate('/meeting/write');
+  }
+
   if (!meetingList)
     <div>
       <div className='meeting-list-write-btn'>
@@ -222,7 +226,7 @@ export default function MeetingList() {
       <h1>모임 리스트</h1>
       <div className='meeting-list-write-btn'>
         <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
-        <button className='meeting-list-create-btn' onClick={() => navigate('/meeting/write')}>모임 만들기</button>
+        <button className='meeting-list-create-btn' onClick={createMeetingClickHandler}>모임 만들기</button>
       </div>
 
       <div className='meeting-list-categories'>

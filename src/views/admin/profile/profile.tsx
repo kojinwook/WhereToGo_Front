@@ -15,7 +15,7 @@ import { useCookies } from 'react-cookie';
 
 export default function AdminProfile() {
     const { loginUser } = useLoginUserStore();
-    const [userId, setUserId] = useState('');
+    const userId = loginUser?.userId;
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
@@ -32,10 +32,10 @@ export default function AdminProfile() {
             alert('관리자만 접근 가능합니다.');
             navigate('/');
         }
-        setUserId(loginUser.userId);
     }, [loginUser]);
 
     useEffect(() => {
+        if (!userId) return;
         const fetchUser = async () => {
             const response = await GetUserRequest(userId, cookies.accessToken);
             if(!response) return;
@@ -45,7 +45,7 @@ export default function AdminProfile() {
             setProfileImage(profileImage);
         }
         fetchUser();
-    }, [userId]);
+    }, []);
 
     const handleFestivalClickHandler = () => {
         navigate('/festival/admin');
@@ -53,6 +53,10 @@ export default function AdminProfile() {
 
     const inquirePathClickHandler = () => {
         navigate("/notice");
+    }
+
+    const handleManagementClickHandler = () => {
+        navigate("/admin/management");
     }
 
     return (
@@ -75,7 +79,7 @@ export default function AdminProfile() {
                     <div className='notice-text'>공지사항</div>
                 </div>
                 <div className='management-button'>
-                    <img src={managementIcon} alt="회원관리 아이콘" className='management-icon' />
+                    <img src={managementIcon} alt="회원관리 아이콘" className='management-icon' onClick={handleManagementClickHandler}/>
                     <div className='management-text'>회원관리</div>
                 </div>
                 <div className='festival-button'>

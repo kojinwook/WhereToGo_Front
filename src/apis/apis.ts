@@ -9,13 +9,13 @@ import { ResponseDto } from "./response/response";
 import Festival from "types/interface/festival.interface";
 import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
+import { DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, ReportUserResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { DeleteMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { DeleteMeetingResponseDto, Get5RecentMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
 import { PatchReviewRequestDto } from "./request/review";
 import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
-import { GetAllFavoriteResponseDto, GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
+import { GetAllFavoriteResponseDto, GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, GetTop5FestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
 import { Images } from "types/interface/interface";
 import { FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
@@ -56,6 +56,7 @@ const GET_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival
 const PATCH_FESTIVAL_URL = (contentId: string | number) => `${API_DOMAIN}/festival/patchFestival?contentId=${contentId}`;
 const PUT_FAVORITE_URL = (contentId: string | number, nickname: string) => `${API_DOMAIN}/favorite/putFavorite?contentId=${contentId}&nickname=${nickname}`;
 const GET_ALL_FAVORITE_URL = (nickname: string) => `${API_DOMAIN}/favorite/getAllFavoriteList?nickname=${nickname}`;
+const GET_TOP5_FESTIVAL_LIST_URL = () => `${API_DOMAIN}/festival/getTop5FestivalList`;
 
 const POST_REVIEW_URL = () => `${API_DOMAIN}/review/postReview`;
 const GET_RATE_AVERAGE_RATE_URL = (contentId: string | number) => `${API_DOMAIN}/review/getAverageRate?contentId=${contentId}`;
@@ -90,6 +91,7 @@ const RECOVER_PASSWORD_URL = () => `${API_DOMAIN}/user/recovery-password`;
 const FIND_USERID_URL = () => `${API_DOMAIN}/user/find-userId`;
 const WIDTHDRAWAL_USER_URL = () => `${API_DOMAIN}/user/withdrawal`;
 const DELETE_USER_URL = (userId: string) => `${API_DOMAIN}/user/delete-user/${userId}`;
+const REPORT_USER_URL = (userId: string) => `${API_DOMAIN}/user/report-user/${userId}`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
 const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
@@ -120,6 +122,7 @@ const PATCH_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting
 const DELETE_MEETING_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/delete/${meetingId}`;
 const GET_MEETING_USERS_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/members?meetingId=${meetingId}`;
 const GET_USER_MEETING_LIST_URL = () => `${API_DOMAIN}/meeting/my-meeting-list`;
+const GET_5RECENT_MEETING_URL = () => `${API_DOMAIN}/meeting/5recent-meeting`;
 
 const POST_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/${meetingId}`;
 const GET_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/detail/${meetingId}`;
@@ -239,6 +242,13 @@ export const DeleteUserRequest = async (userId: string, accessToken: string) => 
     return result;
 };
 
+export const ReportUserRequest = async (userId: string, accessToken: string) => {
+    const result = await axios.post(REPORT_USER_URL(userId), null, authorization(accessToken))
+        .then(responseHandler<ReportUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
 export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryRequestDto): Promise<ResponseBody<PasswordRecoveryResponseDto>> => {
     const result = await axios.post(RECOVER_PASSWORD_URL(), requestBody)
         .then(responseHandler<PasswordRecoveryResponseDto>)
@@ -298,6 +308,13 @@ export const PutFavoriteRequest = async (contentId: string | number, nickname: s
 export const GetAllFavoriteRequest = async (nickname: string, accessToken: string) => {
     const result = await axios.get(GET_ALL_FAVORITE_URL(nickname), authorization(accessToken))
         .then(responseHandler<GetAllFavoriteResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const GetTop5FestivalListRequest = async () => {
+    const result = await axios.get(GET_TOP5_FESTIVAL_LIST_URL())
+        .then(responseHandler<GetTop5FestivalListResponseDto>)
         .catch(errorHandler);
     return result;
 };
@@ -582,6 +599,13 @@ export const GetJoinMeetingMemberRequest = async (meetingId: string | number, ac
 export const GetUserMeetingListRequest = async (accessToken: string) => {
     const result = await axios.get(GET_USER_MEETING_LIST_URL(), authorization(accessToken))
         .then(responseHandler<GetUserMeetingListResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const Get5RecentMeetingRequest = async () => {
+    const result = await axios.get(GET_5RECENT_MEETING_URL())
+        .then(responseHandler<Get5RecentMeetingResponseDto>)
         .catch(errorHandler);
     return result;
 };

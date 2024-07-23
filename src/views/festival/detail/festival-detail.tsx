@@ -36,7 +36,7 @@ export default function FestivalDetail() {
             try {
                 if (!contentId) return;
                 const festivalResponse = await GetFestivalRequest(contentId);
-                if(!festivalResponse) return;
+                if (!festivalResponse) return;
                 if (festivalResponse.code === 'SU') {
                     const fetchedFestival = festivalResponse.festival;
                     fetchedFestival.startDate = formatDate(fetchedFestival.startDate);
@@ -46,7 +46,7 @@ export default function FestivalDetail() {
                     console.error('Failed to fetch festival:', festivalResponse.message);
                 }
                 const averageRateResponse = await GetAverageRateRequest(contentId);
-                if(!averageRateResponse) return;
+                if (!averageRateResponse) return;
                 if (averageRateResponse.code === 'SU') {
                     const { average } = averageRateResponse;
                     setAverageRate(average[contentId] || 0);
@@ -65,7 +65,7 @@ export default function FestivalDetail() {
         const fetchReviewList = async () => {
             if (!contentId) return;
             const response = await GetAllReviewRequest(contentId);
-            if(!response) return;
+            if (!response) return;
             if (response.code === 'SU') {
                 setReviews(response.reviews);
             } else {
@@ -180,7 +180,8 @@ export default function FestivalDetail() {
     };
 
     const backGoPathClickHandler = () => {
-        navigate(`/festival/search`);
+        // navigate(`/festival/search`);
+        window.history.back();
     }
 
     if (!festival) return null;
@@ -200,7 +201,7 @@ export default function FestivalDetail() {
                         }
                     }} />
                     <div className="icon-button" onClick={() => onFavoriteClickHandler(festival.contentId)}>
-                        {favorites[festival.contentId] ? 
+                        {favorites[festival.contentId] ?
                             <i className="fas fa-heart favorite-fill-icon" style={{ color: 'red' }}></i> :
                             <i className="far fa-heart favorite-light-icon" style={{ color: 'grey' }}></i>
                         }
