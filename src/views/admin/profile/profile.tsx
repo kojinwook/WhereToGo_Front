@@ -7,7 +7,6 @@ import festivalIcon from 'assets/images/festival.png';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { log } from 'console';
 import { GetUserRequest } from 'apis/apis';
 import { useCookies } from 'react-cookie';
 
@@ -22,6 +21,13 @@ export default function AdminProfile() {
     const [cookies] = useCookies()
     const navigate = useNavigate();
 
+    const inquirePathClickHandler = () => {
+        navigate('/inquire/list')
+    }
+
+    const noticePathClickHandler = () => {
+        navigate("/notice");
+    }    
     useEffect(() => {
         if (!loginUser) {
             alert('로그인이 필요합니다.');
@@ -37,7 +43,7 @@ export default function AdminProfile() {
     useEffect(() => {
         if (!userId) return;
         const fetchUser = async () => {
-            const response = await GetUserRequest(userId, cookies.accessToken);
+            const response = await GetUserRequest(userId);
             if(!response) return;
             const { nickname, email, profileImage } = response;
             setNickname(nickname);
@@ -49,10 +55,6 @@ export default function AdminProfile() {
 
     const handleFestivalClickHandler = () => {
         navigate('/festival/admin');
-    }
-
-    const inquirePathClickHandler = () => {
-        navigate("/notice");
     }
 
     const handleManagementClickHandler = () => {
@@ -70,11 +72,11 @@ export default function AdminProfile() {
                 </div>
             </div>
             <div className='admin-setting-button'>
-                <div className='inquiry-button'>
+                <div className='inquiry-button' onClick={inquirePathClickHandler}>
                     <img src={inquiryIcon} alt="문의 아이콘" className='inquiry-icon' />
                     <div className='inquiry-text' >문의</div>
                 </div>
-                <div className='notice-button' onClick={inquirePathClickHandler}>
+                <div className='notice-button'  onClick={noticePathClickHandler}>
                     <img src={noticeIcon} alt="공지사항 아이콘" className='notice-icon' />
                     <div className='notice-text'>공지사항</div>
                 </div>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import User from 'types/interface/user.interface';
-import { DeleteUserRequest, GetUserListRequest } from 'apis/apis';
+import { BlockUserRequest, DeleteUserRequest, GetUserListRequest } from 'apis/apis';
 import useLoginUserStore from 'store/login-user.store';
 import { useNavigate } from 'react-router-dom';
+import { BlockUserRequestDto } from 'apis/request/user';
 
 export default function Management() {
     const { loginUser } = useLoginUserStore();
@@ -14,6 +15,8 @@ export default function Management() {
     const [sortOrder, setSortOrder] = useState<string>('newest');
     const [cookies] = useCookies();
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [isBlocking, setIsBlocking] = useState<boolean>(false);
+    const [blockDays, setBlockDays] = useState<number>(3);
     const [currentUserId, setCurrentUserId] = useState<string>('');
     const [adminCode, setAdminCode] = useState<string>('');
     const navigate = useNavigate();
@@ -24,21 +27,20 @@ export default function Management() {
             alert('로그인이 필요합니다.');
             return;
         }
-        if (loginUser && loginUser.role !== 'ROLE_ADMIN') {
-            alert('관리자만 접근 가능합니다.');
+        if (loginUser.role !== 'ROLE_ADMIN') {
+            window.history.back();
         }
         setUserId(loginUser.userId);
-    }, [loginUser]);
 
-    useEffect(() => {
         const fetchUserList = async () => {
             const response = await GetUserListRequest(cookies.accessToken);
+            console.log(response)
             if (!response) return;
             setUserList(response.userList);
             setFilteredUserList(response.userList);
         };
         fetchUserList();
-    }, [cookies.accessToken]);
+    }, [userList.length]);
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
@@ -56,24 +58,35 @@ export default function Management() {
         );
         if (sortOrder === 'newest') {
             filteredUsers.sort((a, b) => new Date(b.createDate).getTime() - new Date(a.createDate).getTime());
-        } else {
+        } else if (sortOrder === 'oldest') {
             filteredUsers.sort((a, b) => new Date(a.createDate).getTime() - new Date(b.createDate).getTime());
+        } else if (sortOrder === 'temperature-asc') {
+            filteredUsers.sort((a, b) => a.temperature - b.temperature);
+        } else if (sortOrder === 'temperature-desc') {
+            filteredUsers.sort((a, b) => b.temperature - a.temperature);
         }
+
         setFilteredUserList(filteredUsers);
     };
 
-    const openModal = (userId: string) => {
+    const openModal = (userId: string, isBlocking: boolean) => {
         setCurrentUserId(userId);
+        setIsBlocking(isBlocking);
         setShowModal(true);
     };
 
     const closeModal = () => {
         setShowModal(false);
         setAdminCode('');
+        setBlockDays(3);
     };
 
     const handleAdminCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAdminCode(event.target.value);
+    };
+
+    const handleBlockDaysChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setBlockDays(parseInt(event.target.value, 10));
     };
 
     const handleDelete = async () => {
@@ -86,6 +99,23 @@ export default function Management() {
         alert('강퇴되었습니다.');
         closeModal();
         const updatedUserList = userList.filter(user => user.userId !== currentUserId);
+        setUserList(updatedUserList);
+        setFilteredUserList(updatedUserList);
+    };
+
+    const handleBlock = async () => {
+        if (adminCode !== ADMIN_CONFIRMATION_CODE) {
+            alert('확인 코드가 일치하지 않습니다.');
+            return;
+        }
+        const requestBody: BlockUserRequestDto = { userId: currentUserId, blockDays: blockDays };
+        const response = await BlockUserRequest(currentUserId, requestBody, cookies.accessToken);
+        if (!response) return;
+        alert('블랙 처리되었습니다.');
+        closeModal();
+        const updatedUserList = userList.map(user =>
+            user.userId === currentUserId ? { ...user, isBlocked: true } : user
+        );
         setUserList(updatedUserList);
         setFilteredUserList(updatedUserList);
     };
@@ -103,6 +133,8 @@ export default function Management() {
         navigate(`/user/profile?userId=${userId}`);
     };
 
+    if (loginUser?.role !== "ROLE_ADMIN") return null;
+
     return (
         <div>
             <div>
@@ -116,6 +148,8 @@ export default function Management() {
                 <select value={sortOrder} onChange={handleSortChange}>
                     <option value="newest">가입 최신순</option>
                     <option value="oldest">가입 오래된순</option>
+                    <option value="temperature-asc">온도 낮은 순</option>
+                    <option value="temperature-desc">온도 높은 순</option>
                 </select>
             </div>
             <div>
@@ -126,7 +160,10 @@ export default function Management() {
                             <th>이메일</th>
                             <th>닉네임</th>
                             <th>가입일</th>
-                            <th>작업</th>
+                            <th>온도</th>
+                            <th>신고누적</th>
+                            <th>블랙</th>
+                            <th>강퇴</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,8 +173,12 @@ export default function Management() {
                                 <td>{user.email}</td>
                                 <td onClick={() => nicknameClickHandler(user.userId)}>{user.nickname}</td>
                                 <td>{formatDate(user.createDate)}</td>
+                                <td>{user.temperature} ℃</td>
+                                <td>{user.reportCount} 회</td>
+                                <td>{user.isBlocked ? 'O' : 'X'}</td>
                                 <td>
-                                    <button onClick={() => openModal(user.userId)}>강퇴</button>
+                                    <button onClick={() => openModal(user.userId, false)}>강퇴</button>
+                                    <button onClick={() => openModal(user.userId, true)}>블랙</button>
                                 </td>
                             </tr>
                         ))}
@@ -154,7 +195,18 @@ export default function Management() {
                             value={adminCode}
                             onChange={handleAdminCodeChange}
                         />
-                        <button onClick={handleDelete}>확인</button>
+                        {isBlocking && (
+                            <>
+                                <input
+                                    type="number"
+                                    placeholder="블록 일수"
+                                    value={blockDays}
+                                    onChange={handleBlockDaysChange}
+                                    min="1"
+                                />
+                            </>
+                        )}
+                        <button onClick={isBlocking ? handleBlock : handleDelete}>확인</button>
                         <button onClick={closeModal}>취소</button>
                     </div>
                 </div>

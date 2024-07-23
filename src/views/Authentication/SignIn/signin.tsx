@@ -1,4 +1,4 @@
-import { FindUserIdRequest, RecoveryPasswordRequest, SignInRequest } from 'apis/apis';
+import { FindUserIdRequest, GetUserRequest, RecoveryPasswordRequest, SignInRequest } from 'apis/apis';
 import SignInRequestDto from 'apis/request/auth/sign-in.request.dto';
 import PasswordRecoveryRequestDto from 'apis/request/user/password-recovery.request.dto';
 import SignInResponseDto from 'apis/response/auth/sign-in.response.dto';
@@ -38,10 +38,12 @@ export default function SignIn() {
   
   const signInResponse = (responseBody: ResponseBody<SignInResponseDto>) => {
     if (!responseBody) return;
+    console.log(responseBody);
     const { code } = responseBody;
     if (code === "VF") alert('아이디와 비밀번호를 입력하세요.');
     if (code === "SF") setMessage('로그인 정보가 일치하지 않습니다.');
     if (code === "DBE") alert('데이터베이스 오류입니다.');
+    if (code === "BU") alert(`${responseBody.blockReleaseDate}까지 차단된 사용자입니다.`);
     if (code !== "SU") return;
 
     const { token, expirationTime } = responseBody as SignInResponseDto;
@@ -66,7 +68,7 @@ export default function SignIn() {
     setMessage('');
   };
 
-  const onSignInButtonClickHandler = () => {
+  const onSignInButtonClickHandler = async () => {
 
     if (!userId || !password) {
       alert('아이디와 비밀번호 모두 입력하세요.');
