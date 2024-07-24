@@ -100,16 +100,16 @@ function App() {
           <Route path='management' element={<Management />} />
         </Route>
 
-        <Route path='/meeting'>
-          <Route path="list" element={<MeetingList />} />
-          <Route path='write' element={<MeetingWrite />} />
-          <Route path='detail/:meetingId' element={<MeetingDetail />} />
-          <Route path='update/:meetingId' element={<MeetingUpdate />} />
-          <Route path='board/write/:meetingId' element={<BoardWrite />} />
-          <Route path='board/list/:meetingId' element={<BoardList />} />
-          <Route path='board/detail/:meetingId/:meetingBoardId' element={<BoardDetail />} />
-          <Route path='board/update/:meetingBoardId' element={<BoardUpdate />} />
-        </Route>
+      <Route path='/meeting'>
+        <Route path="list" element={<MeetingList />} />
+        <Route path='write' element={<MeetingWrite />} />
+        <Route path='detail/:meetingId' element={<MeetingDetail />} />
+        <Route path='update/:meetingId' element={<MeetingUpdate />} />
+        <Route path='board/write/:meetingId' element={<BoardWrite />} />
+        <Route path='board/list/:meetingId' element={<BoardList />} />
+        <Route path='board/detail/:meetingId/:meetingBoardId' element={<BoardDetail />} />
+        <Route path='board/update/:meetingId/:meetingBoardId' element={<BoardUpdate />} />
+      </Route>
 
         <Route path='/authentication'>
           <Route path="admin" element={<AdminSignUp />} />

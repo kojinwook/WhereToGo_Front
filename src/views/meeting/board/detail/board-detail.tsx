@@ -1,7 +1,7 @@
 import { DeleteMeetingBoardRequest, DeleteMeetingRequest, GetBoardReplyRequest, GetMeetingBoardRequest, PostBoardReplyRequest, PostReplyReplyRequest } from 'apis/apis';
 import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from 'apis/request/meeting/board/reply';
 import defaultProfileImage from 'assets/images/user.png';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
@@ -23,7 +23,12 @@ export default function BoardDetail() {
     const [cookies] = useCookies();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [role, setRole] = useState<string>('')
-    const [showOptions, setShowOptions] = useState(false);
+    const [showBoardOptions, setShowBoardOptions] = useState(false);
+    const [showAnswerOptions, setShowAnswerOptions] = useState<number | null>(null);
+    const [showReplyOptions, setShowReplyOptions] = useState<number | null>(null);
+    const boardOptionsRef = useRef<HTMLDivElement>(null);
+    const answerOptionsRef = useRef<HTMLDivElement>(null);
+    const replyOptionsRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
 
     const formatDate = (createDateTime: string) => {
@@ -109,10 +114,6 @@ export default function BoardDetail() {
         }
     }
 
-    const onUpdateBoardButtonClickHandler = () => {
-        navigate(`/meeting/board/update/${meetingBoardId}`);
-    }
-
     const backGoPathClickHandler = () => {
         navigate(`/meeting/detail/${meetingId}`);
     }
@@ -131,23 +132,47 @@ export default function BoardDetail() {
     };
     
     // 더보기
-    const toggleOptions = () => {
-        setShowOptions((prev) => !prev);
+    const handleClickOutside = (event: MouseEvent) => {
+        setShowBoardOptions(false);
+        setShowAnswerOptions(null);
+        setShowReplyOptions(null);
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const toggleBoardOptions = (event: React.MouseEvent) => {
+        event.stopPropagation();
+        setShowBoardOptions((prev) => !prev);
+    };
+
+    const toggleAnswerOptions = (event: React.MouseEvent, replyId: number) => {
+        event.stopPropagation();
+        setShowAnswerOptions(prev => prev === replyId ? null : replyId)
+    };
+
+    const toggleReplyOptions = (event: React.MouseEvent, replyReplyId: number) => {
+        event.stopPropagation();
+        setShowReplyOptions(prev => prev === replyReplyId ? null : replyReplyId)
     };
 
     // 수정
     const updateBoardClickHandler = (meetingBoardId: number | string | undefined) => {
         if (!meetingBoardId) return;
-        navigate(`/meeting/board/update/${meetingBoardId}`);
+        navigate(`/meeting/board/update/${meetingId}/${meetingBoardId}`);
     };
 
-    const updateAnswerClickHandler = (answer: number | string | undefined) => {
-        if (!answer) return;
+    const updateAnswerClickHandler = (answerId: number | string | undefined) => {
+        if (!answerId) return;
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
     };
     
-    const updateReAnswerClickHandler = (reAnswer: number | string | undefined) => {
-        if (!reAnswer) return;
+    const updateReAnswerClickHandler = (replyReplyId: number | string | undefined) => {
+        if (!replyReplyId) return;
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
     };
 
@@ -166,9 +191,9 @@ export default function BoardDetail() {
         }
     }
 
-    const deleteAnswerButtonClickHandler = async (answer: number) => {
+    const deleteAnswerButtonClickHandler = async (replyId: number) => {
         window.confirm('정말로 삭제하시겠습니까?')
-        const response = await DeleteMeetingBoardRequest(answer, cookies.accessToken);
+        const response = await DeleteMeetingBoardRequest(replyId, cookies.accessToken);
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('댓글이 삭제되었습니다.');
@@ -176,13 +201,13 @@ export default function BoardDetail() {
         } else if (response.code === 'DHP') {
             alert('댓글을 삭제할 수 있는 권한이 없습니다.');
         } else {
-            console.error('Failed to delete board');
+            console.error('Failed to delete reply');
         }
     }
 
-    const deleteReAnswerButtonClickHandler = async (reAnswer: number) => {
+    const deleteReAnswerButtonClickHandler = async (replyReplyId: number) => {
         window.confirm('정말로 삭제하시겠습니까?')
-        const response = await DeleteMeetingBoardRequest(reAnswer, cookies.accessToken);
+        const response = await DeleteMeetingBoardRequest(replyReplyId, cookies.accessToken);
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('대댓글이 삭제되었습니다.');
@@ -190,7 +215,7 @@ export default function BoardDetail() {
         } else if (response.code === 'DHP') {
             alert('대댓글을 삭제할 수 있는 권한이 없습니다.');
         } else {
-            console.error('Failed to delete board');
+            console.error('Failed to delete replyReply');
         }
     }
 
@@ -233,12 +258,13 @@ export default function BoardDetail() {
                 <div className="board-detail-right">
                     <div className="board-more-options">
                         <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
+                        <p>{writerNickname}</p>
 
                         {(writerNickname === nickname || role === "ROLE_ADMIN") && (
-                            <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                            <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleBoardOptions} />
                         )}
-                        {showOptions && (
-                            <div className="board-button-box">
+                        {showBoardOptions && (
+                            <div className="board-button-box" ref={boardOptionsRef}>
                                 {writerNickname === nickname && (
                                     <button
                                         className="update-button"
@@ -258,8 +284,7 @@ export default function BoardDetail() {
                             </div>
                         )}
                     </div>
-                    <div>
-                        <p>{writerNickname}</p>
+                    <div className='board-detail-info'>
                         <p>제목</p>
                         <div className="board-info-div">{board?.title}</div>
                         <p>주소</p>
@@ -285,14 +310,14 @@ export default function BoardDetail() {
                                 
                                 <div className="answer-more-options">
                                     {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                                        <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={(e) => toggleAnswerOptions(e, replyItem.replyId)} />
                                     )}
-                                    {showOptions && (
-                                        <div className="board-button-box">
+                                    {showAnswerOptions == replyItem.replyId && (
+                                        <div className="board-button-box" ref={answerOptionsRef}>
                                             {replyItem.userDto.nickname === nickname && (
                                                 <button
                                                     className="update-button"
-                                                    // onClick={() => updateAnswerClickHandler(answer?.answerId)}
+                                                    onClick={() => updateAnswerClickHandler(replyItem.replyId)}
                                                 >
                                                     수정
                                                 </button>
@@ -300,7 +325,7 @@ export default function BoardDetail() {
                                             {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
                                                 <button
                                                     className="delete-button"
-                                                    // onClick={() => deleteAnswerButtonClickHandler(answer?.answerId)}
+                                                    onClick={() => deleteAnswerButtonClickHandler(replyItem.replyId)}
                                                 >
                                                     삭제
                                                 </button>
@@ -324,14 +349,14 @@ export default function BoardDetail() {
 
                                             <div className="answer-more-options">
                                                 {(replyReplyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                                    <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                                                    <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={(e) => toggleReplyOptions(e, replyReplyItem.replyReplyId)} />
                                                 )}
-                                                {showOptions && (
+                                                {showReplyOptions == replyReplyItem.replyReplyId && (
                                                     <div className="board-button-box">
                                                         {replyReplyItem.userDto.nickname === nickname && (
                                                             <button
                                                                 className="update-button"
-                                                                // onClick={() => updateReAnswerClickHandler(reAnswer.reAnswerId)}
+                                                                onClick={() => updateReAnswerClickHandler(replyReplyItem.replyReplyId)}
                                                             >
                                                                 수정
                                                             </button>
@@ -339,7 +364,7 @@ export default function BoardDetail() {
                                                         {(replyReplyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
                                                             <button
                                                                 className="delete-button"
-                                                                // onClick={() => deleteReAnswerButtonClickHandler(Number(board?.meetingId))}
+                                                                onClick={() => deleteReAnswerButtonClickHandler(replyReplyItem.replyReplyId)}
                                                             >
                                                                 삭제
                                                             </button>
