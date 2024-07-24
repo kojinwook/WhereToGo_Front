@@ -76,8 +76,10 @@
     width: 40px;
     height: 40px;
 }
+
 .board-img-button:hover{
     background-color: transparent;
+    color: #000;
     border: none;
 }
 
