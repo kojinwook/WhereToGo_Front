@@ -61,6 +61,7 @@ export default function MeetingDetail() {
             try {
                 const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
                 if (!response) return;
+                console.log(response);
                 const members = response.meetingUsersList.map(member => member.userNickname);
                 setJoinMemberList(members);
                 setJoinMembers(response.meetingUsersList.length);
@@ -276,8 +277,11 @@ export default function MeetingDetail() {
     }
 
     const handleBoardDetail = (meetingBoardId: string) => {
+        if (!joinMemberList.includes(nickname)) {
+            alert('모임에 가입해야 게시물을 볼 수 있습니다.');
+            return;
+        }
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
-
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -423,8 +427,9 @@ export default function MeetingDetail() {
                     <div className="requests-list">
                         <div className='image-grid'>
                             {boardImageList.map((image) => (
-                                <div key={image.id} className="image-container">
-                                    <img src={image.image} alt="image"  className="board-image"/>
+                                <div key={image.imageId} className="image-container">
+                                    <img src={image.image} alt="image" onClick={() => handleBoardDetail(image.meetingBoardId)} />
+
                                 </div>
                             ))}
                         </div>
