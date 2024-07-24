@@ -3,13 +3,17 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
 import './style.css';
-import Inquire from "../main/inquire-main";
+ import useLoginUserStore from "store/login-user.store";
 
 const InquireList: React.FC = () => {
   const navigator = useNavigate();
+  const {loginUser} = useLoginUserStore();
   const { questionId } = useParams();
   const [posts, setPosts] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const nickname = loginUser?.nickname;
+  const role = loginUser?.role;
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -24,8 +28,11 @@ const InquireList: React.FC = () => {
         }
         if (code !== 'SU') return;
 
-        // 날짜 기준으로 최신순으로 정렬
-        const sortedQuestions = questions.sort((a: Question, b: Question) => 
+        const filteredQuestions = role === "ROLE_ADMIN" ? questions : questions.filter((question: Question) => 
+          question.nickname === nickname
+        );
+
+        const sortedQuestions = filteredQuestions.sort((a: Question, b: Question) => 
           new Date(b.createDateTime).getTime() - new Date(a.createDateTime).getTime()
         );
 
@@ -37,7 +44,7 @@ const InquireList: React.FC = () => {
     };
 
     fetchPosts();
-  }, [questionId]);
+  }, [questionId, nickname, role]);
 
   const formatDate = (isoDate: string) => {
     const date = new Date(isoDate);
@@ -59,9 +66,10 @@ const InquireList: React.FC = () => {
   const inquireListClickHandler = (questionId: number | string | undefined) => {
     navigator(`/inquire/detail/${questionId}`);
   };
+
   const backPathClickHandler = () => {
     navigator(`/inquire`);
-  }
+  };
 
   const getTypeText = (type: string) => {
     switch (type) {
@@ -83,7 +91,7 @@ const InquireList: React.FC = () => {
   return (
     <div className="inquire-list">
       <h1>문의 리스트</h1>
-      <div className="back-button"> 
+      <div className="back-button">
         <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backPathClickHandler} />
       </div>
       <div className='inquire-list-header'>
@@ -95,24 +103,23 @@ const InquireList: React.FC = () => {
       </div>
       
       <div className="inquire-list-body">
-      {loading ? (
-        <p>문의 목록이 없습니다.</p>
-      ) : (
-        <div className="posts">
-          {posts.map((post, index) => (
-            <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
-              <p>{posts.length - index}</p>
-              <p>{getTypeText(post.type)}</p>
-              <p onClick={() => inquireListClickHandler(post.questionId)}>
-                {post.title}
-              </p>
-              <p>{post.modifyDateTime ? formatDate(post.modifyDateTime) : formatDate(post.createDateTime)}</p>
-              {/* <p>답변: {post.answers && Array.isArray(post.answers) && post.answers.length > 0 ? '유' : '무'}</p> */}
-              <p>{post.answered ? '유' : '무'}</p>
-            </div>
-          ))}
-        </div>
-      )}
+        {loading ? (
+          <p>문의 목록이 없습니다.</p>
+        ) : (
+          <div className="posts">
+            {posts.map((post, index) => (
+              <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
+                <p>{posts.length - index}</p>
+                <p>{getTypeText(post.type)}</p>
+                <p onClick={() => inquireListClickHandler(post.questionId)}>
+                  {post.title}
+                </p>
+                <p>{post.modifyDateTime ? formatDate(post.modifyDateTime) : formatDate(post.createDateTime)}</p>
+                <p>{post.answered ? '유' : '무'}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

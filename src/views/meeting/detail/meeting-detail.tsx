@@ -325,12 +325,12 @@ export default function MeetingDetail() {
                             </div>
                             <div className="meeting-detail-right">
                                 <div className="more-options">
-                                    {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                    {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
                                         <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
-                                            {meeting.userNickname === nickname && (
+                                            {meeting.userNickname !== nickname && (
                                                 <button
                                                     className="update-button"
                                                     onClick={() => updatePostClickHandler(meeting.meetingId)}
@@ -338,7 +338,7 @@ export default function MeetingDetail() {
                                                     수정
                                                 </button>
                                             )}
-                                            {(meeting.userNickname === nickname || role === "ADMIN") && (
+                                            {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
                                                 <button
                                                     className="delete-button"
                                                     onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}

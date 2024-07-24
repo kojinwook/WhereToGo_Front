@@ -19,6 +19,7 @@ export default interface ResponseDto {
     profileImage: string | null;
     email: string;
     nickname: string;
+    temperature: number;
     answers: Answer[];
     answer: Answer[];
     question: Question;
@@ -37,4 +38,5 @@ export default interface ResponseDto {
     boardList: MeetingBoard[];
     userList: User[];
     imageList: Images[];
+    blockReleaseDate: string | null;
 }

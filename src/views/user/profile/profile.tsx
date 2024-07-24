@@ -16,6 +16,7 @@ import settingIcon from 'assets/images/setting.png';
 import starIcon from 'assets/images/star.png';
 import { ResponseDto } from 'apis/response/response';
 import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
+import Thermometer from 'components/Thermometer/Thermometer';
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -46,6 +47,7 @@ export default function UserProfile() {
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
+    const [temperature, setTemperature] = useState<number>(0); // 온도
     const [favorites, setFavorites] = useState<Favorite[]>([]);
     const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
     const [meetingList, setMeetingList] = useState<Meeting[]>([]); // 모임 목록
@@ -109,7 +111,7 @@ export default function UserProfile() {
 
     useEffect(() => {
         if (!userId) return;
-        GetUserRequest(userId, cookies.accessToken).then((responseBody: GetUserResponseDto | ResponseDto | null) => {
+        GetUserRequest(userId).then((responseBody: GetUserResponseDto | ResponseDto | null) => {
             if (!responseBody) return;
             const { code } = responseBody;
             if (code === 'NU') {
@@ -124,10 +126,11 @@ export default function UserProfile() {
                 navigate('/');
                 return;
             }
-            const { nickname, email, profileImage } = responseBody;
+            const { nickname, email, profileImage, temperature } = responseBody;
             setNickname(nickname);
             setEmail(email);
             setProfileImage(profileImage);
+            setTemperature(temperature);
         });
     }, [userId, cookies.accessToken, navigator]);
 
@@ -158,11 +161,18 @@ export default function UserProfile() {
             if (response.code === 'SU') {
                 setFavorites(response.favoriteList);
             } else {
-                console.log ('찜 목록을 불러오는데 실패했습니다.');
+                console.log('찜 목록을 불러오는데 실패했습니다.');
             }
         } catch (error) {
             console.error(error);
         }
+    };
+
+    const formatDate = (dateStr: string) => {
+        const year = dateStr.substring(0, 4);
+        const month = dateStr.substring(4, 6);
+        const day = dateStr.substring(6, 8);
+        return `${year}년 ${month}월 ${day}일`;
     };
 
     const getChatRooms = async (nickname: string) => {
@@ -177,7 +187,7 @@ export default function UserProfile() {
             if (response.code === 'SU') {
                 setChatRooms(response.chatRoomList);
             } else {
-                console.log ('채팅 목록을 불러오는데 실패했습니다.');
+                console.log('채팅 목록을 불러오는데 실패했습니다.');
             }
         } catch (error) {
             console.error(error);
@@ -200,6 +210,10 @@ export default function UserProfile() {
         navigate(`/chat?roomId=${roomId}&userId=${userId}`);
     };
 
+    const handleStarIconClick = () => {
+        navigate(`/user/review/${nickname}`)
+    }
+
     return (
         <div id='user-profile-wrapper'>
             <div className='user-profile-container'>
@@ -209,6 +223,7 @@ export default function UserProfile() {
                 <div className='user-profile-info-box'>
                     <div className='user-profile-info-nickname'>{nickname}</div>
                     <div className='user-profile-info-email'>{email}</div>
+                    <Thermometer temperature={temperature} />
                 </div>
             </div>
             <div className='user-profile-button'>
@@ -225,7 +240,7 @@ export default function UserProfile() {
                     <div className='board-text'>내 게시물</div>
                 </div>
                 <div className='star-button'>
-                    <img src={starIcon} alt='후기 아이콘' className='star-icon' />
+                    <img src={starIcon} alt='후기 아이콘' className='star-icon' onClick={handleStarIconClick} />
                     <div className='star-text'>축제 후기</div>
                 </div>
                 <div className='chat-button' onClick={toggleChatModal}>
@@ -249,6 +264,7 @@ export default function UserProfile() {
                         <div key={favorite.id} className='favorite-item'>
                             {/* 여기에 각 찜 목록 항목의 내용을 출력 */}
                             <span onClick={() => handleFestivalTitleClick(favorite.contentId)}>{favorite.title}</span>
+                            <div>{formatDate(favorite.startDate)} ~ {formatDate(favorite.endDate)}</div>
                         </div>
                     ))}
                 </div>
@@ -285,6 +301,7 @@ export default function UserProfile() {
                     {chatRooms.map((chatRoom) => (
                         <div key={chatRoom.roomId} className='favorite-item'>
                             {/* 여기에 각 채팅 목록 항목의 내용을 출력 */}
+                            {/* <div>{chatRoom.}</div> */}
                             <span onClick={() => handleChatRoomClick(chatRoom.roomId, chatRoom.userId)}>{chatRoom.creatorNickname}</span>
                         </div>
                     ))}
@@ -302,6 +319,8 @@ export default function UserProfile() {
                     {meetingList.map((meeting) => (
                         <div key={meeting.meetingId} className='meeting-item'>
                             {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
+                            <img src={meeting.userDto.profileImage ? meeting.userDto.profileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
+                            <div>{meeting.userNickname}</div>
                             <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
                         </div>
                     ))}
