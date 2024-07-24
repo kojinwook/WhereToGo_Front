@@ -402,11 +402,13 @@ export default function MeetingDetail() {
                                 <div className='board-list-content'>
                                     {boardList.map((board) => (
                                         <div key={board.meetingBoardId} className='meeting-board-item' onClick={() => handleBoardDetail(board.meetingBoardId)}>
-                                            <img
-                                                src={board.userDto && board.userDto.profileImage ? board.userDto.profileImage : defaultProfileImage}
-                                                alt="profile"
-                                                className='board-list-profile-image'
-                                            />
+                                            <div className='item-img'>
+                                                <img
+                                                    src={board.userDto && board.userDto.profileImage ? board.userDto.profileImage : defaultProfileImage}
+                                                    alt="profile"
+                                                    className='board-list-profile-image'
+                                                />
+                                            </div>
                                             <div className='item-nickname'>{board.userDto ? board.userDto.nickname : 'Unknown'}</div>
                                             <div className='item-title'>{board.title}</div>
                                             <div className='item-date'>{board.createDate}</div>
@@ -419,10 +421,10 @@ export default function MeetingDetail() {
                 )}
                 {activeTab === 'requests' && (
                     <div className="requests-list">
-                        <div>
+                        <div className='image-grid'>
                             {boardImageList.map((image) => (
                                 <div key={image.id} className="image-container">
-                                    <img src={image.image} alt="image" />
+                                    <img src={image.image} alt="image"  className="board-image"/>
                                 </div>
                             ))}
                         </div>

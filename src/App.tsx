@@ -103,7 +103,7 @@ function App() {
         <Route path='board/write/:meetingId' element={<BoardWrite />} />
         <Route path='board/list/:meetingId' element={<BoardList />} />
         <Route path='board/detail/:meetingId/:meetingBoardId' element={<BoardDetail />} />
-        <Route path='board/update/:meetingBoardId' element={<BoardUpdate />} />
+        <Route path='board/update/:meetingId/:meetingBoardId' element={<BoardUpdate />} />
       </Route>
 
       <Route path='/authentication'>
