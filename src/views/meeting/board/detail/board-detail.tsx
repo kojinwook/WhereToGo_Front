@@ -193,6 +193,10 @@ export default function BoardDetail() {
             console.error('Failed to delete board');
         }
     }
+
+    const reportUserButtonClickHandler = (reportUserNickname: string) => {
+        navigate(`/user/report/${reportUserNickname}`);
+    }
     
     return (
         <div className='board-detail-container'>

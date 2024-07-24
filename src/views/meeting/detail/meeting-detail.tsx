@@ -33,11 +33,11 @@ export default function MeetingDetail() {
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
+    const [creatorNickname, setCreatorNickname] = useState<string>('');
+    const [roomName, setRoomName] = useState<string>(''); // 채팅방 이름
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const creatorNickname = meeting?.userNickname;
-    const roomName = meeting?.userNickname;
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [activeTab, setActiveTab] = useState('detail');
@@ -61,7 +61,7 @@ export default function MeetingDetail() {
             try {
                 const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
                 if (!response) return;
-                console.log(response);
+                console.log(response)
                 const members = response.meetingUsersList.map(member => member.userNickname);
                 setJoinMemberList(members);
                 setJoinMembers(response.meetingUsersList.length);
@@ -80,6 +80,8 @@ export default function MeetingDetail() {
                 const response = await GetMeetingRequest(meetingId)
                 if (!response) return;
                 setMeeting(response.meeting)
+                setCreatorNickname(response.meeting.userDto.nickname)
+                setRoomName(response.meeting.userDto.nickname)
             }
             catch (error) {
                 console.error("모임 정보를 불러오는 중 오류가 발생했습니다:", error)
@@ -134,6 +136,7 @@ export default function MeetingDetail() {
 
     const handleCreateRoom = async () => {
         const meetingTitle = meeting?.title;
+
         if (!roomName || !nickname || !creatorNickname || !meetingTitle) return;
         try {
             const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorNickname, meetingTitle }, cookies.accessToken);
@@ -354,7 +357,7 @@ export default function MeetingDetail() {
                                     )}
                                 </div>
                                 <p>대표 닉네임</p>
-                                <div className="bordered-div">{meeting.userNickname}</div>
+                                <div className="bordered-div">{creatorNickname}</div>
                                 <p>한 줄 소개</p>
                                 <div className="bordered-div">{meeting.introduction}</div>
                                 <p>개설 날짜</p>
