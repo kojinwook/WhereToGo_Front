@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileUploadRequest, GetUserRequest, PatchUserRequest } from 'apis/apis';
-import { PatchUserRequestDto } from 'apis/request/user';
+import { FileUploadRequest, GetUserRequest, PatchPasswordRequest, PatchUserRequest } from 'apis/apis';
+import { PatchPasswordRequestDto, PatchUserRequestDto } from 'apis/request/user';
 import { GetUserResponseDto, PatchUserResponseDto } from 'apis/response/user';
 import { ResponseDto } from 'apis/response/response';
 import useLoginUserStore from 'store/login-user.store';
@@ -111,13 +111,45 @@ export default function UserModifyProfile() {
         FileUploadRequest(data).then(fileUploadResponse);
     }
 
+    const patchPasswordResponse = (responseBody: ResponseDto | null) => {
+        if (!responseBody) return;
+        const { code } = responseBody;
+        if (code === 'VF') alert('입력한 정보가 유효하지 않습니다.');
+        if (code === 'WP') alert('비밀번호가 일치하지 않습니다.');
+        if (code === 'NU') alert('존재하지 않는 유저입니다.');
+        if (code === 'DBE') alert('데이터베이스 오류입니다.');
+        if (code === 'SU') alert('비밀번호가 성공적으로 수정되었습니다.');
+    }
+
+    const onPatchPassword = () => {
+        if (!userId) {
+            alert('유저 ID를 입력하세요.');
+            return;
+        }
+        if (!currentPassword) {
+            alert('현재 비밀번호를 입력하세요.');
+            return;
+        }
+        if (!newPassword) {
+            alert('새 비밀번호를 입력하세요.');
+            return;
+        }
+
+        const requestBody: PatchPasswordRequestDto = {
+            currentPassword,
+            newPassword
+        };
+
+        PatchPasswordRequest(requestBody, cookies.accessToken).then(patchPasswordResponse);
+    }
+
     useEffect(() => {
         if (!userId) return;
         GetUserRequest(userId).then(getUserResponse);
     }, [userId]);
 
     return (
-        <div className='mp-container'>
+        <div>
             <h2>사용자 프로필 수정</h2>
             <div className='profile-image' onClick={onProfileBoxClickHandler}>
                 <img src={profileImage ? profileImage : defaultProfileImage} alt="프로필 이미지" />
@@ -161,6 +193,7 @@ export default function UserModifyProfile() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="새 비밀번호 입력"
             />
+            <button onClick={onPatchPassword}>비밀번호 수정</button>
             <button onClick={handleSubmit}>수정</button>
         </div>
     )

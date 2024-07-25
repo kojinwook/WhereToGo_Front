@@ -11,6 +11,7 @@ import ReportUserResponseDto from "./report-user.response.dto";
 import BlockUserResponseDto from "./block-user.response.dto";
 import PatchProfileImageResponseDto from "./patch-profile-image.response.dto";
 import PatchUserResponseDto from "./patch-user.response.dto";
+import VerifyPasswordResponseDto from "./verify-password.response.dto";
 
 export type {
     GetUserResponseDto,
@@ -25,5 +26,6 @@ export type {
     ReportUserResponseDto,
     BlockUserResponseDto,
     PatchProfileImageResponseDto,
-    PatchUserResponseDto
+    PatchUserResponseDto,
+    VerifyPasswordResponseDto
 }
