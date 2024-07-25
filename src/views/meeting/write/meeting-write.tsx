@@ -241,7 +241,7 @@ export default function MeetingWrite() {
         placeholder="태그를 입력해주세요. (Enter로 추가)"
         name="tags"
         onKeyDown={handleTagKeyDown} />
-      <div>
+      <div className='tag-container'>
         {tags.map((tag, index) => (
           <div key={index}>
             #{tag}
@@ -264,14 +264,6 @@ export default function MeetingWrite() {
           </div>
         ))}
       </div>
-      <div>
-        {categories.map((categoryName) => (
-          <div key={categoryName}>
-            #{categoryName}
-            <span onClick={() => handleTagSelect(categoryName)}>&times;</span>
-          </div>
-        ))}
-      </div>
 
       <br />
 
@@ -284,14 +276,6 @@ export default function MeetingWrite() {
             onClick={() => handleAreaSelect(location.name)}
           >
             {location.name}
-          </div>
-        ))}
-      </div>
-      <div>
-        {locations.map((locationName) => (
-          <div key={locationName}>
-            #{locationName}
-            <span onClick={() => handleAreaSelect(locationName)}>&times;</span>
           </div>
         ))}
       </div>
