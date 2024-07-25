@@ -1,0 +1,26 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.logo-container img {
+    cursor: pointer;
+    width: 100px;
+    height: auto;
+}
+
+.nav-container {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-container span {
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+}

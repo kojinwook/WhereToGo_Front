@@ -50,6 +50,9 @@ const Main: React.FC = () => {
     const day = dateStr.substring(6, 8);
     return `${year}년 ${month}월 ${day}일`;
   };
+  const InquirePathClickHandler = () => {
+    navigator('/inquire');
+  }
 
   const NoticePathClickHandler = () => {
     navigator('/notice');
@@ -72,6 +75,7 @@ const Main: React.FC = () => {
   return (
     <div>
       <div>
+        <div onClick={InquirePathClickHandler}>고객센터</div>
         <div onClick={NoticePathClickHandler}>공지사항</div>
         <div onClick={FestivalPathClickHandler}>축제</div>
         <div onClick={meetingPathClickHandler}>모임</div>
