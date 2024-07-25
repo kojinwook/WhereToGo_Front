@@ -23,6 +23,7 @@
   },
   "include": [
     "src/**/*",
-    "src/assets/images/**/*.png"
+    "src/assets/images/**/*.png",
+    "src/globals.d.ts"
   ]
 }

@@ -106,12 +106,13 @@ body, html {
 
 .message-text {
     margin-top: 5px; /* 프로필 사진과 메시지 내용 사이의 간격 설정 */
+    margin: 10px; /* 메시지와 시간 사이의 간격 설정 */
 }
 
 .message-time {
     font-size: 0.8em;
     color: gray;
-    margin-left: 10px; /* 메시지와 시간 사이의 간격 설정 */
+    margin: 10px; /* 메시지와 시간 사이의 간격 설정 */
     align-self: center; /* 시간 텍스트를 수직 가운데 정렬 */
 }
 
@@ -139,13 +140,20 @@ body, html {
     background-color: black;
     color: white;
     border: none;
-    border-radius: 5px; /* 모서리 둥글게 */
+    border-radius: 5px;
     cursor: pointer;
     outline: none;
-    margin-left: 10px; /* 간격 유지 */
+    margin-left: 10px;
 }
 
 .chat-room button:hover {
     background-color: white;
     color: black;
+}
+
+.message-nickname {
+    color: black;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-left: 30px;
 }

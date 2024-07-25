@@ -16,6 +16,7 @@ import settingIcon from 'assets/images/setting.png';
 import starIcon from 'assets/images/star.png';
 import { ResponseDto } from 'apis/response/response';
 import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
+import Thermometer from 'components/Thermometer/Thermometer';
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -46,6 +47,7 @@ export default function UserProfile() {
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
+    const [temperature, setTemperature] = useState<number>(0); // 온도
     const [favorites, setFavorites] = useState<Favorite[]>([]);
     const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
     const [meetingList, setMeetingList] = useState<Meeting[]>([]); // 모임 목록
@@ -124,10 +126,11 @@ export default function UserProfile() {
                 navigate('/');
                 return;
             }
-            const { nickname, email, profileImage } = responseBody;
+            const { nickname, email, profileImage, temperature } = responseBody;
             setNickname(nickname);
             setEmail(email);
             setProfileImage(profileImage);
+            setTemperature(temperature);
         });
     }, [userId, cookies.accessToken, navigator]);
 
@@ -220,6 +223,7 @@ export default function UserProfile() {
                 <div className='user-profile-info-box'>
                     <div className='user-profile-info-nickname'>{nickname}</div>
                     <div className='user-profile-info-email'>{email}</div>
+                    <Thermometer temperature={temperature} />
                 </div>
             </div>
             <div className='user-profile-button'>
@@ -236,7 +240,7 @@ export default function UserProfile() {
                     <div className='board-text'>내 게시물</div>
                 </div>
                 <div className='star-button'>
-                    <img src={starIcon} alt='후기 아이콘' className='star-icon' onClick={handleStarIconClick}/>
+                    <img src={starIcon} alt='후기 아이콘' className='star-icon' onClick={handleStarIconClick} />
                     <div className='star-text'>축제 후기</div>
                 </div>
                 <div className='chat-button' onClick={toggleChatModal}>
