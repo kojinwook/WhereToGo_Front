@@ -14,6 +14,12 @@ const Main: React.FC = () => {
   const [top5TemperatureUserList, setTop5TemperatureUserList] = useState<User[]>([])
   const [loading, setLoading] = useState(true);
 
+  const images = [
+    "https://i.imgur.com/PKqEZdk.png",
+    "https://i.imgur.com/qiBAt1e.png"
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   useEffect(() => {
     const fetchTop5FestivalList = async () => {
       const response = await GetTop5FestivalListRequest();
@@ -71,10 +77,30 @@ const Main: React.FC = () => {
     navigator(`/meeting/detail/${meetingId}`);
   }
 
+  // 배너
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+  // 배너 끝
+
   return (
     <div className='main-container'>
       <div className='banner'>
-        <div>배너</div>
+      <button className='arrow prev' onClick={prevSlide}>&#10094;</button>
+      <img src={images[currentIndex]} alt="슬라이드 이미지" className='slide-image' />
+      <button className='arrow next' onClick={nextSlide}>&#10095;</button>
       </div>
       <div className='main-content'>
         <div className='main-header'>
