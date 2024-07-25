@@ -115,7 +115,7 @@ export default function BoardDetail() {
     }
 
     const backGoPathClickHandler = () => {
-        navigate(`/meeting/detail/${meetingId}`);
+        window.history.back();
     }
 
     // 이미지 넘기기 함수
@@ -217,6 +217,10 @@ export default function BoardDetail() {
         } else {
             console.error('Failed to delete replyReply');
         }
+    }
+
+    const reportUserButtonClickHandler = (reportUserNickname: string) => {
+        navigate(`/user/report/${reportUserNickname}`);
     }
     
     return (
