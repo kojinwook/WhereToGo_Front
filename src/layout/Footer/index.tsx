@@ -20,8 +20,6 @@ const Footer : React.FC = () => {
         <div>여기갈래?</div>
         <img src={logoImage} alt="뒤로가기" onClick={onLogoClickHandler} />
         <div>
-            <div>대표이사 고진욱</div>
-            <div>사원 : 유신형, 장민규 , 김예지</div>
             <div>사업자 번호 000-00-</div>
             <div>주소 : 대전광역시 서구 둔산로 52</div>
         </div>
