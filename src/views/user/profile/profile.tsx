@@ -39,6 +39,15 @@ const modalStyle = {
     },
 };
 
+const passwordModalStyle = {
+    ...modalStyle,
+    content: {
+        ...modalStyle.content,
+        width: '300px', // 비밀번호 모달의 너비
+        height: '200px', // 비밀번호 모달의 높이
+    }
+};
+
 export default function UserProfile() {
     const { loginUser } = useLoginUserStore();
     const navigate = useNavigate();
@@ -53,15 +62,19 @@ export default function UserProfile() {
     const [meetingList, setMeetingList] = useState<Meeting[]>([]); // 모임 목록
     const [boardList, setBoardList] = useState<any[]>([]); // 게시물 목록
 
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState<boolean>(false);
+    const [password, setPassword] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string>('');
+
     const [isHeartModalOpen, setIsHeartModalOpen] = useState<boolean>(false); // 찜 모달 열림 상태
     const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false); // 모임 모달 열림 상태
     const [isBoardModalOpen, setIsBoardModalOpen] = useState<boolean>(false); // 게시물 모달 열림 상태
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
 
-    const handleProfileChangeClick = () => {
-        navigate('/user/modifyProfile');
-    }
+    // const handleProfileChangeClick = () => {
+    //     navigate('/user/modifyProfile');
+    // }
 
     // 알림
     const handleNotificationChange = (checked: boolean) => {
@@ -193,6 +206,62 @@ export default function UserProfile() {
             console.error(error);
         }
     }
+
+    const togglePasswordModal = () => setIsPasswordModalOpen(!isPasswordModalOpen);
+
+    const handleProfileChangeClick = () => {
+        togglePasswordModal();
+    };
+
+    const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(event.target.value);
+    };
+
+    const handlePasswordSubmit = async () => {
+        try {
+            const response = await verifyPassword(password, cookies.accessToken);
+            if (response.code === 'SU') {
+                togglePasswordModal();
+                navigate('/user/modifyProfile');
+            } else {
+                setPasswordError('비밀번호가 올바르지 않습니다.');
+            }
+        } catch (error) {
+            console.error(error);
+            setPasswordError('비밀번호 확인 중 오류가 발생했습니다.');
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     const handleFestivalTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`);
@@ -327,6 +396,36 @@ export default function UserProfile() {
                 </div>
                 <button onClick={toggleGroupModal}>닫기</button>
             </Modal>
+
+
+
+
+            
+            <Modal
+                isOpen={isPasswordModalOpen}
+                onRequestClose={togglePasswordModal}
+                style={passwordModalStyle}
+                contentLabel='비밀번호 확인'
+            >
+                <h2>비밀번호 확인</h2>
+                <input
+                    type='password'
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder='비밀번호 입력'
+                />
+                {passwordError && <div className='error'>{passwordError}</div>}
+                <button onClick={handlePasswordSubmit}>확인</button>
+                <button onClick={togglePasswordModal}>취소</button>
+            </Modal>
+
+
+
+
+
+
+
+
             <Modal
                 isOpen={isSettingModalOpen}
                 onRequestClose={toggleSettingModal}
