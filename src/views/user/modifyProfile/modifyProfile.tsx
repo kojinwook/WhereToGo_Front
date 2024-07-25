@@ -37,10 +37,11 @@ export default function UserModifyProfile() {
             navigate('/');
             return;
         }
-        const { nickname, email, profileImage } = responseBody as GetUserResponseDto;
+        const { nickname, email, profileImage, phoneNumber } = responseBody as GetUserResponseDto;
         setNickname(nickname);
         setEmail(email);
         setProfileImage(profileImage);
+        setPhoneNumber(phoneNumber);
     }
 
     const fileUploadResponse = (responseBody: string | Images | ResponseDto | null) => {
@@ -78,13 +79,18 @@ export default function UserModifyProfile() {
             alert('이메일을 입력하세요.');
             return;
         }
+        if(!phoneNumber) {
+            alert('전화번호를 입력하세요.');
+            return;
+        }
 
         const requestBody: PatchUserRequestDto = {
             nickname,
             email,
             currentPassword,
             newPassword,
-            profileImage
+            profileImage,
+            phoneNumber
         };
 
         PatchUserRequest(requestBody, cookies.accessToken).then(patchUserResponse);
@@ -122,17 +128,26 @@ export default function UserModifyProfile() {
                 style={{ display: 'none' }}
                 onChange={onProfileImageChangeHandler}
             />
+            닉네임
             <input
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="새 닉네임 입력"
             />
+            이메일
             <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="새 이메일 입력"
+            />
+            전화번호
+            <input
+                type="text"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="전화번호 입력"
             />
             <input
                 type="password"

@@ -4,4 +4,5 @@ export default interface PatchUserRequestDto{
     currentPassword: string;
     newPassword: string;
     profileImage: string | null;
+    phoneNumber: string;
 }

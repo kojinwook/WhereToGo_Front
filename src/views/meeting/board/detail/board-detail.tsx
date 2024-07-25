@@ -115,7 +115,7 @@ export default function BoardDetail() {
     }
 
     const backGoPathClickHandler = () => {
-        navigate(`/meeting/detail/${meetingId}`);
+        window.history.back();
     }
 
     // 이미지 넘기기 함수
