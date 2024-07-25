@@ -39,4 +39,5 @@ export default interface ResponseDto {
     userList: User[];
     imageList: Images[];
     blockReleaseDate: string | null;
+    phoneNumber: string;
 }

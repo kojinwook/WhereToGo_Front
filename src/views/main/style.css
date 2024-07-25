@@ -11,6 +11,14 @@
     overflow: hidden;
 }
 
+<<<<<<< HEAD
+=======
+.banner-slider {
+    position: relative;
+    width: 100%;
+}
+
+>>>>>>> b0ce3615e12a18692827c94926dbe23183feffbb
 .slide-image {
     width: 100%;
     height: auto;

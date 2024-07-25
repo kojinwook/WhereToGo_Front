@@ -1,4 +1,4 @@
-import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest, VerifyPasswordRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -17,6 +17,8 @@ import starIcon from 'assets/images/star.png';
 import { ResponseDto } from 'apis/response/response';
 import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
 import Thermometer from 'components/Thermometer/Thermometer';
+import { VerifyPasswordRequestDto } from 'apis/request/user';
+
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -36,7 +38,20 @@ const modalStyle = {
         backgroundColor: '#fff', // 배경색 설정
         padding: '20px', // 안쪽 여백
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // 그림자 설정
+        zIndex: '100', // z-index 설정
     },
+};
+
+const passwordModalStyle = {
+    ...modalStyle,
+    overlay: {
+        zIndex: '200',
+    },
+    content: {
+        ...modalStyle.content,
+        width: '300px', // 비밀번호 모달의 너비
+        height: '200px', // 비밀번호 모달의 높이
+    }
 };
 
 export default function UserProfile() {
@@ -53,15 +68,19 @@ export default function UserProfile() {
     const [meetingList, setMeetingList] = useState<Meeting[]>([]); // 모임 목록
     const [boardList, setBoardList] = useState<any[]>([]); // 게시물 목록
 
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState<boolean>(false);
+    const [password, setPassword] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string>('');
+
     const [isHeartModalOpen, setIsHeartModalOpen] = useState<boolean>(false); // 찜 모달 열림 상태
     const [isGroupModalOpen, setIsGroupModalOpen] = useState<boolean>(false); // 모임 모달 열림 상태
     const [isBoardModalOpen, setIsBoardModalOpen] = useState<boolean>(false); // 게시물 모달 열림 상태
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
 
-    const handleProfileChangeClick = () => {
-        navigate('/user/modifyProfile');
-    }
+    // const handleProfileChangeClick = () => {
+    //     navigate('/user/modifyProfile');
+    // }
 
     // 알림
     const handleNotificationChange = (checked: boolean) => {
@@ -193,6 +212,64 @@ export default function UserProfile() {
             console.error(error);
         }
     }
+
+    const togglePasswordModal = () => setIsPasswordModalOpen(!isPasswordModalOpen);
+
+    const handleProfileChangeClick = () => {
+        togglePasswordModal();
+    };
+
+    const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(event.target.value);
+    };
+
+    const handlePasswordSubmit = async () => {
+        try {
+            const requestBody: VerifyPasswordRequestDto = { password: password };
+            const response = await VerifyPasswordRequest(requestBody, cookies.accessToken);
+            if(!response) return;
+            if (response.code === 'SU') {
+                togglePasswordModal();
+                navigate('/user/modifyProfile');
+            } else {
+                setPasswordError('비밀번호가 올바르지 않습니다.');
+            }
+        } catch (error) {
+            console.error(error);
+            setPasswordError('비밀번호 확인 중 오류가 발생했습니다.');
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     const handleFestivalTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`);
@@ -327,6 +404,36 @@ export default function UserProfile() {
                 </div>
                 <button onClick={toggleGroupModal}>닫기</button>
             </Modal>
+
+
+
+
+
+            <Modal
+                isOpen={isPasswordModalOpen}
+                onRequestClose={togglePasswordModal}
+                style={passwordModalStyle}
+                contentLabel='비밀번호 확인'
+            >
+                <h2>비밀번호 확인</h2>
+                <input
+                    type='password'
+                    value={password}
+                    onChange={handlePasswordChange}
+                    placeholder='비밀번호 입력'
+                />
+                {passwordError && <div className='error'>{passwordError}</div>}
+                <button onClick={handlePasswordSubmit}>확인</button>
+                <button onClick={togglePasswordModal}>취소</button>
+            </Modal>
+
+
+
+
+
+
+
+
             <Modal
                 isOpen={isSettingModalOpen}
                 onRequestClose={toggleSettingModal}

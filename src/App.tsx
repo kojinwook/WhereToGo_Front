@@ -43,6 +43,7 @@ import Main from 'views/main/main';
 import Management from 'views/admin/management/management';
 import Container from 'layout/Container';
 import ReviewList from 'views/user/review/review-list';
+import ReportUser from 'views/user/report/report-user';
 
 function App() {
 
@@ -75,30 +76,31 @@ function App() {
   return (
     <Routes>
       <Route element={<Container />}>
-      <Route path="/" element={<Main/>}></Route>
-      <Route path='/festival'>
-        <Route path="search" element={<FestivalPage />} />
-        <Route path="save" element={<SaveFestivalList />} />
-        <Route path="admin" element={<FestivalAdmin />} />
-        <Route path="detail" element={<FestivalDetail />} />
-        <Route path="review/write" element={<ReviewWritePage />} />
-        <Route path="review/update" element={<ReviewUpdatePage />} />
-      </Route>
+        <Route path="/" element={<Main />}></Route>
+        <Route path='/festival'>
+          <Route path="search" element={<FestivalPage />} />
+          <Route path="save" element={<SaveFestivalList />} />
+          <Route path="admin" element={<FestivalAdmin />} />
+          <Route path="detail" element={<FestivalDetail />} />
+          <Route path="review/write" element={<ReviewWritePage />} />
+          <Route path="review/update" element={<ReviewUpdatePage />} />
+        </Route>
 
-      <Route path='/user'>
-        <Route path="profile" element={<UserProfile />} />
-        <Route path='modifyProfile' element={<UserModifyProfile />} />
-        <Route path='review/:nickname' element={<ReviewList/>}/>
-      </Route>
+        <Route path='/user'>
+          <Route path="profile" element={<UserProfile />} />
+          <Route path='modifyProfile' element={<UserModifyProfile />} />
+          <Route path='review/:nickname' element={<ReviewList />} />
+          <Route path='report/:reportUserNickname' element={<ReportUser />} />
+        </Route>
 
-      <Route path='/chat'>
-        <Route path="" element={<ChatRoom />} />
-      </Route>
+        <Route path='/chat'>
+          <Route path="" element={<ChatRoom />} />
+        </Route>
 
-      <Route path='/admin'>
-        <Route path='profile' element={<AdminProfile />} />
-        <Route path='management' element={<Management />}/>
-      </Route>
+        <Route path='/admin'>
+          <Route path='profile' element={<AdminProfile />} />
+          <Route path='management' element={<Management />} />
+        </Route>
 
       <Route path='/meeting'>
         <Route path="list" element={<MeetingList />} />
@@ -111,27 +113,27 @@ function App() {
         <Route path='board/update/:meetingId/:meetingBoardId' element={<BoardUpdate />} />
       </Route>
 
-      <Route path='/authentication'>
-        <Route path="admin" element={<AdminSignUp />} />
-        <Route path="signin" element={<SignIn />} />
-        <Route path="signup" element={<SignUp />} />
-      </Route>
+        <Route path='/authentication'>
+          <Route path="admin" element={<AdminSignUp />} />
+          <Route path="signin" element={<SignIn />} />
+          <Route path="signup" element={<SignUp />} />
+        </Route>
 
-      <Route path='/inquire'>
-        <Route path="" element={<Inquire />} />
-        <Route path="detail/:questionId" element={<InquireDetail />} />
-        <Route path="write" element={<InquireWrite />} />
-        <Route path="update/:questionId" element={<InquireUpdate />} />
-        <Route path="list" element={<InquireList />} />
-      </Route>
+        <Route path='/inquire'>
+          <Route path="" element={<Inquire />} />
+          <Route path="detail/:questionId" element={<InquireDetail />} />
+          <Route path="write" element={<InquireWrite />} />
+          <Route path="update/:questionId" element={<InquireUpdate />} />
+          <Route path="list" element={<InquireList />} />
+        </Route>
 
-      <Route path='/notice'>
-        <Route path="" element={<NoticeList />} />
-        <Route path="detail/:noticeId" element={<NoticeDetail />} />
-        <Route path="write" element={<NoticeWrite />} />
-        <Route path="update/:noticeId" element={<NoticeUpdate />} />
-      </Route>
-      <Route path='*' element={<h1>404 Not Found</h1>} />
+        <Route path='/notice'>
+          <Route path="" element={<NoticeList />} />
+          <Route path="detail/:noticeId" element={<NoticeDetail />} />
+          <Route path="write" element={<NoticeWrite />} />
+          <Route path="update/:noticeId" element={<NoticeUpdate />} />
+        </Route>
+        <Route path='*' element={<h1>404 Not Found</h1>} />
       </Route>
     </Routes>
   );
