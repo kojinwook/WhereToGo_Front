@@ -33,6 +33,20 @@
     box-sizing: border-box;
     vertical-align: middle;
 }
+.notice-write-button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+.notice-write-button{
+    width: 63px;
+    padding: 0 16px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: 1px solid #000;
+    cursor: pointer;
+    height: 36px;
+}
 
 .notice-search-btn {
     padding: 0 16px;

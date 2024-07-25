@@ -1,19 +1,18 @@
-import { GetAllNoticeRequest } from "apis/apis"; // 공지사항 데이터 가져오기 위해 추가
+import { GetAllNoticeRequest } from "apis/apis";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Notice from "types/interface/notice.interface"; // 공지사항 인터페이스 가져오기 위해 추가
+import Notice from "types/interface/notice.interface";
 import Question from "types/interface/question.interface";
 import './style.css';
 
 const Inquire: React.FC = () => {
-  // const { questionId } = useParams();
   const navigator = useNavigate();
   const [posts, setPosts] = useState<Question[]>([]);
-  const [notices, setNotices] = useState<Notice[]>([]); // 공지사항 상태 추가
+  const [notices, setNotices] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchNotices = async () => { // 공지사항 데이터 가져오기
+    const fetchNotices = async () => {
       try {
         const result = await GetAllNoticeRequest();
         if (!result) return;
@@ -28,7 +27,7 @@ const Inquire: React.FC = () => {
         console.error('공지사항을 가져오는데 실패했습니다.', error);
       }
     };
-    fetchNotices(); // 공지사항 데이터 호출 추가
+    fetchNotices();
   }, []);
 
   const writePathClickHandler = () => {
@@ -71,7 +70,7 @@ const Inquire: React.FC = () => {
             <button className="inquire-plus" onClick={noticeListClickHandler}> 더보기 </button>
           </div>
           <div className="inquire-notice-list">
-          <div className="inquire-count">{notices.length}건</div> {/* 공지사항 수 표시 */}
+          <div className="inquire-count">{notices.length}건</div>
             <div className="inquire-header">
               <div className="inquire-num">NO</div>
               <div className="inquire-title">제목</div>
@@ -85,7 +84,7 @@ const Inquire: React.FC = () => {
                   <div className="inquire-sort" key={notice.noticeId}>
                     <div className="inquire-num">{notice.noticeId}</div>
                     <div className="inquire-title">{notice.title}</div>
-                    <div className="inquire-date">{new Date(notice.createDateTime).toLocaleString()}</div> {/* 작성된 시간을 표시 */}
+                    <div className="inquire-date">{new Date(notice.createDateTime).toLocaleString()}</div>
                   </div>
                 ))}
               </>

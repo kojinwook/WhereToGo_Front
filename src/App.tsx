@@ -72,6 +72,8 @@ function App() {
     GetSignInUserRequest(cookies.accessToken).then(getSignInUserResponse)
   }, [cookies.accessToken]);
 
+
+
   return (
     <Routes>
       <Route element={<Container />}>
@@ -136,7 +138,6 @@ function App() {
         <Route path='*' element={<h1>404 Not Found</h1>} />
       </Route>
     </Routes>
-
   );
 }
 
