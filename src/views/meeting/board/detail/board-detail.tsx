@@ -257,8 +257,10 @@ export default function BoardDetail() {
 
                 <div className="board-detail-right">
                     <div className="board-more-options">
-                        <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
-                        <p>{writerNickname}</p>
+                        <div className="profile-container">
+                            <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
+                            <p className="writer-nickname">{writerNickname}</p>
+                        </div>
 
                         {(writerNickname === nickname || role === "ROLE_ADMIN") && (
                             <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleBoardOptions} />
