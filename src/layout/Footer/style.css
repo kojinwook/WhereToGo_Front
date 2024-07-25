@@ -1,15 +1,12 @@
 .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    position: relative;
+    margin-top: auto;
     display: flex;
     justify-content: space-between;
     padding: 20px;
     background-color: #424242;
     border-top: 1px solid #424242;
     margin-top: 20px;
-    z-index: 1000;
 }
 
 .footer-line{

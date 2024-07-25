@@ -5,9 +5,43 @@
 .banner {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.banner-slider {
+    position: relative;
+    width: 100%;
+}
+
+.slide-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+.arrow:hover {
+    color: #333;
 }
 
 .main-content{
