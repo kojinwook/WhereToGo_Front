@@ -1,4 +1,4 @@
-import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest, VerifyPasswordRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -17,6 +17,8 @@ import starIcon from 'assets/images/star.png';
 import { ResponseDto } from 'apis/response/response';
 import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
 import Thermometer from 'components/Thermometer/Thermometer';
+import { VerifyPasswordRequestDto } from 'apis/request/user';
+import { over } from 'stompjs';
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -36,11 +38,15 @@ const modalStyle = {
         backgroundColor: '#fff', // 배경색 설정
         padding: '20px', // 안쪽 여백
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', // 그림자 설정
+        zIndex: '100', // z-index 설정
     },
 };
 
 const passwordModalStyle = {
     ...modalStyle,
+    overlay: {
+        zIndex: '200',
+    },
     content: {
         ...modalStyle.content,
         width: '300px', // 비밀번호 모달의 너비
@@ -219,7 +225,9 @@ export default function UserProfile() {
 
     const handlePasswordSubmit = async () => {
         try {
-            const response = await verifyPassword(password, cookies.accessToken);
+            const requestBody: VerifyPasswordRequestDto = { password: password };
+            const response = await VerifyPasswordRequest(requestBody, cookies.accessToken);
+            if(!response) return;
             if (response.code === 'SU') {
                 togglePasswordModal();
                 navigate('/user/modifyProfile');
@@ -400,7 +408,7 @@ export default function UserProfile() {
 
 
 
-            
+
             <Modal
                 isOpen={isPasswordModalOpen}
                 onRequestClose={togglePasswordModal}

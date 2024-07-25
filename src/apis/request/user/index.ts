@@ -6,6 +6,7 @@ import PatchPasswordRequestDto from "./patch-password.request.dto"
 import PatchProfileImageRequestDto from "./patch-profile-image.request.dto"
 import PatchUserRequestDto from "./patch-user.request.dto"
 import ReportUserRequestDto from "./report-user.request.dto"
+import VerifyPasswordRequestDto from "./verify-password.request.dto"
 import WithdrawalUserRequestDto from "./withdrawal-user.request.dto"
 
 export type {
@@ -17,5 +18,6 @@ export type {
     BlockUserRequestDto,
     ReportUserRequestDto,
     PatchProfileImageRequestDto,
-    PatchUserRequestDto
+    PatchUserRequestDto,
+    VerifyPasswordRequestDto
 }

@@ -33,6 +33,7 @@ export default function MeetingDetail() {
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
+    const [creatorId, setCreatorId] = useState<string>('');
     const [creatorNickname, setCreatorNickname] = useState<string>('');
     const [roomName, setRoomName] = useState<string>(''); // 채팅방 이름
     const [profileImages, setProfileImages] = useState<string[]>([]);
@@ -81,6 +82,7 @@ export default function MeetingDetail() {
                 if (!response) return;
                 setMeeting(response.meeting)
                 setCreatorNickname(response.meeting.userDto.nickname)
+                setCreatorId(response.meeting.userDto.userId)
                 setRoomName(response.meeting.userDto.nickname)
             }
             catch (error) {
@@ -137,14 +139,14 @@ export default function MeetingDetail() {
     const handleCreateRoom = async () => {
         const meetingTitle = meeting?.title;
 
-        if (!roomName || !nickname || !creatorNickname || !meetingTitle) return;
+        if (!roomName || !nickname || !creatorId || !meetingTitle) return;
         try {
-            const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorNickname, meetingTitle }, cookies.accessToken);
+            const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorId, meetingTitle }, cookies.accessToken);
             if (!response) return;
             if (response.code === 'SU') {
                 const roomId = response.roomId;
                 if (roomId) {
-                    navigate(`/chat?roomId=${roomId}&userId=${creatorNickname}`);
+                    navigate(`/chat?roomId=${roomId}&userId=${creatorId}`);
                 } else {
                     console.error('Failed to create chat room: No roomId returned');
                 }
