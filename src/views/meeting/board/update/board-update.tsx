@@ -1,14 +1,16 @@
-import { FileUploadRequest, GetMeetingBoardRequest, PatchMeetingBoardRequest } from 'apis/apis'
-import { PatchMeetingBoardRequestDto } from 'apis/request/meeting/board'
-import React, { useEffect, useState } from 'react'
+import { FileUploadRequest, GetMeetingBoardRequest, PatchMeetingBoardRequest } from 'apis/apis';
+import { PatchMeetingBoardRequestDto } from 'apis/request/meeting/board';
+import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images } from 'types/interface/interface';
+import './style.css';
 
 export default function BoardUpdate() {
 
-    const { meetingBoardId } = useParams();
+    const { meetingId, meetingBoardId } = useParams();
+    // const {meetingId} = 
     const { loginUser } = useLoginUserStore();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -97,7 +99,7 @@ export default function BoardUpdate() {
         if (!response) return;
         if (response.code === 'SU') {
             alert('게시물이 성공적으로 수정되었습니다.');
-            navigate('/meeting/board/list/${meetingId}');
+            navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
         } else {
             alert('게시물 수정에 실패했습니다.');
         }
@@ -106,63 +108,62 @@ export default function BoardUpdate() {
 
 
     return (
-        <div>
+        <div className='board-update-container'>
+            <p>게시물 수정</p>
             <div>
-            <div>
-                <p><strong>제목</strong></p>
-                <input
-                    type="text"
-                    placeholder="제목"
-                    value={title}
-                    onChange={handleTitle}
-                />
+                <div className='board-update-list'>
+                    <p><strong>제목</strong></p>
+                    <input
+                        type="text"
+                        placeholder="제목"
+                        value={title}
+                        onChange={handleTitle}
+                    />
 
-                <br />
+                    <br />
 
-                <p><strong>내용</strong></p>
-                <label>
-                    <textarea
-                        placeholder='내용'
-                        value={content}
-                        onChange={handleContent}
-                    ></textarea>
-                </label>
+                    <p><strong>내용</strong></p>
+                    <label>
+                        <textarea
+                            placeholder='내용'
+                            value={content}
+                            onChange={handleContent}
+                        ></textarea>
+                    </label>
 
-                <br />
+                    <br />
 
-                <p><strong>주소</strong></p>
-                <label>
-                    <textarea
-                        placeholder='주소'
-                        value={address}
-                        onChange={handleAddress}
-                    ></textarea>
-                </label>
+                    <p><strong>주소</strong></p>
+                    <label>
+                        <textarea
+                            placeholder='주소'
+                            value={address}
+                            onChange={handleAddress}
+                        ></textarea>
+                    </label>
 
-                <br />
+                    <br />
 
-                <p><strong>사진</strong></p>
-                <input type="file" multiple onChange={handleImageChange} />
-                <div style={{ display: 'flex', marginTop: '10px' }}>
-                    {imagePreviews.map((preview, index) => (
-                        <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
-                            <img
-                                src={preview}
-                                alt={`이미지 미리보기 ${index}`}
-                                style={{ width: '100px', height: 'auto', marginRight: '10px' }}
-                            />
-                            <button
-                                style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
-                                onClick={() => handleImageRemove(index)}
-                            >
-                                <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
-                            </button>
-                        </div>
-                    ))}
+                    <p><strong>사진</strong></p>
+                    <input type="file" multiple onChange={handleImageChange} />
+                    <div className='image-preview-container'>
+                        {imagePreviews.map((preview, index) => (
+                            <div key={index} className='image-preview'>
+                                <img
+                                    src={preview}
+                                    alt={`이미지 미리보기 ${index}`}
+                                />
+                                <button
+                                    onClick={() => handleImageRemove(index)}
+                                >
+                                    <i className="fas fa-times-circle"/>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={onUpdateBoardButtonClickHandler}>수정</button>
                 </div>
-                <button onClick={onUpdateBoardButtonClickHandler}>수정</button>
             </div>
-        </div>
         </div>
     )
 }
