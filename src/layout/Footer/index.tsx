@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import logoImage from 'assets/images/logo.png';
+import './style.css';
 
 const Footer : React.FC = () => {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Footer : React.FC = () => {
 
     return (
         <footer>
-        <div>
+        <div className='footer-container'>
         <div>고객센터 0000-0000</div>
         <div>서비스 이용약관</div>
         <div>개인정보 처리방침</div>

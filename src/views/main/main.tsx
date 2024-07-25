@@ -5,6 +5,7 @@ import Festival from 'types/interface/festival.interface';
 import Meeting from 'types/interface/meeting.interface';
 import User from 'types/interface/user.interface';
 import defaultProfileImage from 'assets/images/user.png';
+import './style.css';
 
 const Main: React.FC = () => {
   const navigator = useNavigate();
