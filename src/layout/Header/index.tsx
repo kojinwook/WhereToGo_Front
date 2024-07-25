@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import logoImage from 'assets/images/logo.png';
+import './style.css';
+import { spawn } from 'child_process';
 import { useCookies } from 'react-cookie';
 
 export default  function Header() {
@@ -47,32 +49,27 @@ export default  function Header() {
 
 
   return (
-    <>
-    <div>
-      <img src={logoImage} alt="뒤로가기" onClick={LogoClickHandler} />
-    </div>
-    <div>
-      <div>
+    <header className='header'>
+      <div  className='logo-container'>
+        <img src={logoImage} alt="뒤로가기" onClick={LogoClickHandler} />
+      </div>
+      <div className='nav-container'>
         {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div> }
-        {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div>}
+        {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div> }
         {isLogin && (
-          <>
           <div>
             {role === 'ROLE_ADMIN' &&  <span>(관리자)</span>}
             <div onClick={nicknamePathClickHandler}>{loginUser?.nickname}님</div>
             {dropdownVisible &&(
-            <div>
-          <div onClick={onSignOutButtonClickHandler}>로그아웃</div>
-          <div onClick={MyProfilePathClickHandler}>프로필</div>
+              <div>
+                <div onClick={onSignOutButtonClickHandler}>로그아웃</div>
+                <div onClick={MyProfilePathClickHandler}>프로필</div>
+              </div>
+            )}
+            <div>알림</div>
           </div>
-          )}
-          <div>알림</div>
-          </div>
-          </>
         )}
       </div>
-    </div>
-    </>
+    </header>
   )
 }
-

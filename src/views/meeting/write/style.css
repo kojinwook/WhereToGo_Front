@@ -84,7 +84,7 @@
   
   .meeting-write-container .tag-container div,
   .meeting-write-container .area-container div {
-    background-color: #007bff;
+    background-color: #000;
     color: white;
     padding: 5px 10px;
     border-radius: 20px;
@@ -99,6 +99,11 @@
     margin-left: 8px;
     cursor: pointer;
   }
+
+  .meeting-write-container .tag-container div {
+    display: inline-block;
+    white-space: nowrap;
+}
   
   .meeting-write-container input[type="text"]::placeholder,
   .meeting-write-container textarea::placeholder {

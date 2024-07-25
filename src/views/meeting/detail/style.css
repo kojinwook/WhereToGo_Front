@@ -97,6 +97,7 @@
 .carousel img {
     width: 100%;
     height: 37.5rem;
+    object-fit: cover;
     display: none;
     border-radius: .625rem;
 }
@@ -127,11 +128,20 @@
 .meeting-detail-right {
     padding: 1.25rem;
     flex: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     border: .0625rem solid #ccc;
     border-radius: .625rem;
+}
+
+.board-more-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profile-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .more-options {
