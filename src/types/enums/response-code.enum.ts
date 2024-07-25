@@ -16,6 +16,7 @@ enum ResponseCode{
     ALREADY_REQUESTED = "AR",
     CANNOT_CREATE_MEETING = "CCM",
     BLOCKED_USER = "BU",
+    WRONG_PASSWORD = "WP",
 };
 
 export default ResponseCode;
