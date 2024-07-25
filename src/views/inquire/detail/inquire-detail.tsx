@@ -67,7 +67,7 @@ const InquireDetail: React.FC = () => {
         const response = await GetAllAnswerRequest(questionId);
         if (!response) return;
         if (response.code !== "SU") return;
-        setAnswers(response.answers); // response.answer가 배열 형태로 들어오는지 확인
+        setAnswers(response.answers);
       } catch (error) {
         console.error("답변 정보를 불러오는 중 오류가 발생했습니다:", error);
         alert("답변 정보를 불러오는 중 오류가 발생했습니다.");
@@ -121,7 +121,7 @@ const InquireDetail: React.FC = () => {
         typeString = "기타 문의";
         break;
       default:
-        typeString = ""; // 기본값 처리
+        typeString = "";
         break;
     }
 
@@ -167,11 +167,10 @@ const InquireDetail: React.FC = () => {
       const result = await PostAnswerRequest({ nickname, content, questionId });
       if (!result) return;
       if (result.code === "SU") {
-        // 답변 업로드 성공 처리
-        await updateAnswerList(); // 답변 리스트 업데이트
+        await updateAnswerList();
         setContent("");
         setAnswerContent("");
-        toggleAnswerSection(); // 모달 닫기
+        toggleAnswerSection();
       } else {
         setErrorMessage("댓글 업로드 실패");
       }
@@ -194,7 +193,7 @@ const InquireDetail: React.FC = () => {
       console.error("댓글 삭제 중 오류가 발생했습니다:", error);
       alert("댓글 삭제 중 오류가 발생했습니다.");
     } finally {
-      await updateAnswerList(); // 답변 리스트 업데이트
+      await updateAnswerList(); 
     }
   };
   
@@ -232,7 +231,7 @@ const InquireDetail: React.FC = () => {
       console.error("댓글 수정 중 오류가 발생했습니다:", error);
       alert("댓글 수정 중 오류가 발생했습니다.");
     } finally {
-      await updateAnswerList(); // 답변 리스트 업데이트
+      await updateAnswerList();
     }
   };
   
@@ -351,8 +350,6 @@ const InquireDetail: React.FC = () => {
           answers.map((answer, index) => (
             <div key={index} className="answer">
               <div>{answer.content}</div>
-              {/* <div>{formatDate(answer.createDateTime)}</div>
-              <div>{formatDate(answer.modifyDateTime)}</div> */}
               <div>{answer.createDateTime === answer.modifyDateTime ? formatDate(answer.createDateTime) : formatDate(answer.modifyDateTime)}</div>
               <div className="answer-actions">
                 {role === "ADMIN" && (

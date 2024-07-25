@@ -20,7 +20,6 @@ const NoticeList: React.FC = () => {
   const [userId, setUserId]= useState("");
   const [role, setRole] = useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
 
   useEffect(() => {
@@ -37,7 +36,6 @@ const NoticeList: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const result = await GetAllNoticeRequest();
-        console.log(result)
         if (!result) return;
         const { code, notices } = result;
         if (code === 'DBE') {
@@ -55,7 +53,7 @@ const NoticeList: React.FC = () => {
   }, [noticeId]);
 
   useEffect(() => {
-    setFilteredPosts(posts); // Initialize filteredPosts with all posts
+    setFilteredPosts(posts);
   }, [posts]);
 
   useEffect(() => {
@@ -73,7 +71,7 @@ const NoticeList: React.FC = () => {
 
   const handleSearch = () => {
     if (searchTerm.trim() === '') {
-      return posts; // If no search term, return all posts
+      return posts; 
     } else {
       return posts.filter(notice =>
         notice.title.includes(searchTerm)
@@ -87,7 +85,6 @@ const NoticeList: React.FC = () => {
       if (filteredNotices.length === 0) {
         alert('해당하는 게시물이 없습니다.');
       }
-      // 필요시 상태 업데이트
     }
   };
 
@@ -104,7 +101,7 @@ const NoticeList: React.FC = () => {
       alert('해당하는 게시물이 없습니다.');
     }
     setFilteredPosts(filteredNotices);
-    setSearchTerm(''); // Reset search term after search
+    setSearchTerm(''); 
   };
 
   return (
@@ -112,9 +109,6 @@ const NoticeList: React.FC = () => {
       <h1>공지사항</h1>
       <div className="notice-search-container">
         <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
-        {role === "ROLE_ADMIN" && (
-        <button onClick={writePathClickHandler}>작성</button>
-        )}
         <div>
           <input
             className="notice-search-input"
@@ -126,6 +120,11 @@ const NoticeList: React.FC = () => {
           <button className='notice-search-btn' onClick={handleSearchButtonClick}>검색</button>
         </div>
       </div>
+      {role === "ROLE_ADMIN" && (
+        <div className="notice-write-button-container">
+        <button className="notice-write-button" onClick={writePathClickHandler}>작성</button>
+      </div>
+        )}
       <div className="notices">
         <div className='notice-header'>
             <div>NO.</div>
@@ -138,9 +137,9 @@ const NoticeList: React.FC = () => {
               <div className='notice-content-non'>게시물이 없습니다.</div>
             </div> 
           ) : (
-            filteredPosts.map((notice) => (
+            filteredPosts.map((notice, index) => (
               <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.noticeId)}>
-                <div>{notice.noticeId}</div>
+                <div>{posts.length - index}</div>
                 <div>{notice.title}</div>
                 <div>{formatDate(notice.createDateTime)}</div>
               </div>
