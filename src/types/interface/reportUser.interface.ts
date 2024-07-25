@@ -1,11 +1,14 @@
-import Images from "types/interface/image.interface";
+import { Images } from "./interface";
 
-export default interface ReportUserRequestDto {
+export default interface ReportUser {
+    reportId: number;
+    userNickname: string;
     reportUserNickname: string;
     reportType: string;
     incidentDescription: string;
     incidentTimeDate: string;
     incidentLocation: string;
     impactDescription: string;
-    imageList: Images[];
-}
+    reportDate: string;
+    imageList: Images[]
+};

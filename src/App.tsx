@@ -44,6 +44,7 @@ import Management from 'views/admin/management/management';
 import Container from 'layout/Container';
 import ReviewList from 'views/user/review/review-list';
 import ReportUser from 'views/user/report/report-user';
+import ReportList from 'views/admin/reportList/report-list';
 
 function App() {
 
@@ -98,6 +99,7 @@ function App() {
         <Route path='/admin'>
           <Route path='profile' element={<AdminProfile />} />
           <Route path='management' element={<Management />} />
+          <Route path='report/:nickname' element={<ReportList/>}/>
         </Route>
 
       <Route path='/meeting'>

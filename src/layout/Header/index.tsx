@@ -28,7 +28,8 @@ export default  function Header() {
     navigate('/');
   }
   const MyProfilePathClickHandler = () => {
-    navigate('/user/profile');
+    if(role === 'ROLE_ADMIN') navigate('/admin/profile');
+    if(role === 'ROLE_USER') navigate('/user/profile');
     setDropdownVisible(false);
   }
   const onSignInButtonClickHandler = () => {
