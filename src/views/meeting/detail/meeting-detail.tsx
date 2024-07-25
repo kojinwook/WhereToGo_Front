@@ -428,7 +428,7 @@ export default function MeetingDetail() {
                         <div className='image-grid'>
                             {boardImageList.map((image) => (
                                 <div key={image.imageId} className="image-container">
-                                    <img src={image.image} alt="image" onClick={() => handleBoardDetail(image.meetingBoardId)} />
+                                    <img src={image.image} alt="image" className="board-image" onClick={() => handleBoardDetail(image.meetingBoardId)} />
 
                                 </div>
                             ))}
