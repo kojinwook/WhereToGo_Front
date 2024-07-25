@@ -315,7 +315,7 @@ const ChatRoom: React.FC = () => {
                     placeholder="메시지 입력..."
                     value={input}
                     onChange={handleInputChange}
-                    onKeyPress={(e) => e.key === 'Enter' ? sendMessage() : null}
+                    onKeyDown={(e) => e.key === 'Enter' ? sendMessage() : null}
                 />
                 <button className="send-button" onClick={sendMessage}>전송</button>
             </div>
