@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import logoImage from 'assets/images/logo.png';
+import logoImage from 'assets/images/logo-white.png';
 import './style.css';
 
 const Footer : React.FC = () => {
@@ -29,9 +29,7 @@ const Footer : React.FC = () => {
                 </div>
             </div>
         </footer>
-      )
-
-
+    )
 }
 
 

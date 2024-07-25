@@ -11,11 +11,14 @@
     overflow: hidden;
 }
 
+<<<<<<< HEAD
+=======
 .banner-slider {
     position: relative;
     width: 100%;
 }
 
+>>>>>>> b0ce3615e12a18692827c94926dbe23183feffbb
 .slide-image {
     width: 100%;
     height: auto;
@@ -73,6 +76,7 @@
     margin-top: 20px;
 }
 
+/* 섹션 공통 스타일 */
 .section {
     flex: 1;
     background-color: #f8f8f8;
@@ -87,14 +91,131 @@
     margin-bottom: 10px;
 }
 
-.user-item, .festival-item, .meeting-item {
+/* 온도 */
+.title-container {
+    display: flex;
+    align-items: center;
     margin-bottom: 10px;
 }
 
-.profile-image {
+.king {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.temper-king-list{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.user-rank {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    width: 30px;
+    text-align: center;
+}
+
+.user-profile-image {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-nickname {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.user-temperature {
+    font-size: 14px;
+    color: #333;
+    margin-left: auto;
+}
+
+
+/* 축제 */
+.festival-icon {
+    width: 30px;
+    height: 30px;
     margin-right: 10px;
-    vertical-align: middle;
+}
+
+.festival-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.festival-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+}
+
+.festival-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.festival-date {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 모임 */
+.meeting-icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.new-meeting-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.new-meeting-item {
+    display: flex;
+    align-items: center;
+    padding:  10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.meeting-rank {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    width: 30px;
+    text-align: center;
+}
+
+.new-meeting-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
 }

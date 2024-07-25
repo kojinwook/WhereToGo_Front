@@ -96,10 +96,10 @@
 
 .carousel img {
     width: 100%;
-    height: 37.5rem;
+    height: 500px;
     object-fit: cover;
     display: none;
-    border-radius: .625rem;
+    border-radius: 10px;
 }
 
 .carousel img.active {
@@ -229,9 +229,10 @@ width: 20px;
 
 /* 모임 설명 */
 .meeting-detail-description {
-    margin: 1.25rem 0;
-    padding-top: 1.25rem;
-    border-top: .0625rem solid #ddd;
+    margin: 20px 0;
+    width: calc(100% - 20px);
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
     font-size: 1.1em;
 }
 
@@ -240,7 +241,7 @@ width: 20px;
     height: 18.75rem;
     border: .0625rem solid #ccc;
     border-radius: .625rem;
-    padding: .625rem;
+    padding: 10px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -410,7 +411,6 @@ width: 20px;
     position: relative;
     overflow: hidden;
     border-radius: 10px;
-    box-shadow: 0 4px .8ox rgba(0, 0, 0, 0.1);
     height: 300px;
 }
 

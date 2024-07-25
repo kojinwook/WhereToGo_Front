@@ -1,18 +1,16 @@
 import Footer from 'layout/Footer'
 import Header from 'layout/Header'
-import React from 'react'
 import { Outlet } from 'react-router-dom'
+import './style.css'
 
 export default function Container() {
   return (
-    <>
-    <div>
+    <div className="container">
         <Header />
-        <div>
+        <main>
             <Outlet />
-            <Footer />
-        </div>
+        </main>
+        <Footer />
     </div>
-    </>
   )
 }
