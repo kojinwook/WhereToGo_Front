@@ -286,7 +286,9 @@ export default function MeetingList() {
         <div>인원</div>
       </div>
       <ul>
-        {filteredMeetingList.length > 0 ? (
+        {filteredMeetingList
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .length > 0 ? (
           filteredMeetingList.map((meeting) => (
             <li key={meeting.meetingId} className='meeting-item' onClick={() => meetingTitleClickHandler(meeting.meetingId)}>
               {<ImageSlider images={meeting.imageList} />}

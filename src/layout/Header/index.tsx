@@ -5,6 +5,7 @@ import logoImage from 'assets/images/logo.png';
 import './style.css';
 import { spawn } from 'child_process';
 import { useCookies } from 'react-cookie';
+import bellButton from 'assets/images/bell.png';
 
 export default  function Header() {
   const {loginUser, setLoginUser, resetLoginUser} = useLoginUserStore();
@@ -80,7 +81,7 @@ export default  function Header() {
           {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div> }
           {isLogin && (
             <div className="header-user-info">
-              <div className="notification">알림</div>
+              <img className="notification" />
               <div className="nickname" onClick={nicknamePathClickHandler}>
                 {loginUser?.nickname}님
               </div>
