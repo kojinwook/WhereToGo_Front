@@ -37,6 +37,7 @@ const ChatRoom: React.FC = () => {
     const roomId = params.get('roomId');
     const { loginUser } = useLoginUserStore();
     const [nickname, setNickname] = useState<string>('');
+    const stompClient = useRef<any>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [cookies] = useCookies();
     const [messages, setMessages] = useState<Message[]>([]);
@@ -85,7 +86,7 @@ const ChatRoom: React.FC = () => {
                 });
                 fetchMessages();
                 if (userId) {
-                    fetchChatPartnerNickname(); // userId가 유효할 때만 호출
+                    fetchChatPartnerNickname();
                 }
             },
             onDisconnect: () => {
@@ -196,7 +197,7 @@ const ChatRoom: React.FC = () => {
     const fetchMessages = async () => {
         try {
             const response = await GetChatMessageListRequest(String(roomId));
-            if(!response) return;
+            if (!response) return;
             if (response.code === 'SU') {
                 const chatMessageList = response.chatMessageList;
                 if (chatMessageList && Array.isArray(chatMessageList)) {
@@ -230,13 +231,22 @@ const ChatRoom: React.FC = () => {
                 message: input,
                 messageKey: messageKey
             };
-
             clientRef.current.publish({
                 destination: `/app/chat/${roomId}/message`,
                 body: JSON.stringify(message)
             });
-            setInput('');
+            const notification = {
+                roomId: roomId,
+                sender: loginUser.nickname,
+                message: input,
+                messageKey: messageKey
+            };
+            clientRef.current.publish({
+                destination: `/app/chat/message`,
+                body: JSON.stringify(notification)
+            });
         }
+        setInput('');
     };
 
     const formatTimestamp = (timestamp: string): string => {

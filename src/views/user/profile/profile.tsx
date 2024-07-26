@@ -115,6 +115,7 @@ export default function UserProfile() {
         const fetchUserMeetingList = async () => {
             try {
                 const response = await GetUserMeetingListRequest(cookies.accessToken);
+                console.log('response', response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setMeetingList(response.meetingList);
@@ -396,8 +397,8 @@ export default function UserProfile() {
                     {meetingList.map((meeting) => (
                         <div key={meeting.meetingId} className='meeting-item'>
                             {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
-                            <img src={meeting.userDto.profileImage ? meeting.userDto.profileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
-                            <div>{meeting.userNickname}</div>
+                            <img src={meeting.creatorProfileImage ? meeting.creatorProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
+                            <div>{meeting.creatorNickname}</div>
                             <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
                         </div>
                     ))}

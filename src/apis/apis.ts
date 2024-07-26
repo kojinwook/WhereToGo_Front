@@ -138,6 +138,7 @@ const PATCH_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/m
 const GET_USER_BOARD_LIST_URL = (userId: string) => `${API_DOMAIN}/meeting/board/my-board-list/${userId}`;
 const DELETE_MEETING_BOARD_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/delete/${meetingId}`;
 const GET_MEETING_BOARD_IMAGE_LIST_URL = (meetingId: number | string) => `${API_DOMAIN}/meeting/board/imageList/${meetingId}`;
+const GET_MEETING_BOARDS_TITLE_URL = (meetingBoardIds: number[] | string[]) => `${API_DOMAIN}/meeting/board/titles?meetingBoardIds=${meetingBoardIds}`;
 
 const POST_BOARD_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply`;
 const POST_REPLY_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply/reply`;
@@ -704,6 +705,13 @@ export const DeleteMeetingBoardRequest = async (meetingId: string | number, acce
 export const GetMeetingBoardImageListRequest = async (meetingId: string | number) => {
     const result = await axios.get(GET_MEETING_BOARD_IMAGE_LIST_URL(meetingId))
         .then(responseHandler<GetMeetingBoardImageListResponseDto>)
+        .catch(errorHandler);
+    return result;
+}
+
+export const GetMeetingBoardsTitleRequest = async (meetingBoardId: number[] | string[]) => {
+    const result = await axios.get(GET_MEETING_BOARDS_TITLE_URL(meetingBoardId))
+        .then(responseHandler<GetMeetingBoardListResponseDto>)
         .catch(errorHandler);
     return result;
 }
