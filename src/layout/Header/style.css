@@ -14,13 +14,69 @@
     height: auto;
 }
 
+.main-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.header-item {
+    cursor: pointer;
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
 .nav-container {
     display: flex;
+    align-items: center;
     gap: 20px;
 }
 
-.nav-container span {
+.nav-container div {
     cursor: pointer;
     font-size: 16px;
     color: #333;
+}
+
+.header-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.notification {
+    margin-right: 10px;
+}
+
+.nickname {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    z-index: 1000;
+}
+
+.dropdown-menu > div {
+    text-align: center;
+  }
+
+.dropdown-menu > div:not(:last-child)::after {
+    content: ' ';
+    display: block;
+    margin: 10px 0;
+    border-bottom: 1px solid #ccc;
 }

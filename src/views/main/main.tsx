@@ -56,18 +56,6 @@ const Main: React.FC = () => {
     const day = dateStr.substring(6, 8);
     return `${year}년 ${month}월 ${day}일`;
   };
-  const NoticePathClickHandler = () => {
-    navigator('/notice');
-  }
-  const FestivalPathClickHandler = () => {
-    navigator('/festival/search');
-  }
-  const meetingPathClickHandler = () => {
-    navigator('/meeting/list');
-  }
-  const inquirePathClickHandler = () => {
-    navigator('/inquire/list');
-  }
 
   const handleTitleClick = (contentId: string | number) => {
     navigator(`/festival/detail?contentId=${contentId}`);
@@ -103,12 +91,6 @@ const Main: React.FC = () => {
       <button className='arrow next' onClick={nextSlide}>&#10095;</button>
       </div>
       <div className='main-content'>
-        <div className='main-header'>
-          <div className="header-item" onClick={inquirePathClickHandler}>고객센터</div>
-          <div className="header-item" onClick={NoticePathClickHandler}>공지사항</div>
-          <div className="header-item" onClick={FestivalPathClickHandler}>축제</div>
-          <div className="header-item" onClick={meetingPathClickHandler}>모임</div>
-        </div>
         <div className='content'>
           <div className='temperature-users section'>
             <div className='title-container'>
@@ -132,15 +114,15 @@ const Main: React.FC = () => {
 
           <div className='recent-festivals section'>
           <div className='title-container'>
-            <img src="https://i.imgur.com/MZl5P8Z.png" alt="축제" className='festival-icon'/>
+            <img src="https://i.imgur.com/MZl5P8Z.png" alt="축제" className='new-festival-icon'/>
             <div className="section-title">최신 등록 축제</div>
           </div>
 
             <div className='festival-list'>
               {top5FestivalList.map((festival, index) => (
                 <div key={index} className='festival-item'>
-                  <div className='festival-details' onClick={() => handleTitleClick(festival.contentId)}>
-                    <div className='festival-title'>{festival.title}</div>
+                  <div className='new-festival-details' onClick={() => handleTitleClick(festival.contentId)}>
+                    <div className='new-festival-title'>{festival.title}</div>
                     <div className='festival-date'>{formatDate(festival.startDate)} ~ {formatDate(festival.endDate)}</div>
                   </div>
                 </div>
@@ -150,7 +132,7 @@ const Main: React.FC = () => {
 
           <div className='recent-meetings section'>
             <div className='title-container'>
-              <img src="https://i.imgur.com/9u9BJga.png" alt="축제" className='meeting-icon'/>
+              <img src="https://i.imgur.com/9u9BJga.png" alt="축제" className='new-meeting-icon'/>
               <div className="section-title">최신 등록 모임</div>
             </div>
             
