@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images, Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
+import moreButton from 'assets/images/more.png';
 import './style.css';
 
 Modal.setAppElement('#root');
@@ -335,7 +336,7 @@ export default function MeetingDetail() {
                             <div className="meeting-detail-right">
                                 <div className="more-options">
                                     {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
+                                        <img className="more-button" src= {moreButton} alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">

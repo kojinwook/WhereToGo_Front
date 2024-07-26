@@ -1,6 +1,7 @@
 import { DeleteMeetingBoardRequest, DeleteMeetingRequest, GetBoardReplyRequest, GetMeetingBoardRequest, PostBoardReplyRequest, PostReplyReplyRequest } from 'apis/apis';
 import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from 'apis/request/meeting/board/reply';
 import defaultProfileImage from 'assets/images/user.png';
+import moreButton from 'assets/images/more.png';
 import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -26,12 +27,14 @@ export default function BoardDetail() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [role, setRole] = useState<string>('')
     const [showBoardOptions, setShowBoardOptions] = useState(false);
-    const [showAnswerOptions, setShowAnswerOptions] = useState<number | null>(null);
-    const [showReplyOptions, setShowReplyOptions] = useState<number | null>(null);
     const boardOptionsRef = useRef<HTMLDivElement>(null);
     const answerOptionsRef = useRef<HTMLDivElement>(null);
     const replyOptionsRef = useRef<HTMLDivElement>(null);
     const stompClient = useRef<any>(null);
+    const [showAnswerOptions, setShowAnswerOptions] = useState(false);
+    const [showReplyOptions, setShowReplyOptions] = useState(false);;
+    const [replyInputVisibility, setReplyInputVisibility] = useState<{ [key: number]: boolean }>({});
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -173,32 +176,16 @@ export default function BoardDetail() {
     };
 
     // 더보기
-    const handleClickOutside = (event: MouseEvent) => {
-        setShowBoardOptions(false);
-        setShowAnswerOptions(null);
-        setShowReplyOptions(null);
-    };
-
-    useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-    const toggleBoardOptions = (event: React.MouseEvent) => {
-        event.stopPropagation();
+    const toggleBoardOptions = () => {
         setShowBoardOptions((prev) => !prev);
     };
 
-    const toggleAnswerOptions = (event: React.MouseEvent, replyId: number) => {
-        event.stopPropagation();
-        setShowAnswerOptions(prev => prev === replyId ? null : replyId)
+    const toggleAnswerOptions = () => {
+        setShowAnswerOptions((prev) => !prev);
     };
 
-    const toggleReplyOptions = (event: React.MouseEvent, replyReplyId: number) => {
-        event.stopPropagation();
-        setShowReplyOptions(prev => prev === replyReplyId ? null : replyReplyId)
+    const toggleReplyOptions = () => {
+        setShowReplyOptions((prev) => !prev);
     };
 
     // 수정
@@ -261,6 +248,30 @@ export default function BoardDetail() {
         }
     }
 
+    // 댓글
+    const handleCommentSubmit = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // 기본 Enter 동작 방지
+            await onReplyButtonClickHandler(); // 댓글 등록 함수 호출
+        }
+    };
+
+    // 대댓글
+    const toggleReplyInputVisibility = (replyId: number) => {
+        setReplyInputVisibility(prevState => ({
+            ...prevState,
+            [replyId]: !prevState[replyId]
+        }));
+    };
+
+    const handleReplySubmit = async (e: React.KeyboardEvent<HTMLInputElement>, replyId: number) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // 기본 Enter 동작 방지
+            await onReplyReplyButtonClickHandler(replyId); // 대댓글 등록 함수 호출
+        }
+    };
+
+    // 신고버튼
     const reportUserButtonClickHandler = (reportUserNickname: string) => {
         navigate(`/user/report/${reportUserNickname}`);
     }
@@ -305,12 +316,11 @@ export default function BoardDetail() {
                             <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
                             <p className="writer-nickname">{writerNickname}</p>
                         </div>
-
                         {(writerNickname === nickname || role === "ROLE_ADMIN") && (
-                            <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleBoardOptions} />
+                            <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleBoardOptions} />
                         )}
                         {showBoardOptions && (
-                            <div className="board-button-box" ref={boardOptionsRef}>
+                            <div className="board-button-box">
                                 {writerNickname === nickname && (
                                     <button
                                         className="update-button"
@@ -343,7 +353,7 @@ export default function BoardDetail() {
 
             <div className='board-answer'>
                 <div className='board-answer-add'>
-                    <input className='board-answer-input' type="text" value={reply} onChange={(e) => setReply(e.target.value)} />
+                    <input className='board-answer-input' type="text" value={reply} onChange={(e) => setReply(e.target.value)} onKeyDown={handleCommentSubmit} />
                     <button className='board-answer-btn' onClick={onReplyButtonClickHandler}>댓글 등록</button>
                 </div>
                 {replyList.map((replyItem) => (
@@ -356,10 +366,10 @@ export default function BoardDetail() {
 
                                 <div className="answer-more-options">
                                     {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={(e) => toggleAnswerOptions(e, replyItem.replyId)} />
+                                        <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleAnswerOptions} />
                                     )}
-                                    {showAnswerOptions == replyItem.replyId && (
-                                        <div className="board-button-box" ref={answerOptionsRef}>
+                                    {showAnswerOptions && (
+                                        <div className="board-button-box">
                                             {replyItem.userDto.nickname === nickname && (
                                                 <button
                                                     className="update-button"
@@ -375,15 +385,36 @@ export default function BoardDetail() {
                                                 >
                                                     삭제
                                                 </button>
-                                            )}
+                                            )}~
                                         </div>
                                     )}
                                 </div>
                             </div>
                             <div className='answer-reply-content'>{replyItem.reply}</div>
                             <div className='answer-reply-reply'>
-                                <input className='answer-reply-reply-input' type="text" value={replyReply} onChange={(e) => setReplyReply(e.target.value)} />
-                                <button className='answer-reply-reply-btn' onClick={() => onReplyReplyButtonClickHandler(replyItem.replyId)}>대댓글 작성</button>
+                                <button
+                                        className='answer-reply-reply-btn'
+                                        onClick={() => toggleReplyInputVisibility(replyItem.replyId)}
+                                    >
+                                    {replyInputVisibility[replyItem.replyId] ? '취소' : '대댓글 작성'}
+                                </button>
+                                {replyInputVisibility[replyItem.replyId] && (
+                                    <div className='answer-reply-reply-input'>
+                                        <input
+                                            className='answer-reply-reply-input-field'
+                                            type="text"
+                                            value={replyReply}
+                                            onChange={(e) => setReplyReply(e.target.value)}
+                                            onKeyDown={(e) => handleReplySubmit(e, replyItem.replyId)}
+                                        />
+                                        <button
+                                            className='answer-reply-reply-submit-btn'
+                                            onClick={() => onReplyReplyButtonClickHandler(replyItem.replyId)}
+                                        >
+                                            대댓글 등록
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                             <div className='board-replies'>
                                 {replyItem.replies.map((replyReplyItem) => (
@@ -395,9 +426,9 @@ export default function BoardDetail() {
 
                                             <div className="answer-more-options">
                                                 {(replyReplyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                                    <img className="board-more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={(e) => toggleReplyOptions(e, replyReplyItem.replyReplyId)} />
+                                                    <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleReplyOptions} />
                                                 )}
-                                                {showReplyOptions == replyReplyItem.replyReplyId && (
+                                                {showReplyOptions && (
                                                     <div className="board-button-box">
                                                         {replyReplyItem.userDto.nickname === nickname && (
                                                             <button
