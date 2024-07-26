@@ -10,4 +10,5 @@ export default interface Notification {
     content: string;
     createdAt: Date;
     read: boolean;
+    type: 'CHAT' | 'REPLY'; // 알림 유형
 }
