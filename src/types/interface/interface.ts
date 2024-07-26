@@ -14,6 +14,7 @@ import ReplyReply from "./reply-reply.interface";
 import ReportUser from "./reportUser.interface";
 import Review from "./review.interface";
 import User from "./user.interface";
+import Notification from "./notification.interface";
 
 export type {
     Festival,
@@ -31,5 +32,6 @@ export type {
     MeetingUser,
     BoardReply,
     ReplyReply,
-    ReportUser
+    ReportUser,
+    Notification
 }

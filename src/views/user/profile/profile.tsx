@@ -114,7 +114,7 @@ export default function UserProfile() {
         const fetchUserMeetingList = async () => {
             try {
                 const response = await GetUserMeetingListRequest(cookies.accessToken);
-                console.log(response)
+                console.log('response', response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setMeetingList(response.meetingList);
@@ -239,38 +239,6 @@ export default function UserProfile() {
             setPasswordError('비밀번호 확인 중 오류가 발생했습니다.');
         }
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     const handleFestivalTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`);
     };
@@ -396,8 +364,9 @@ export default function UserProfile() {
                 <div className='meeting-list'>
                     {meetingList.map((meeting) => (
                         <div key={meeting.meetingId} className='meeting-item'>
-                            <img src={meeting.userProfileImage ? meeting.userProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
-                            <div>{meeting.userNickname}</div>
+                            {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
+                            <img src={meeting.creatorProfileImage ? meeting.creatorProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
+                            <div>{meeting.creatorNickname}</div>
                             <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
                         </div>
                     ))}
@@ -405,11 +374,6 @@ export default function UserProfile() {
                 </div>
                 <button className='board-list-close-botton' onClick={toggleGroupModal}>닫기</button>
             </Modal>
-
-
-
-
-
             <Modal
                 isOpen={isPasswordModalOpen}
                 onRequestClose={togglePasswordModal}
@@ -427,14 +391,6 @@ export default function UserProfile() {
                 <button onClick={handlePasswordSubmit}>확인</button>
                 <button onClick={togglePasswordModal}>취소</button>
             </Modal>
-
-
-
-
-
-
-
-
             <Modal
                 isOpen={isSettingModalOpen}
                 onRequestClose={toggleSettingModal}
