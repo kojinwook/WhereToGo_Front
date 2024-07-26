@@ -27,18 +27,20 @@ export default function Header() {
         webSocketFactory: () => socket,
         debug: (str) => console.log(str),
         onConnect: () => {
-          stompClient.subscribe(`/topic/notifications/${loginUser.userId}`, (message) => {
+          stompClient.subscribe(`/topic/notifications/${loginUser.nickname}`, (message) => {
             const notification = JSON.parse(message.body);
             console.log('notification', notification);
-            setNotifications((prev) => {
-              const isAlreadyExist = prev.some((n) => n.id === notification.id);
-              if (!isAlreadyExist) {
-                const updatedNotifications = [...prev, notification];
-                localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
-                return updatedNotifications;
-              }
-              return prev;
-            });
+            if (notification.senderId !== loginUser.userId) {
+              setNotifications((prev) => {
+                const isAlreadyExist = prev.some((n) => n.id === notification.id);
+                if (!isAlreadyExist) {
+                  const updatedNotifications = [...prev, notification];
+                  localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+                  return updatedNotifications;
+                }
+                return prev;
+              });
+            }
           });
         },
         onDisconnect: () => {
@@ -47,12 +49,10 @@ export default function Header() {
       });
       stompClient.activate();
       client.current = stompClient;
-
       const savedNotifications = localStorage.getItem('notifications');
       if (savedNotifications) {
         setNotifications(JSON.parse(savedNotifications));
       }
-
       return () => {
         if (client.current) {
           client.current.deactivate();
@@ -75,7 +75,6 @@ export default function Header() {
     const fetchMeetingBoardTitles = async () => {
       const meetingBoardIds = notifications.map((notification) => notification.meetingBoardId);
       const response = await GetMeetingBoardsTitleRequest(meetingBoardIds);
-      console.log('response', response);
       if (!response) return;
 
       const titlesMap = new Map<number, string>();
@@ -118,8 +117,12 @@ export default function Header() {
     setDropdownVisible(!dropdownVisible);
   }
 
-  const handleNotificationClick = (meetingId: number, meetingBoardId: number) => {
-    navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+  const handleNotificationClick = (notification: Notification) => {
+    if (notification.type === 'CHAT' && notification.chatRoomId) {
+      navigate(`/chat?roomId=${notification.chatRoomId}&userId=`);
+    } else if (notification.meetingBoardId && notification.meetingId) {
+      navigate(`/meeting/board/detail/${notification.meetingId}/${notification.meetingBoardId}`);
+    }
   };
 
   const handleDeleteNotification = (id: string) => {
@@ -161,8 +164,12 @@ export default function Header() {
           <div className="header-user-info">
             <div className="notification">알림</div>
             {notifications.map((notification, index) => (
-              <div key={index} className="notification" onClick={() => handleNotificationClick(notification.meetingId, notification.meetingBoardId)}>
-                <span>{notification.replySender} : {meetingBoardTitles.get(notification.meetingBoardId)} : {notification.replyContent}</span>
+              <div key={index} className={`notification ${notification.type === 'CHAT' ? 'chat-notification' : ''}`} onClick={() => handleNotificationClick(notification)}>
+                {notification.type === 'CHAT' ? (
+                  <span>{/*채팅메세지*/ }{notification.message} : {/*보낸사람*/}{notification.senderId}</span>
+                ) : (
+                  <span>{/*댓글 작성자*/}{notification.replySender} : {/*게시물 제목*/}{meetingBoardTitles.get(notification.meetingBoardId!)} : {/*댓글*/}{notification.replyContent}</span>
+                )}
                 <button onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notification.id); }}>삭제</button>
               </div>
             ))}
