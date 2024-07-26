@@ -421,7 +421,7 @@ export default function MeetingDetail() {
                                             </div>
                                             <div className='item-nickname'>{board.userDto ? board.userDto.nickname : 'Unknown'}</div>
                                             <div className='item-title'>{board.title}</div>
-                                            <div className='item-date'>{board.createDate}</div>
+                                            <div className='item-date'>{formatDate(board.createDate)}</div>
                                         </div>
                                     ))}
                                 </div>

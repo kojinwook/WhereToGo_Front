@@ -8,6 +8,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { BoardReply, MeetingBoard } from 'types/interface/interface';
 import './style.css';
+import SockJS from 'sockjs-client';
+import { Stomp } from '@stomp/stompjs';
 
 export default function BoardDetail() {
     const { meetingId, meetingBoardId } = useParams();
@@ -25,11 +27,36 @@ export default function BoardDetail() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [role, setRole] = useState<string>('')
     const [showBoardOptions, setShowBoardOptions] = useState(false);
+    const boardOptionsRef = useRef<HTMLDivElement>(null);
+    const answerOptionsRef = useRef<HTMLDivElement>(null);
+    const replyOptionsRef = useRef<HTMLDivElement>(null);
+    const stompClient = useRef<any>(null);
     const [showAnswerOptions, setShowAnswerOptions] = useState(false);
     const [showReplyOptions, setShowReplyOptions] = useState(false);;
     const [replyInputVisibility, setReplyInputVisibility] = useState<{ [key: number]: boolean }>({});
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const socket = new SockJS('http://localhost:8080/ws');
+        stompClient.current = Stomp.over(socket);
+
+        const headers = {
+            'Authorization': `Bearer ${cookies.accessToken}`
+        };
+
+        stompClient.current.connect(headers, () => {
+            console.log('WebSocket connected');
+        });
+
+        return () => {
+            if (stompClient.current) {
+                stompClient.current.disconnect(() => {
+                    console.log('WebSocket disconnected');
+                });
+            }
+        };
+    }, [cookies.accessToken]);
 
     const formatDate = (createDateTime: string) => {
         const isoDate = createDateTime;
@@ -87,14 +114,31 @@ export default function BoardDetail() {
     }, [meetingBoardId]);
 
     const onReplyButtonClickHandler = async () => {
-        if (!meetingBoardId || !reply || !nickname) return;
-        const requestBody: PostBoardReplyRequestDto = { meetingBoardId, reply }
+        if (!meetingBoardId || !reply || !nickname || !meetingId) return;
+        const requestBody: PostBoardReplyRequestDto = { meetingBoardId, reply: reply, meetingId: meetingId }
         const response = await PostBoardReplyRequest(requestBody, cookies.accessToken);
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('댓글이 작성되었습니다.');
             setReply("");
-            fetchReplyList(); // 댓글 리스트를 다시 불러옵니다.
+            fetchReplyList();
+
+            if (stompClient.current) {
+                const notification = {
+                    meetingBoardId: meetingBoardId,
+                    replySender: loginUser?.nickname,
+                    replyContent: reply
+                };
+
+                stompClient.current.send('/app/board/reply',
+                    {
+                        'Authorization': `Bearer ${cookies.accessToken}`
+                    },
+                    JSON.stringify(notification)
+                );
+                console.log('WebSocket sent');
+            }
+
         } else {
             console.error('Failed to post reply');
         }
@@ -124,13 +168,13 @@ export default function BoardDetail() {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % board.imageList.length);
         }
     };
-    
+
     const prevImage = () => {
         if (board && board.imageList) {
             setCurrentIndex((prevIndex) => (prevIndex - 1 + board.imageList.length) % board.imageList.length);
         }
     };
-    
+
     // 더보기
     const toggleBoardOptions = () => {
         setShowBoardOptions((prev) => !prev);
@@ -146,6 +190,7 @@ export default function BoardDetail() {
 
     // 수정
     const updateBoardClickHandler = (meetingBoardId: number | string | undefined) => {
+        console.log("meetingBoardId", meetingBoardId);
         if (!meetingBoardId) return;
         navigate(`/meeting/board/update/${meetingId}/${meetingBoardId}`);
     };
@@ -154,7 +199,7 @@ export default function BoardDetail() {
         if (!answerId) return;
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
     };
-    
+
     const updateReAnswerClickHandler = (replyReplyId: number | string | undefined) => {
         if (!replyReplyId) return;
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
@@ -230,7 +275,9 @@ export default function BoardDetail() {
     const reportUserButtonClickHandler = (reportUserNickname: string) => {
         navigate(`/user/report/${reportUserNickname}`);
     }
-    
+
+    console.log('board', board);
+
     return (
         <div className='board-detail-container'>
             <div className='board-detail-header'>
@@ -303,7 +350,7 @@ export default function BoardDetail() {
                     </div>
                 </div>
             </div>
-        
+
             <div className='board-answer'>
                 <div className='board-answer-add'>
                     <input className='board-answer-input' type="text" value={reply} onChange={(e) => setReply(e.target.value)} onKeyDown={handleCommentSubmit} />
@@ -316,7 +363,7 @@ export default function BoardDetail() {
                                 <img className='answer-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
                                 <p className='answer-nickname'>{replyItem.userDto.nickname}</p>
                                 <div className='answer-date'>{formatDate(replyItem.createDate)}</div>
-                                
+
                                 <div className="answer-more-options">
                                     {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
                                         <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleAnswerOptions} />

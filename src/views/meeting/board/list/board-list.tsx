@@ -25,6 +25,23 @@ export default function BoardList() {
         fetchBoardList();
     }, [])
 
+    const formatDate = (createDateTime: string) => {
+        const isoDate = createDateTime;
+        const date = new Date(isoDate);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        let period = hours < 12 ? '오전' : '오후';
+        if (hours === 0) {
+            hours = 12;
+        } else if (hours > 12) {
+            hours -= 12;
+        }
+        return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
+    };
+
     const handleCreateBoard = () => {
         navigate(`/meeting/board/write/${meetingId}`);
     }
@@ -46,7 +63,7 @@ export default function BoardList() {
                         <h2>제목: {board.title}</h2>
                         <p>{board.content}</p>
                         <p>닉네임: {board.userDto ? board.userDto.nickname : 'Unknown'}</p>
-                        <p>작성날짜: {board.createDate}</p>
+                        <p>작성날짜: {formatDate(board.createDate)}</p>
                     </li>
                 ))}
             </ul>
