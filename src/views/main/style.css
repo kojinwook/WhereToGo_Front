@@ -11,14 +11,6 @@
     overflow: hidden;
 }
 
-<<<<<<< HEAD
-=======
-.banner-slider {
-    position: relative;
-    width: 100%;
-}
-
->>>>>>> b0ce3615e12a18692827c94926dbe23183feffbb
 .slide-image {
     width: 100%;
     height: auto;
@@ -50,23 +42,6 @@
 .main-content{
     width: 80%;
     margin: 0 auto;
-}
-
-.main-header {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.header-item {
-    cursor: pointer;
-    padding: 10px;
-    flex: 1;
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
 }
 
 .content {
@@ -153,7 +128,7 @@
 
 
 /* 축제 */
-.festival-icon {
+.new-festival-icon {
     width: 30px;
     height: 30px;
     margin-right: 10px;
@@ -162,17 +137,21 @@
 .festival-list {
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
-.festival-details {
+.new-festival-details {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 5px;
 }
 
-.festival-title {
+.new-festival-title {
     font-size: 16px;
     font-weight: bold;
     color: #333;
@@ -184,7 +163,7 @@
 }
 
 /* 모임 */
-.meeting-icon {
+.new-meeting-icon {
     width: 30px;
     height: 30px;
     margin-right: 10px;

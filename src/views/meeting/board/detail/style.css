@@ -33,9 +33,9 @@
 .board-detail-body {
     display: flex;
     flex-direction: column;
-    display: flex; /* 수평으로 배치 */
-    flex-direction: row; /* 두 개의 영역을 수평으로 나열 */
-    margin: 20px 0; /* 아래쪽 여백 추가 */
+    display: flex;
+    flex-direction: row;
+    margin: 20px 0;
     gap: 10px;
 }
 
@@ -138,10 +138,10 @@
     border-radius: 50%;
 }
 .board-info-div {
-    border: 1px solid #ccc; /* Add border */
-    padding: 10px; /* Add some padding for better appearance */
-    border-radius: 5px; /* Optional: Add rounded corners */
-    margin-bottom: 10px; /* Add some space between elements */
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 .board-detail-right p {
@@ -152,7 +152,7 @@
 /* 댓글 */
 .board-answer{
     width: calc(100% - 20px);
-    height: 500px;
+    height: 900px;
     border: 1px solid #ccc;
     border-radius: 10px;
     margin-bottom: 20px;
@@ -230,22 +230,15 @@
 }
 
 .answer-reply-reply {
-    display: flex;
-    align-items: center;
+    /* display: flex;
+    align-items: center; */
     margin-top: 10px;
-}
-
-.answer-reply-reply-input {
-    flex: 1;
-    padding: 5px;
-    margin-right: 10px;
-    box-sizing: border-box;
-    border-radius: 5px;
 }
 
 .answer-reply-reply-btn {
     padding: 5px 10px;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .answer-reply-reply-btn:hover {
@@ -253,8 +246,43 @@
     color: #fff;
 }
 
+/* 대댓글 입력 */
+.answer-reply-reply-input {
+    /* flex: 1;
+    padding: 5px;
+    margin-right: 10px;
+    box-sizing: border-box;
+    border-radius: 5px; */
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
 .board-replies{
     margin-top: 20px;
+}
+
+.answer-reply-reply-input-field {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.answer-reply-reply-submit-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.answer-reply-reply-submit-btn:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+/* 숨겨진 대댓글 입력 필드를 위한 CSS */
+.answer-reply-reply-input.hidden {
+    display: none;
 }
 
 .board-reply-reply-item {

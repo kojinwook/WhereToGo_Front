@@ -6,6 +6,7 @@ import Review from 'types/interface/review.interface';
 import './style.css'
 import { useCookies } from 'react-cookie';
 import useLoginUserStore from 'store/login-user.store';
+import defaultProfileImage from 'assets/images/user.png';
 import { log } from 'console';
 
 function useQuery() {
@@ -257,7 +258,7 @@ export default function FestivalDetail() {
                                 <p><strong>시간 | </strong></p>
                                 <p><strong>번호 | </strong>{festival.tel}</p>
                                 <p><strong>웹사이트 | </strong>{festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
-                                <p><strong>태그:</strong> {Array.isArray(festival.tags) ? festival.tags.map(tag => `#${tag}`).join(' ') : `#${festival.tags}`}</p>
+                                <p><strong>태그 | </strong> {Array.isArray(festival.tags) ? festival.tags.map(tag => `#${tag}`).join(' ') : `#${festival.tags}`}</p>
                             </div>
                             <div className="map-container">
                                 <button onClick={handleNavigateClick}>길찾기</button>
@@ -271,26 +272,32 @@ export default function FestivalDetail() {
                     {showReviews && (
                         <div>
                             <button className='review-btn' onClick={() => reviewWriteButtonClickHandler(festival.contentId)}>리뷰 작성</button>
-                            <h2>리뷰 리스트</h2>
                             {reviews.length > 0 ? (
                                 reviews.map((review, index) => (
-                                    <div key={index}>
-                                        <p>{renderStars(review.rate)} {review.writeDatetime}</p>
-                                        <p><strong>작성자:</strong> {review.nickname}</p>
+                                    <div key={index} className='festival-review-container'>
+                                        <div className='review-header'>
+                                            <img src={review.profileImage ? review.profileImage : defaultProfileImage} alt="profile" className="profile-pic" />
+                                            <div className="review-header-info">
+                                                <p className="review-nickname">{review.nickname}</p>
+                                                <p className="review-stars">{renderStars(review.rate)}</p>
+                                            </div>
+                                            <p className='review-date'>{review.writeDatetime}</p>
+                                        </div>
                                         <div className="review-images">
                                             {review.images && review.images.length > 0 ? (
                                                 review.images.map((image, idx) => (
                                                     <img key={idx} src={image.image} alt={`리뷰 이미지 ${idx}`} className="review-image" />
                                                 ))
-                                            ) : (
-                                                <p><strong>사진:</strong> 없음</p>
+                                            ) 
+                                            : (
+                                                <p>등록된 사진이 없습니다.</p>
                                             )}
                                         </div>
-                                        <p><strong>Review:</strong> {review.review}</p>
+                                        <div className='review-text'>{review.review}</div>
                                     </div>
                                 ))
                             ) : (
-                                <p>리뷰가 없습니다.</p>
+                                <p>등록된 리뷰가 없습니다.</p>
                             )}
                         </div>
                     )}
