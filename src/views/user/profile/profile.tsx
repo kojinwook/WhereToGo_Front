@@ -114,6 +114,7 @@ export default function UserProfile() {
         const fetchUserMeetingList = async () => {
             try {
                 const response = await GetUserMeetingListRequest(cookies.accessToken);
+                console.log(response)
                 if (!response) return;
                 if (response.code === 'SU') {
                     setMeetingList(response.meetingList);
@@ -373,6 +374,7 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='채팅'
             >
+                <h2>내 채팅 목록</h2>
                 <div className='chat-list'>
                     {chatRooms.map((chatRoom) => (
                         <div key={chatRoom.roomId} className='favorite-item'>
@@ -394,12 +396,12 @@ export default function UserProfile() {
                 <div className='meeting-list'>
                     {meetingList.map((meeting) => (
                         <div key={meeting.meetingId} className='meeting-item'>
-                            {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
-                            <img src={meeting.userDto.profileImage ? meeting.userDto.profileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
+                            <img src={meeting.userProfileImage ? meeting.userProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
                             <div>{meeting.userNickname}</div>
                             <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
                         </div>
                     ))}
+                    
                 </div>
                 <button className='board-list-close-botton' onClick={toggleGroupModal}>닫기</button>
             </Modal>

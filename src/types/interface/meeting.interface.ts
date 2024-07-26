@@ -14,5 +14,6 @@ export default interface Meeting{
     categories : string[];
     locations : string[];
     userNickname : string;
+    userProfileImage: string;
     userDto: User;
 }
