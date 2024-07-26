@@ -81,7 +81,7 @@ const Main: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [images.length]);
@@ -111,48 +111,59 @@ const Main: React.FC = () => {
         </div>
         <div className='content'>
           <div className='temperature-users section'>
-            <div className="section-title">온도왕</div>
-            <div>1~3위 프로필, 닉네임</div>
-            <br />
+            <div className='title-container'>
+              <img src="https://i.imgur.com/DeFG48l.png" alt="왕관" className='king'/>
+              <div className="section-title">온도왕</div>
+            </div>
 
-            {top5TemperatureUserList.map((user, index) => (
-              <div key={index}>
-                <img src={user.profileImage ? user.profileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
-                <div>{user.nickname}</div>
-                <div>{user.temperature}</div>
-              </div>
-            ))}
+            <div className='temper-king-list'>
+              {top5TemperatureUserList.map((user, index) => (
+                <div key={index} className='user-item'>
+                  <div className='user-rank'>{index + 1}</div>
+                  <img src={user.profileImage ? user.profileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
+                  <div className='user-info'>
+                    <div className='user-nickname'>{user.nickname}</div>
+                  </div>
+                  <div className='user-temperature'>{user.temperature}°</div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className='recent-festivals section'>
-            <div className="section-title">축제</div>
-            <div>최신5개</div>
-            <br />
+          <div className='title-container'>
+            <img src="https://i.imgur.com/MZl5P8Z.png" alt="축제" className='festival-icon'/>
+            <div className="section-title">최신 등록 축제</div>
+          </div>
 
-            <div>
+            <div className='festival-list'>
               {top5FestivalList.map((festival, index) => (
-                <div key={index}>
-                  <div onClick={() => handleTitleClick(festival.contentId)}>{festival.title}</div>
-                  <div>{formatDate(festival.startDate)} ~ {formatDate(festival.endDate)}</div>
+                <div key={index} className='festival-item'>
+                  <div className='festival-details' onClick={() => handleTitleClick(festival.contentId)}>
+                    <div className='festival-title'>{festival.title}</div>
+                    <div className='festival-date'>{formatDate(festival.startDate)} ~ {formatDate(festival.endDate)}</div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
           <div className='recent-meetings section'>
-            <div className="section-title">모임</div>
-            <div>최신5개</div>
-            <br />
-
-            <div>
+            <div className='title-container'>
+              <img src="https://i.imgur.com/9u9BJga.png" alt="축제" className='meeting-icon'/>
+              <div className="section-title">최신 등록 모임</div>
+            </div>
+            
+            <div className='new-meeting-list'>
               {Recent5MeetingList.map((meeting, index) => (
-                <div key={index}>
-                  <div onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</div>
+                <div key={index} className='new-meeting-item'onClick={() => handleMeetingTitleClick(meeting.meetingId)}>
+                  <div className='meeting-rank'>{index + 1}</div>
+                  <div className='new-meeting-title'>{meeting.title}</div>
                 </div>
               ))}
             </div>
-
           </div>
+
         </div>
       </div>
     </div>

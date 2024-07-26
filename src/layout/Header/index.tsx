@@ -28,7 +28,8 @@ export default  function Header() {
     navigate('/');
   }
   const MyProfilePathClickHandler = () => {
-    navigate('/user/profile');
+    if(role === 'ROLE_ADMIN') navigate('/admin/profile');
+    if(role === 'ROLE_USER') navigate('/user/profile');
     setDropdownVisible(false);
   }
   const onSignInButtonClickHandler = () => {
@@ -54,21 +55,21 @@ export default  function Header() {
         <img src={logoImage} alt="뒤로가기" onClick={LogoClickHandler} />
       </div>
       <div className='nav-container'>
-        {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div> }
-        {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div> }
-        {isLogin && (
-          <div>
-            {role === 'ROLE_ADMIN' &&  <span>(관리자)</span>}
-            <div onClick={nicknamePathClickHandler}>{loginUser?.nickname}님</div>
-            {dropdownVisible &&(
-              <div>
-                <div onClick={onSignOutButtonClickHandler}>로그아웃</div>
-                <div onClick={MyProfilePathClickHandler}>프로필</div>
-              </div>
-            )}
-            <div>알림</div>
-          </div>
-        )}
+          {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div> }
+          {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div> }
+          {isLogin && (
+            <div>
+              {role === 'ROLE_ADMIN' &&  <span>(관리자)</span>}
+              <div onClick={nicknamePathClickHandler}>{loginUser?.nickname}님</div>
+              {dropdownVisible &&(
+                <div>
+                  <div onClick={onSignOutButtonClickHandler}>로그아웃</div>
+                  <div onClick={MyProfilePathClickHandler}>프로필</div>
+                </div>
+              )}
+              <div>알림</div>
+            </div>
+          )}
       </div>
     </header>
   )

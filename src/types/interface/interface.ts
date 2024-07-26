@@ -11,6 +11,7 @@ import MeetingUser from "./meetingUsers.interface";
 import Notice from "./notice.interface";
 import Question from "./question.interface";
 import ReplyReply from "./reply-reply.interface";
+import ReportUser from "./reportUser.interface";
 import Review from "./review.interface";
 import User from "./user.interface";
 
@@ -29,5 +30,6 @@ export type {
     MeetingBoard,
     MeetingUser,
     BoardReply,
-    ReplyReply
+    ReplyReply,
+    ReportUser
 }

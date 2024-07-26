@@ -133,6 +133,10 @@ export default function Management() {
         navigate(`/user/profile?userId=${userId}`);
     };
 
+    const reportListClickHandler = (nickname: string) => {
+        navigate(`/admin/report/${nickname}`);
+    }
+
     if (loginUser?.role !== "ROLE_ADMIN") return null;
 
     return (
@@ -179,6 +183,7 @@ export default function Management() {
                                 <td>
                                     <button onClick={() => openModal(user.userId, false)}>강퇴</button>
                                     <button onClick={() => openModal(user.userId, true)}>블랙</button>
+                                    <button onClick={() => reportListClickHandler(user.nickname)}>신고목록</button>
                                 </td>
                             </tr>
                         ))}

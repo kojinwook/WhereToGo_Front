@@ -18,7 +18,6 @@ import { ResponseDto } from 'apis/response/response';
 import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
 import Thermometer from 'components/Thermometer/Thermometer';
 import { VerifyPasswordRequestDto } from 'apis/request/user';
-// import { over } from 'stompjs';
 
 // 모달 스타일 설정
 const modalStyle = {
