@@ -1,4 +1,4 @@
-import { GetAllReviewRequest, GetAverageRateRequest, GetFestivalRequest, PutFavoriteRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetAllReviewRequest, GetAverageRateRequest, GetFestivalRequest, PutFavoriteRequest } from 'apis/apis';
 import React, { useEffect, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Festival } from 'types/interface/interface';
@@ -18,7 +18,7 @@ export default function FestivalDetail() {
     const query = useQuery();
     const contentId = query.get('contentId');
     const navigate = useNavigate();
-    const {loginUser} = useLoginUserStore();
+    const { loginUser } = useLoginUserStore();
     const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
     const [festival, setFestival] = useState<Festival>();
     const [averageRate, setAverageRate] = useState<number>(0);
@@ -36,10 +36,25 @@ export default function FestivalDetail() {
     }
 
     useEffect(() => {
-        if(loginUser){
+        if (loginUser) {
             setNickname(loginUser.nickname);
         }
     }, [cookies.accessToken])
+
+    useEffect(() => {
+        const fetchFavorites = async () => {
+            if (!loginUser) return;
+            const response = await GetAllFavoriteRequest(loginUser.nickname, cookies.accessToken);
+            if (response && response.code === 'SU') {
+                const favoriteIds: { [key: string]: boolean } = {};
+                response.favoriteList.forEach((favorite: { contentId: string }) => {
+                    favoriteIds[favorite.contentId] = true;
+                });
+                setFavorites(favoriteIds);
+            }
+        };
+        fetchFavorites();
+    }, [loginUser]);
 
     useEffect(() => {
         const fetchFestivalData = async () => {

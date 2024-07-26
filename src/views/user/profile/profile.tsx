@@ -19,7 +19,6 @@ import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
 import Thermometer from 'components/Thermometer/Thermometer';
 import { VerifyPasswordRequestDto } from 'apis/request/user';
 
-
 // 모달 스타일 설정
 const modalStyle = {
     overlay: {
@@ -335,7 +334,7 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='찜 목록'
             >
-                <h2>나의 찜 목록</h2>
+                <h2 className='favorite-list-title'>나의 찜 목록</h2>
                 <div className='favorite-list'>
                     {favorites.map((favorite) => (
                         <div key={favorite.id} className='favorite-item'>
@@ -345,7 +344,7 @@ export default function UserProfile() {
                         </div>
                     ))}
                 </div>
-                <button onClick={toggleHeartModal}>닫기</button>
+                <button className='board-list-close-botton' onClick={toggleHeartModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isBoardModalOpen}
@@ -366,7 +365,7 @@ export default function UserProfile() {
                         </div>
                     ))}
                 </div>
-                <button onClick={toggleBoardModal}>닫기</button>
+                <button className='board-list-close-botton' onClick={toggleBoardModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isChatModalOpen}
@@ -383,7 +382,7 @@ export default function UserProfile() {
                         </div>
                     ))}
                 </div>
-                <button onClick={toggleChatModal}>닫기</button>
+                <button className='board-list-close-botton' onClick={toggleChatModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isGroupModalOpen}
@@ -402,7 +401,7 @@ export default function UserProfile() {
                         </div>
                     ))}
                 </div>
-                <button onClick={toggleGroupModal}>닫기</button>
+                <button className='board-list-close-botton' onClick={toggleGroupModal}>닫기</button>
             </Modal>
 
 
