@@ -1,4 +1,5 @@
 export default interface Review {
+    profileImage: any;
     contentId: number;
     reviewId: number;
     nickname: string;
