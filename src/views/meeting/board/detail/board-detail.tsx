@@ -1,5 +1,5 @@
-import { DeleteMeetingBoardRequest, DeleteMeetingRequest, GetBoardReplyRequest, GetMeetingBoardRequest, PostBoardReplyRequest, PostReplyReplyRequest } from 'apis/apis';
-import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from 'apis/request/meeting/board/reply';
+import { DeleteBoardReplyRequest, DeleteMeetingBoardRequest, DeleteReplyReplyRequest, GetBoardReplyRequest, GetMeetingBoardRequest, PatchBoardReplyRequest, PatchReplyReplyRequest, PostBoardReplyRequest, PostReplyReplyRequest } from 'apis/apis';
+import { PatchBoardReplyRequestDto, PatchReplyReplyRequestDto, PostBoardReplyRequestDto, PostReplyReplyRequestDto } from 'apis/request/meeting/board/reply';
 import defaultProfileImage from 'assets/images/user.png';
 import moreButton from 'assets/images/more.png';
 import React, { useEffect, useRef, useState } from 'react';
@@ -15,8 +15,6 @@ export default function BoardDetail() {
     const { meetingId, meetingBoardId } = useParams();
     const { loginUser } = useLoginUserStore();
     const [board, setBoard] = useState<MeetingBoard>();
-    const [answer, setAnswer] = useState(); //댓글
-    const [reAnswer, setReAnswer] = useState(); //대댓글
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [nickname, setNickname] = useState<string>("");
     const [writerNickname, setWriterNickname] = useState<string>("");
@@ -27,14 +25,17 @@ export default function BoardDetail() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [role, setRole] = useState<string>('')
     const [showBoardOptions, setShowBoardOptions] = useState(false);
-    const boardOptionsRef = useRef<HTMLDivElement>(null);
-    const answerOptionsRef = useRef<HTMLDivElement>(null);
-    const replyOptionsRef = useRef<HTMLDivElement>(null);
-    const stompClient = useRef<any>(null);
-    const [showAnswerOptions, setShowAnswerOptions] = useState(false);
-    const [showReplyOptions, setShowReplyOptions] = useState(false);;
+    const [showAnswerOptions, setShowAnswerOptions] = useState<{ [key: number]: boolean }>({});
+    const [showReplyOptions, setShowReplyOptions] = useState<{ [key: number]: boolean }>({});
     const [replyInputVisibility, setReplyInputVisibility] = useState<{ [key: number]: boolean }>({});
 
+    const [editReplyId, setEditReplyId] = useState<number | null>(null);
+    const [editReplyReplyId, setEditReplyReplyId] = useState<number | null>(null);
+    const [editedReply, setEditedReply] = useState<string>('');
+    const [editedReplyReply, setEditedReplyReply] = useState<string>('');
+
+
+    const stompClient = useRef<any>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -78,6 +79,7 @@ export default function BoardDetail() {
     useEffect(() => {
         if (loginUser) {
             setNickname(loginUser.nickname);
+            setRole(loginUser.role);
         }
     }, [loginUser]);
 
@@ -180,12 +182,18 @@ export default function BoardDetail() {
         setShowBoardOptions((prev) => !prev);
     };
 
-    const toggleAnswerOptions = () => {
-        setShowAnswerOptions((prev) => !prev);
+    const toggleAnswerOptions = (replyId: number) => {
+        setShowAnswerOptions((prev) => ({
+            ...prev,
+            [replyId]: !prev[replyId]
+        }));
     };
 
-    const toggleReplyOptions = () => {
-        setShowReplyOptions((prev) => !prev);
+    const toggleReplyOptions = (replyReplyId: number) => {
+        setShowReplyOptions((prev) => ({
+            ...prev,
+            [replyReplyId]: !prev[replyReplyId]
+        }));
     };
 
     // 수정
@@ -195,14 +203,36 @@ export default function BoardDetail() {
         navigate(`/meeting/board/update/${meetingId}/${meetingBoardId}`);
     };
 
-    const updateAnswerClickHandler = (answerId: number | string | undefined) => {
-        if (!answerId) return;
-        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    const onEditReplyButtonClickHandler = (replyId: number, currentReply: string) => {
+        setEditReplyId(replyId);
+        setEditedReply(currentReply);
     };
 
-    const updateReAnswerClickHandler = (replyReplyId: number | string | undefined) => {
-        if (!replyReplyId) return;
-        navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    const onEditReplyReplyButtonClickHandler = (replyReplyId: number, currentReplyReply: string) => {
+        setEditReplyReplyId(replyReplyId);
+        setEditedReplyReply(currentReplyReply);
+    };
+
+    const onEditReplySubmitHandler = async (replyId: number) => {
+        const requestBody: PatchBoardReplyRequestDto = { replyId, reply: editedReply };
+        const response = await PatchBoardReplyRequest(requestBody, cookies.accessToken);
+        if (response && response.code === 'SU') {
+            alert('댓글이 수정되었습니다.');
+            setEditReplyId(null);
+            setEditedReply('');
+            fetchReplyList();
+        }
+    };
+
+    const onEditReplyReplySubmitHandler = async (replyReplyId: number) => {
+        const requestBody: PatchReplyReplyRequestDto = { replyReplyId: replyReplyId, replyReply: editedReplyReply };
+        const response = await PatchReplyReplyRequest(requestBody, cookies.accessToken);
+        if (response && response.code === 'SU') {
+            alert('대댓글이 수정되었습니다.');
+            setEditReplyReplyId(null);
+            setEditedReplyReply('');
+            fetchReplyList();
+        }
     };
 
     // 삭제
@@ -222,11 +252,12 @@ export default function BoardDetail() {
 
     const deleteAnswerButtonClickHandler = async (replyId: number) => {
         window.confirm('정말로 삭제하시겠습니까?')
-        const response = await DeleteMeetingBoardRequest(replyId, cookies.accessToken);
+        const response = await DeleteBoardReplyRequest(replyId, cookies.accessToken);
+        console.log(response);
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('댓글이 삭제되었습니다.');
-            navigate(`/meeting/board/detail/${meetingId}/%{meetingBoardId}`);
+            fetchReplyList();
         } else if (response.code === 'DHP') {
             alert('댓글을 삭제할 수 있는 권한이 없습니다.');
         } else {
@@ -236,11 +267,11 @@ export default function BoardDetail() {
 
     const deleteReAnswerButtonClickHandler = async (replyReplyId: number) => {
         window.confirm('정말로 삭제하시겠습니까?')
-        const response = await DeleteMeetingBoardRequest(replyReplyId, cookies.accessToken);
+        const response = await DeleteReplyReplyRequest(replyReplyId, cookies.accessToken);
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('대댓글이 삭제되었습니다.');
-            navigate(`/meeting/board/detail/${meetingId}/%{meetingBoardId}`);
+            fetchReplyList();
         } else if (response.code === 'DHP') {
             alert('대댓글을 삭제할 수 있는 권한이 없습니다.');
         } else {
@@ -275,8 +306,6 @@ export default function BoardDetail() {
     const reportUserButtonClickHandler = (reportUserNickname: string) => {
         navigate(`/user/report/${reportUserNickname}`);
     }
-
-    console.log('board', board);
 
     return (
         <div className='board-detail-container'>
@@ -366,14 +395,14 @@ export default function BoardDetail() {
 
                                 <div className="answer-more-options">
                                     {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleAnswerOptions} />
+                                        <img className="board-more-button" src={moreButton} alt="더보기" onClick={() => toggleAnswerOptions(replyItem.replyId)} />
                                     )}
-                                    {showAnswerOptions && (
+                                    {showAnswerOptions[replyItem.replyId] && (
                                         <div className="board-button-box">
                                             {replyItem.userDto.nickname === nickname && (
                                                 <button
                                                     className="update-button"
-                                                    onClick={() => updateAnswerClickHandler(replyItem.replyId)}
+                                                    onClick={() => onEditReplyButtonClickHandler(replyItem.replyId, replyItem.reply)}
                                                 >
                                                     수정
                                                 </button>
@@ -385,17 +414,28 @@ export default function BoardDetail() {
                                                 >
                                                     삭제
                                                 </button>
-                                            )}~
+                                            )}
                                         </div>
                                     )}
                                 </div>
                             </div>
-                            <div className='answer-reply-content'>{replyItem.reply}</div>
+                            {editReplyId === replyItem.replyId ? (
+                                <div className='edit-reply-input'>
+                                    <input className='board-answer-input'
+                                        type='text'
+                                        value={editedReply}
+                                        onChange={(e) => setEditedReply(e.target.value)}
+                                    />
+                                    <button className='board-answer-btn' onClick={() => onEditReplySubmitHandler(replyItem.replyId)}>수정 완료</button>
+                                </div>
+                            ) : (
+                                <div className='answer-reply-content'>{replyItem.reply}</div>
+                            )}
                             <div className='answer-reply-reply'>
                                 <button
-                                        className='answer-reply-reply-btn'
-                                        onClick={() => toggleReplyInputVisibility(replyItem.replyId)}
-                                    >
+                                    className='answer-reply-reply-btn'
+                                    onClick={() => toggleReplyInputVisibility(replyItem.replyId)}
+                                >
                                     {replyInputVisibility[replyItem.replyId] ? '취소' : '대댓글 작성'}
                                 </button>
                                 {replyInputVisibility[replyItem.replyId] && (
@@ -426,14 +466,14 @@ export default function BoardDetail() {
 
                                             <div className="answer-more-options">
                                                 {(replyReplyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                                    <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleReplyOptions} />
+                                                    <img className="board-more-button" src={moreButton} alt="더보기" onClick={() => toggleReplyOptions(replyReplyItem.replyReplyId)} />
                                                 )}
-                                                {showReplyOptions && (
+                                                {showReplyOptions[replyReplyItem.replyReplyId] && (
                                                     <div className="board-button-box">
                                                         {replyReplyItem.userDto.nickname === nickname && (
                                                             <button
                                                                 className="update-button"
-                                                                onClick={() => updateReAnswerClickHandler(replyReplyItem.replyReplyId)}
+                                                                onClick={() => onEditReplyReplyButtonClickHandler(replyReplyItem.replyReplyId, replyReplyItem.replyReply)}
                                                             >
                                                                 수정
                                                             </button>
@@ -450,7 +490,18 @@ export default function BoardDetail() {
                                                 )}
                                             </div>
                                         </div>
-                                        <p className='answer-reply-content'>{replyReplyItem.replyReply}</p>
+                                        {editReplyReplyId === replyReplyItem.replyReplyId ? (
+                                            <div className='edit-reply-reply-input'>
+                                                <input className='board-answer-input'
+                                                    type='text'
+                                                    value={editedReplyReply}
+                                                    onChange={(e) => setEditedReplyReply(e.target.value)}
+                                                />
+                                                <button className='board-answer-btn' onClick={() => onEditReplyReplySubmitHandler(replyReplyItem.replyReplyId)}>수정 완료</button>
+                                            </div>
+                                        ) : (
+                                            <p className='answer-reply-content'>{replyReplyItem.replyReply}</p>
+                                        )}
                                     </div>
                                 ))}
                             </div>
