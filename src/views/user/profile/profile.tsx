@@ -1,10 +1,10 @@
-import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest, VerifyPasswordRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest, VerifyPasswordRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import Switch from 'react-switch';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import './style.css';
 import defaultProfileImage from 'assets/images/user.png';
@@ -142,7 +142,7 @@ export default function UserProfile() {
             setProfileImage(profileImage);
             setTemperature(temperature);
         });
-    }, [userId, cookies.accessToken, navigator]);
+    }, [userId, cookies.accessToken]);
 
     useEffect(() => {
         if (!loginUser) { alert('로그인 후 이용해주세요.'); navigate('/authentication/signin'); return; };
@@ -160,7 +160,7 @@ export default function UserProfile() {
     const getAllFavorite = async (nickname: string) => {
         if (!loginUser) {
             alert('로그인 후 이용해주세요.');
-            navigate('/login');
+            navigate('/authentication/signin');
             return;
         }
         try {
@@ -363,11 +363,11 @@ export default function UserProfile() {
                 <h2>내 모임 목록</h2>
                 <div className='meeting-list'>
                     {meetingList.map((meeting) => (
-                        <div key={meeting.meetingId} className='meeting-item'>
+                        <div key={meeting.meetingId} className='meeting-item' onClick={() => handleMeetingTitleClick(meeting.meetingId)}>
                             {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
                             <img src={meeting.creatorProfileImage ? meeting.creatorProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
                             <div>{meeting.creatorNickname}</div>
-                            <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
+                            <span>{meeting.title}</span>
                         </div>
                     ))}
                     

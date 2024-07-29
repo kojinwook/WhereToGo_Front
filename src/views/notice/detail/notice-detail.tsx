@@ -13,22 +13,14 @@ const NoticeDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const navigator = useNavigate();
   const { loginUser } = useLoginUserStore();
-  const [deletingNoticeId, setDeletingNoticeId] = useState<number | null>(null);
   const [nickname, setNickname] = useState("");
   const [role, setRole] = useState<string>("");
-  const [content, setContent] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
-    const nickname = loginUser?.nickname;
-    const role = loginUser?.role;
-    // console.log("userId", nickname, "role", role);
-    if (!nickname || !role) return;
-    setNickname(nickname);
-    setRole(role);
-    setIsLoggedIn(true);
+    if(!loginUser) return;
+    setNickname(loginUser.nickname);
+    setRole(loginUser.role);
   }, [loginUser]);
 
   useEffect(() => {
@@ -37,7 +29,7 @@ const NoticeDetail: React.FC = () => {
         const response = await GetNoticeRequest(noticeId);
         console.log(response)
         if(!response) return;
-        const { title, content, nickname, imageList } = response.notice;
+        const { title, content, nickname } = response.notice;
         if (!title || !content || !nickname) {
           throw new Error("Invalid response structure");
         }
@@ -45,7 +37,6 @@ const NoticeDetail: React.FC = () => {
         setLoading(false);
       } catch (error) {
         console.error("공지사항 정보를 불러오는 중 오류가 발생했습니다.", error);
-        // alert("공지사항 정보를 불러오는 중 오류가 발생했습니다.");
         setLoading(false);
       }
     }
@@ -77,7 +68,6 @@ const NoticeDetail: React.FC = () => {
     } else {
       alert("삭제 실패");
     }
-    setDeletingNoticeId(null);
   };
 
   const formatDate = (createDateTime: string, modifyDateTime?: string) => {
