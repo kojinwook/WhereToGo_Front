@@ -77,11 +77,6 @@ export default function UserProfile() {
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
 
-    // 알림
-    const handleNotificationChange = (checked: boolean) => {
-        setIsNotificationEnabled(checked);
-    };
-
     // 로그아웃
     const handleLogoutClick = () => {
         removeCookie('accessToken');
@@ -161,8 +156,6 @@ export default function UserProfile() {
     const toggleBoardModal = () => setIsBoardModalOpen(!isBoardModalOpen);
     const toggleChatModal = () => setIsChatModalOpen(!isChatModalOpen);
     const toggleSettingModal = () => setIsSettingModalOpen(!isSettingModalOpen);
-
-    const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(true); // 알림 설정 상태
 
     const getAllFavorite = async (nickname: string) => {
         if (!loginUser) {
@@ -406,12 +399,6 @@ export default function UserProfile() {
             >
                 <h2>설정</h2>
                 <div onClick={handleProfileChangeClick}>프로필 변경</div>
-                <div>
-                    <label>
-                        알림
-                        <Switch onChange={handleNotificationChange} checked={isNotificationEnabled} />
-                    </label>
-                </div>
                 <div onClick={handleLogoutClick} >로그아웃</div>
                 <button onClick={toggleSettingModal}>닫기</button>
             </Modal>
