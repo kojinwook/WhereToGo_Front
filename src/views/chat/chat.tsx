@@ -139,6 +139,10 @@ const ChatRoom: React.FC = () => {
             readByReceiver: parsedBody.body.chatMessage.readByReceiver,
         };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+        if (newMessage.sender !== loginUser.nickname) {
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+        }
     };
 
     const handleTypingMessage = (message: IMessage) => {
@@ -225,16 +229,6 @@ const ChatRoom: React.FC = () => {
         }
         if (clientRef.current && input.trim()) {
             const messageKey = new Date().getTime();
-            const message = {
-                roomId: roomId,
-                sender: loginUser.nickname,
-                message: input,
-                messageKey: messageKey
-            };
-            clientRef.current.publish({
-                destination: `/app/chat/${roomId}/message`,
-                body: JSON.stringify(message)
-            });
             const notification = {
                 roomId: roomId,
                 sender: loginUser.nickname,

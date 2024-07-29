@@ -77,10 +77,6 @@ export default function UserProfile() {
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
 
-    // const handleProfileChangeClick = () => {
-    //     navigate('/user/modifyProfile');
-    // }
-
     // 알림
     const handleNotificationChange = (checked: boolean) => {
         setIsNotificationEnabled(checked);
@@ -202,6 +198,7 @@ export default function UserProfile() {
         }
         try {
             const response = await GetChatRoomRequest(nickname, cookies.accessToken);
+            console.log('response', response);
             if (!response) return;
             if (response.code === 'SU') {
                 setChatRooms(response.chatRoomList);
@@ -227,7 +224,7 @@ export default function UserProfile() {
         try {
             const requestBody: VerifyPasswordRequestDto = { password: password };
             const response = await VerifyPasswordRequest(requestBody, cookies.accessToken);
-            if(!response) return;
+            if (!response) return;
             if (response.code === 'SU') {
                 togglePasswordModal();
                 navigate('/user/modifyProfile');
@@ -344,13 +341,23 @@ export default function UserProfile() {
             >
                 <h2>내 채팅 목록</h2>
                 <div className='chat-list'>
-                    {chatRooms.map((chatRoom) => (
-                        <div key={chatRoom.roomId} className='favorite-item'>
-                            {/* 여기에 각 채팅 목록 항목의 내용을 출력 */}
-                            {/* <div>{chatRoom.}</div> */}
-                            <span onClick={() => handleChatRoomClick(chatRoom.roomId, chatRoom.userId)}>{chatRoom.creatorNickname}</span>
-                        </div>
-                    ))}
+                    {chatRooms.map((chatRoom) => {
+                        const otherUser = loginUser?.nickname === chatRoom.creator.nickname ? chatRoom.user : chatRoom.creator;
+                        const profileImage = otherUser?.profileImage ? otherUser.profileImage : defaultProfileImage;
+                        const formattedLastMessage = chatRoom.lastMessage
+                            ? `${chatRoom.lastMessage} (${new Date(chatRoom.lastMessageTimestamp).toLocaleString()})`
+                            : '최근 메세지가 없습니다.';
+
+                        return (
+                            <div key={chatRoom.roomId} className='favorite-item'>
+                                <span onClick={() => handleChatRoomClick(chatRoom.roomId, loginUser?.userId || '')}>
+                                    <img src={profileImage} alt="프로필 이미지" className='board-list-profile-image' />
+                                    {otherUser?.nickname}
+                                    <p className='last-message'>{formattedLastMessage}</p>
+                                </span>
+                            </div>
+                        );
+                    })}
                 </div>
                 <button className='board-list-close-botton' onClick={toggleChatModal}>닫기</button>
             </Modal>
