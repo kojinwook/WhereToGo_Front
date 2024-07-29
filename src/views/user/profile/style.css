@@ -130,3 +130,23 @@
     margin-bottom: 30px;
     margin-left: 10px;
 }
+
+.board-item {
+    width: 90%;
+    padding: 20px;
+    margin: 10px 0;
+    transition: transform 0.3s;
+    background-color: #E6E6E6;
+    border-radius: 5px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.board-item:hover {
+    transform: translateY(-5px);
+}
+
+.board-item > div {
+    font-size: 15px;
+    cursor: pointer;
+}
