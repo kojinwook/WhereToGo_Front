@@ -41,4 +41,5 @@ export default interface ResponseDto {
     blockReleaseDate: string | null;
     phoneNumber: string;
     reportList: ReportUser[];
+    meetingBoardTitle: string[];
 }

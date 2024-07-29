@@ -152,7 +152,7 @@
 /* 댓글 */
 .board-answer{
     width: calc(100% - 20px);
-    height: 500px;
+    height: 900px;
     border: 1px solid #ccc;
     border-radius: 10px;
     margin-bottom: 20px;

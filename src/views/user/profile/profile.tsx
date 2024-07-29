@@ -77,10 +77,6 @@ export default function UserProfile() {
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
 
-    // const handleProfileChangeClick = () => {
-    //     navigate('/user/modifyProfile');
-    // }
-
     // 알림
     const handleNotificationChange = (checked: boolean) => {
         setIsNotificationEnabled(checked);
@@ -114,6 +110,7 @@ export default function UserProfile() {
         const fetchUserMeetingList = async () => {
             try {
                 const response = await GetUserMeetingListRequest(cookies.accessToken);
+                console.log('response', response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setMeetingList(response.meetingList);
@@ -226,7 +223,7 @@ export default function UserProfile() {
         try {
             const requestBody: VerifyPasswordRequestDto = { password: password };
             const response = await VerifyPasswordRequest(requestBody, cookies.accessToken);
-            if(!response) return;
+            if (!response) return;
             if (response.code === 'SU') {
                 togglePasswordModal();
                 navigate('/user/modifyProfile');
@@ -238,37 +235,6 @@ export default function UserProfile() {
             setPasswordError('비밀번호 확인 중 오류가 발생했습니다.');
         }
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     const handleFestivalTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`);
@@ -378,7 +344,9 @@ export default function UserProfile() {
                         <div key={chatRoom.roomId} className='favorite-item'>
                             {/* 여기에 각 채팅 목록 항목의 내용을 출력 */}
                             {/* <div>{chatRoom.}</div> */}
-                            <span onClick={() => handleChatRoomClick(chatRoom.roomId, chatRoom.userId)}>{chatRoom.creatorNickname}</span>
+                            <span onClick={() => handleChatRoomClick(chatRoom.roomId, loginUser?.userId || '')}>
+                                {loginUser?.nickname === chatRoom.creatorNickname ? chatRoom.nickname : chatRoom.creatorNickname}
+                            </span>
                         </div>
                     ))}
                 </div>
@@ -395,8 +363,8 @@ export default function UserProfile() {
                     {meetingList.map((meeting) => (
                         <div key={meeting.meetingId} className='meeting-item'>
                             {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
-                            <img src={meeting.userDto.profileImage ? meeting.userDto.profileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
-                            <div>{meeting.userNickname}</div>
+                            <img src={meeting.creatorProfileImage ? meeting.creatorProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
+                            <div>{meeting.creatorNickname}</div>
                             <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
                         </div>
                     ))}
