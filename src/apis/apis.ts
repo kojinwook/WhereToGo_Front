@@ -28,6 +28,7 @@ import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-t
 
 
 const DOMAIN = 'http://localhost:8080';
+// const DOMAIN = 'http://13.124.235.221:8080/';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const FILE_DOMAIN = `${DOMAIN}/file`;
