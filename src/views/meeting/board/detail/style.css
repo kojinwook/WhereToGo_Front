@@ -61,7 +61,7 @@
 }
 
 .board-img img.active {
-    display: block; /* 활성화된 이미지만 표시 */
+    display: block;
 }
 
 .board-img-button {

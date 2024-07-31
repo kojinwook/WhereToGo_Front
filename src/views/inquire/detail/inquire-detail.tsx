@@ -8,6 +8,7 @@ import useLoginUserStore from "store/login-user.store";
 import Answer from "types/interface/answer.interface";
 import Question from "types/interface/question.interface";
 import './style.css';
+import Meeting from "types/interface/meeting.interface";
 
 const InquireDetail: React.FC = () => {
   const { questionId, answer: answerIdParam } = useParams();
@@ -22,6 +23,8 @@ const InquireDetail: React.FC = () => {
   const [content, setContent] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [meeting, setMeeting] = useState<Meeting>();
   const [postRequest, setPostRequest] = useState<PostAnswerRequestDto>({
     content: "",
     nickname: "",
@@ -268,6 +271,19 @@ const InquireDetail: React.FC = () => {
     setShowOptions((prev) => !prev);
   };
 
+  // 이미지 넘기기 함수
+  const nextImage = () => {
+    if (meeting && meeting.imageList) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
+    }
+  };
+
+  const prevImage = () => {
+      if (meeting && meeting.imageList) {
+          setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
+      }
+  };
+
   return (
     <div className="question-detail-container">
       <div className="nickname-datetime-container">
@@ -311,14 +327,16 @@ const InquireDetail: React.FC = () => {
           <p><span className="label">내용 |</span> <span className="value">{question.content}</span></p>
         </div>
         <div className="images">
-          {question.imageList.map((imageObject, index) => (
+          {question.imageList.map((image, index) => (
             <img
               key={index}
-              src={imageObject.image}
-              alt={`이미지 ${index}`}
-              className="question-image"
+              src={image.image}
+              alt={`Meeting image ${index + 1}`}
+              className={currentIndex === index ? 'active' : ''}
             />
           ))}
+            <button className="images-button left" onClick={prevImage}>◀</button>
+            <button className="images-button right" onClick={nextImage}>▶</button>
         </div>
       </div>
       {role === "ADMIN" && (

@@ -22,13 +22,13 @@ import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomR
 import { PatchMeetingRequestDto, PostJoinMeetingRequestDto, PostMeetingRequestDto } from "./request/meeting";
 import { PatchMeetingBoardRequestDto, PostMeetingBoardRequestDto } from "./request/meeting/board";
 import { GetMeetingBoardImageListResponseDto, GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
-import { PostBoardReplyRequestDto, PostReplyReplyRequestDto } from "./request/meeting/board/reply";
-import { PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
-import GetBoardReplyListResponseDto from "./response/meeting/board/reply/get-board-reply-list.response.dto";
+import { PatchBoardReplyRequestDto, PatchReplyReplyRequestDto, PostBoardReplyRequestDto, PostReplyReplyRequestDto } from "./request/meeting/board/reply";
+import { DeleteBoardReplyResponseDto, DeleteReplyReplyResponseDto, GetBoardReplyListResponseDto, PatchBoardReplyResponseDto, PatchReplyReplyResponseDto, PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
 
-const DOMAIN = 'http://localhost:8080';
+// const DOMAIN = 'http://localhost:8080';
+const DOMAIN = 'http://13.124.235.221:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const FILE_DOMAIN = `${DOMAIN}/file`;
@@ -143,6 +143,10 @@ const GET_MEETING_BOARDS_TITLE_URL = (meetingBoardIds: number[] | string[]) => `
 const POST_BOARD_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply`;
 const POST_REPLY_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply/reply`;
 const GET_BOARD_REPLY_URL = (meetingBoardId: number | string) => `${API_DOMAIN}/meeting/board/reply/list/${meetingBoardId}`;
+const DELETE_BOARD_REPLY_URL = (replyId: number | string) => `${API_DOMAIN}/meeting/board/reply/delete/${replyId}`;
+const DELETE_REPLY_REPLY_URL = (replyId: number | string) => `${API_DOMAIN}/meeting/board/reply/reply/delete/${replyId}`;
+const PATCH_BOARD_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply/patch`;
+const PATCH_REPLY_REPLY_URL = () => `${API_DOMAIN}/meeting/board/reply/reply/patch`;
 
 export const AdminSignInRequest = async (requestBody: AdminSignInRequestDto) => {
     const result = await axios.post(ADMIN_SIGN_IN_URL(), requestBody)
@@ -737,5 +741,32 @@ export const GetBoardReplyRequest = async (meetingBoardId: number | string) => {
     return result;
 };
 
+export const DeleteBoardReplyRequest = async (replyId: number | string, accessToken: string) => {
+    const result = await axios.delete(DELETE_BOARD_REPLY_URL(replyId), authorization(accessToken))
+        .then(responseHandler<DeleteBoardReplyResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const DeleteReplyReplyRequest = async (replyId: number | string, accessToken: string) => {
+    const result = await axios.delete(DELETE_REPLY_REPLY_URL(replyId), authorization(accessToken))
+        .then(responseHandler<DeleteReplyReplyResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const PatchBoardReplyRequest = async (requestBody: PatchBoardReplyRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_BOARD_REPLY_URL(), requestBody, authorization(accessToken))
+        .then(responseHandler<PatchBoardReplyResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const PatchReplyReplyRequest = async (requestBody: PatchReplyReplyRequestDto, accessToken: string) => {
+    const result = await axios.patch(PATCH_REPLY_REPLY_URL(), requestBody, authorization(accessToken))
+        .then(responseHandler<PatchReplyReplyResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
 
 

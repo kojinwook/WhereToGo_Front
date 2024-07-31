@@ -31,12 +31,12 @@ export default function Header() {
           stompClient.subscribe(`/topic/notifications/${loginUser.nickname}`, (message) => {
             const notification = JSON.parse(message.body);
             console.log('notification', notification);
-            if (notification.senderId !== loginUser.userId) {
+            if (notification.senderId !== loginUser.userId && (!notification.replySender || notification.replySender !== loginUser.nickname)) {
               setNotifications((prev) => {
                 const isAlreadyExist = prev.some((n) => n.id === notification.id);
                 if (!isAlreadyExist) {
-                  const updatedNotifications = [...prev, notification];
-                  localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+                  const updatedNotifications = [...prev, { ...notification, timestamp: new Date().getTime() }];
+                  localStorage.setItem(`notifications_${loginUser.userId}`, JSON.stringify(updatedNotifications));
                   return updatedNotifications;
                 }
                 return prev;
@@ -50,7 +50,7 @@ export default function Header() {
       });
       stompClient.activate();
       client.current = stompClient;
-      const savedNotifications = localStorage.getItem('notifications');
+      const savedNotifications = localStorage.getItem(`notifications_${loginUser.userId}`);
       if (savedNotifications) {
         setNotifications(JSON.parse(savedNotifications));
       }
@@ -61,7 +61,7 @@ export default function Header() {
       };
     }
   }, [loginUser, cookies.accessToken]);
-
+  
   useEffect(() => {
     const role = loginUser?.role;
     if (!role) return;
@@ -110,6 +110,7 @@ export default function Header() {
   const onSignOutButtonClickHandler = () => {
     resetLoginUser();
     setCookie('accessToken', '', { path: '/', expires: new Date() })
+    // localStorage.removeItem(`notifications_${loginUser?.userId}`);
     navigate('/');
     setDropdownVisible(false);
   }
@@ -129,8 +130,9 @@ export default function Header() {
   const handleDeleteNotification = (id: string) => {
     const updatedNotifications = notifications.filter(notification => notification.id !== id);
     setNotifications(updatedNotifications);
-    localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+    localStorage.setItem(`notifications_${loginUser?.userId}`, JSON.stringify(updatedNotifications));
   };
+  
   const NoticePathClickHandler = () => {
     navigate('/notice');
   }

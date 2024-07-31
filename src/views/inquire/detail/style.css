@@ -71,10 +71,10 @@ padding: .625rem 0;
 }
 
 .label {
-  min-width: 120px; /* 문의 유형, 제목, 내용에 대해 동일한 최소 너비 설정 */
-  font-weight: bold;
-  display: flex;
-  align-items: center;
+  margin-right: .625rem;
+  width: 80px;
+  display: inline-block;
+  text-align: right;
 }
 
 .value {
@@ -83,20 +83,52 @@ padding: .625rem 0;
   padding-left: 5px; /* 구분 기호와 값 사이의 간격 추가 */
 }
 
+/* 이미지 */
 .images {
-display: flex;
-flex-wrap: wrap;
-gap: .625rem;
-margin-top: .625rem;
+  position: relative;
+  overflow: hidden;
+  width: 50%;
 }
 
-.question-image {
-width: 18.75rem;
-height: auto;
-border-radius: .3125rem;
-box-shadow: 0 .0625rem .3125rem rgba(0, 0, 0, 0.1);
+.images img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  display: none;
+  border-radius: 10px;
 }
 
+.images img.active {
+  display: block; /* 활성화된 이미지만 표시 */
+}
+
+.images-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  z-index: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.images-button:hover{
+  background-color: transparent;
+  color: #000;
+  border: none;
+}
+
+.images-button.left {
+  left: 10px;
+}
+
+.images-button.right {
+  right: 10px;
+}
+
+/* 더보기 버튼 뭔가 이상해 뭐지? 왜 이것밖에 없어? */
 .update-button,
 .delete-button {
   padding: .625rem .9375rem;
