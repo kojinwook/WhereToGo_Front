@@ -26,9 +26,8 @@ import { PatchBoardReplyRequestDto, PatchReplyReplyRequestDto, PostBoardReplyReq
 import { DeleteBoardReplyResponseDto, DeleteReplyReplyResponseDto, GetBoardReplyListResponseDto, PatchBoardReplyResponseDto, PatchReplyReplyResponseDto, PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
-
-const DOMAIN = 'http://localhost:8080';
-// const DOMAIN = 'http://13.124.235.221:8080/';
+// const DOMAIN = 'http://localhost:8080';
+const DOMAIN = 'http://13.124.235.221:8080';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 const FILE_DOMAIN = `${DOMAIN}/file`;

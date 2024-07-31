@@ -13,15 +13,21 @@ Modal.setAppElement('#root');
 
 const ModalStyle = {
     overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     content: {
+        width: '300px',
+        height: '400px',
         top: '50%',
         left: '50%',
         right: 'auto',
         bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        backgroundColor: '#fff',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        zIndex: '100',
     }
 }
 
@@ -334,9 +340,9 @@ export default function MeetingDetail() {
                                 </div>
                             </div>
                             <div className="meeting-detail-right">
-                                <div className="more-options">
+                                <div className="meeting-more-options">
                                     {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="more-button" src= {moreButton} alt="더보기" onClick={toggleOptions} />
+                                        <img className="meeting-more-button" src= {moreButton} alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
@@ -451,8 +457,8 @@ export default function MeetingDetail() {
                 style={ModalStyle}
             >
                 <div className="modal-content">
-                    <div className="modal-header">
-                        <h2>참가 요청 목록</h2>
+                    <div className="modal-footer">
+                        <button className='modal-x' onClick={closeModal}>X</button>
                     </div>
                     <div className="modal-body">
                         {requests.length > 0 ? (
@@ -475,10 +481,6 @@ export default function MeetingDetail() {
                         ) : (
                             <p>참가 요청이 없습니다.</p>
                         )}
-                    </div>
-
-                    <div className="modal-footer">
-                        <button onClick={closeModal}>닫기</button>
                     </div>
                 </div>
             </Modal>
