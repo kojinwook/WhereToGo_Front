@@ -43,13 +43,16 @@
 
 .header-user-info {
     display: flex;
-    align-items: center;
+    align-items: center
+    ;
     gap: 10px;
     position: relative;
 }
 
 .notification {
-    margin-right: 10px;
+    width: 20px;
+    height: auto;
+    object-fit: contain;
 }
 
 .nickname {
@@ -72,7 +75,7 @@
 
 .dropdown-menu > div {
     text-align: center;
-  }
+}
 
 .dropdown-menu > div:not(:last-child)::after {
     content: ' ';

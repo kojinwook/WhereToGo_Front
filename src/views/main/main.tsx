@@ -118,9 +118,9 @@ const Main: React.FC = () => {
             <div className="section-title">최신 등록 축제</div>
           </div>
 
-            <div className='festival-list'>
+            <div className='new-festival-list'>
               {top5FestivalList.map((festival, index) => (
-                <div key={index} className='festival-item'>
+                <div key={index} className='new-festival-item'>
                   <div className='new-festival-details' onClick={() => handleTitleClick(festival.contentId)}>
                     <div className='new-festival-title'>{festival.title}</div>
                     <div className='festival-date'>{formatDate(festival.startDate)} ~ {formatDate(festival.endDate)}</div>

@@ -144,7 +144,7 @@
     gap: 10px;
 }
 
-.more-options {
+.meeting-more-options {
     align-self: flex-end;
     padding-right: 10px;
     position: relative;
@@ -193,7 +193,7 @@ padding: 10px;
 z-index: 1000;
 }
 
-.more-button {
+.meeting-more-button {
 border: none;
 cursor: pointer;
 width: 20px;
@@ -264,54 +264,91 @@ width: 20px;
 }
 
 /* 모임 참가 요청 목록 모달 */
-.profile-info img {
-    width: 3.125rem;
-    height: 3.125rem;
-    border-radius: 50%;
-    margin-right: .625rem;
-}
-
-.profile-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: .625rem;
-}
-
 .modal-content {
-    position: relative;
-    background-color: #fff;
-    padding: 1.25rem;
-    border-radius: .5rem;
-    max-width: 37.5rem;
-    width: 100%;
-}
-
-.modal-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: .625rem;
-}
-
-.modal-header h2 {
-    margin: 0;
-}
-
-.modal-body {
-    max-height: 25rem;
-    overflow-y: auto;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
 }
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
-    margin-top: 1.25rem;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
-.modal-footer button {
-    margin-left: .625rem;
+.modal-x {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
 }
 
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-top: 40px;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* 요청 항목 */
+.request-item {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.profile-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+/* 요청 버튼 */
+.request-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* 요청 버튼 스타일 */
+.request-buttons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.request-buttons button:first-child{
+    border: 1px solid #000;
+}
+.request-buttons button:first-child:hover {
+    background-color: #000; /* 수락 버튼 색상 */
+    color: white;
+}
+
+.request-buttons button:last-child{
+    border: 1px solid #f44336;
+    color: #f44336;
+}
+.request-buttons button:last-child:hover {
+    background-color: #f44336; /* 거절 버튼 색상 */
+    color: white;
+}
 /* 모임 홈 끝 */
 
 /* 게시판 */

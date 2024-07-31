@@ -4,6 +4,7 @@ import useLoginUserStore from 'store/login-user.store';
 import logoImage from 'assets/images/logo.png';
 import './style.css';
 import { useCookies } from 'react-cookie';
+import bellButton from 'assets/images/bell.png';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import Notification from 'types/interface/notification.interface';
@@ -160,11 +161,9 @@ export default function Header() {
       <div className='nav-container'>
         {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div>}
         {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div>}
-        {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div>}
-        {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div>}
         {isLogin && (
           <div className="header-user-info">
-            <div className="notification">알림</div>
+            <img className="notification" src={bellButton} alt='알림'/>
             {notifications.map((notification, index) => (
               <div key={index} className={`notification ${notification.type === 'CHAT' ? 'chat-notification' : ''}`} onClick={() => handleNotificationClick(notification)}>
                 {notification.type === 'CHAT' ? (

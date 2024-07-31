@@ -2,6 +2,7 @@ import { Images, User } from "./interface";
 
 
 export default interface Meeting{
+    date: string | number | Date;
     meetingId: number;
     title : string;
     introduction : string;
