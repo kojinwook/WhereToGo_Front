@@ -116,7 +116,7 @@ export default function MeetingDetail() {
         if (!meetingId) return;
         const fetchMeetingBoardImageList = async () => {
             const response = await GetMeetingBoardImageListRequest(meetingId);
-            console.log(response)
+            console.log("response",response)
             if (response && response.code === 'SU') {
                 setBoardImageList(response.imageList);
             } else {

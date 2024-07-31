@@ -26,7 +26,7 @@ export default function Header() {
       const socket = new SockJS('http://localhost:8080/ws');
       const stompClient = new Client({
         webSocketFactory: () => socket,
-        debug: (str) => console.log(str),
+        // debug: (str) => console.log(str),
         onConnect: () => {
           stompClient.subscribe(`/topic/notifications/${loginUser.nickname}`, (message) => {
             const notification = JSON.parse(message.body);
@@ -143,7 +143,7 @@ export default function Header() {
     navigate('/meeting/list');
   }
   const inquirePathClickHandler = () => {
-    navigate('/inquire/list');
+    navigate('/inquire');
   }
 
 

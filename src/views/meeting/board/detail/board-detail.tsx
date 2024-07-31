@@ -242,7 +242,7 @@ export default function BoardDetail() {
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('게시물이 삭제되었습니다.');
-            navigate(`/meeting/board/list/${meetingId}`);
+            navigate(`/meeting/detail/${meetingId}`);
         } else if (response.code === 'DHP') {
             alert('게시물을 삭제할 수 있는 권한이 없습니다.');
         } else {

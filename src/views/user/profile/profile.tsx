@@ -1,10 +1,10 @@
-import { GetAllFavoriteRequest, GetChatRoomListRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest, VerifyPasswordRequest } from 'apis/apis';
+import { GetAllFavoriteRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest, VerifyPasswordRequest } from 'apis/apis';
 import { GetUserResponseDto } from 'apis/response/user';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import Switch from 'react-switch';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import './style.css';
 import defaultProfileImage from 'assets/images/user.png';
@@ -77,11 +77,6 @@ export default function UserProfile() {
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
 
-    // 알림
-    const handleNotificationChange = (checked: boolean) => {
-        setIsNotificationEnabled(checked);
-    };
-
     // 로그아웃
     const handleLogoutClick = () => {
         removeCookie('accessToken');
@@ -147,7 +142,7 @@ export default function UserProfile() {
             setProfileImage(profileImage);
             setTemperature(temperature);
         });
-    }, [userId, cookies.accessToken, navigator]);
+    }, [userId, cookies.accessToken]);
 
     useEffect(() => {
         if (!loginUser) { alert('로그인 후 이용해주세요.'); navigate('/authentication/signin'); return; };
@@ -162,12 +157,10 @@ export default function UserProfile() {
     const toggleChatModal = () => setIsChatModalOpen(!isChatModalOpen);
     const toggleSettingModal = () => setIsSettingModalOpen(!isSettingModalOpen);
 
-    const [isNotificationEnabled, setIsNotificationEnabled] = useState<boolean>(true); // 알림 설정 상태
-
     const getAllFavorite = async (nickname: string) => {
         if (!loginUser) {
             alert('로그인 후 이용해주세요.');
-            navigate('/login');
+            navigate('/authentication/signin');
             return;
         }
         try {
@@ -236,7 +229,6 @@ export default function UserProfile() {
             setPasswordError('비밀번호 확인 중 오류가 발생했습니다.');
         }
     };
-
     const handleFestivalTitleClick = (contentId: string) => {
         navigate(`/festival/detail?contentId=${contentId}`);
     };
@@ -340,6 +332,7 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='채팅'
             >
+                <h2>내 채팅 목록</h2>
                 <div className='chat-list'>
                     {chatRooms.map((chatRoom) => {
                         const otherUser = loginUser?.nickname === chatRoom.creator.nickname ? chatRoom.user : chatRoom.creator;
@@ -370,13 +363,14 @@ export default function UserProfile() {
                 <h2>내 모임 목록</h2>
                 <div className='meeting-list'>
                     {meetingList.map((meeting) => (
-                        <div key={meeting.meetingId} className='meeting-item'>
+                        <div key={meeting.meetingId} className='meeting-item' onClick={() => handleMeetingTitleClick(meeting.meetingId)}>
                             {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
                             <img src={meeting.creatorProfileImage ? meeting.creatorProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
                             <div>{meeting.creatorNickname}</div>
-                            <span onClick={() => handleMeetingTitleClick(meeting.meetingId)}>{meeting.title}</span>
+                            <span>{meeting.title}</span>
                         </div>
                     ))}
+                    
                 </div>
                 <button className='board-list-close-botton' onClick={toggleGroupModal}>닫기</button>
             </Modal>
@@ -405,12 +399,6 @@ export default function UserProfile() {
             >
                 <h2>설정</h2>
                 <div onClick={handleProfileChangeClick}>프로필 변경</div>
-                <div>
-                    <label>
-                        알림
-                        <Switch onChange={handleNotificationChange} checked={isNotificationEnabled} />
-                    </label>
-                </div>
                 <div onClick={handleLogoutClick} >로그아웃</div>
                 <button onClick={toggleSettingModal}>닫기</button>
             </Modal>
