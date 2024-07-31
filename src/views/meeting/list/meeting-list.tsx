@@ -293,7 +293,7 @@ export default function MeetingList() {
             <li key={meeting.meetingId} className='meeting-item' onClick={() => meetingTitleClickHandler(meeting.meetingId)}>
               {<ImageSlider images={meeting.imageList} />}
               <div className='meeting-title'>{meeting.title}</div>
-              <div>{meeting.userNickname}</div>
+              <div>{meeting.userDto.nickname}</div>
               <div>{meeting.introduction}</div>
               <div>{joinMembersMap[meeting.meetingId]}/{meeting.maxParticipants}</div>
             </li>
