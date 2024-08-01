@@ -321,37 +321,39 @@ return (
           <div className='sign-up-content-box'>
               <div className='sign-up-content-divider'></div>
               <div className='sign-up-content-input-box'>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={userIdRef} title='아이디' placeholder='아이디를 입력해주세요' type='text' value={userId} onChange={onIdChangeHandler} isErrorMessage={isUserIdError} message={userIdMessage} buttonTitle='중복 확인' onButtonClick={onIdButtenClickHandler} onKeyDown={onIdKeyDownHandler} />
                 </div>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={nicknameRef} title='닉네임' placeholder='닉네임을 입력해주세요' type='text' value={nickname} onChange={onNicknameChangeHandler} isErrorMessage={isNicknameError} message={NicknameMessage} buttonTitle='중복 확인' onButtonClick={onNicknameButtenClickHandler} onKeyDown={onNicknameKeyDownHandler} />
                 </div>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={passwordRef} title='비밀번호' placeholder='비밀번호를 입력해주세요' type='password' value={password} onChange={onPasswordChangeHandler} isErrorMessage={isPasswordError} message={passwordMessage} onKeyDown={onPasswordKeyDownHandler} />
                 </div>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={passwordCheckRef} title='비밀번호 확인' placeholder='비밀번호를 입력해주세요' type='password' value={passwordCheck} onChange={onPasswordCheckChangeHandler} isErrorMessage={isPasswordCheckError} message={passwordCheckMessage} onKeyDown={onPasswordCheckKeyDownHandler} />
                 </div>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={phoneRef} title='전화번호' placeholder='전화번호를 입력해주세요' type='text' value={phone} onChange={onPhoneChangeHandler} isErrorMessage={isPhoneError} message={PhoneMessage} />
                 </div>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={emailRef} title='이메일' placeholder='이메일 주소를 입력해주세요' type='text' value={email} onChange={onEmailChangeHandler} isErrorMessage={isEmailError} message={EmailMessage} buttonTitle='이메일 인증' onButtonClick={onEmailButtenClickHandler} onKeyDown={onEmailKeyDownHandler} />
                 </div>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={certificationNumberRef} title='인증번호' placeholder='인증번호 4자리를 입력해주세요' type='text' value={certificationNumber} onChange={onCertificationNumberChangeHandler} isErrorMessage={isCertificationNumberError} message={CertificationNumberMessage} buttonTitle='인증 확인' onButtonClick={onCertificationNumberButtenClickHandler} onKeyDown={onCertificationNumberKeyDownHandler} />
                 </div>
-                <div className='input-container'>
+                <div className='admin-input-container'>
                   <SignBox ref={secretKeyRef} title='시크릿 키' placeholder='시크릿 키를 입력해주세요' type='text' value={secretKey} onChange={onSecretKeyChangeHandler} isErrorMessage={isSecretKeyError} message={SecretKeyMessage} />
                 </div>
               </div>
               <div className="auth-consent-box">
-                  <div className="auth-check-box" onClick={onAgreedPersonalClickHandler}>
-                      <div className={`icon ${agreedPersonal ? 'check-round-fill-icon' : 'check-ring-light-icon'} `}></div>
-                  </div>
-                  <div className={isAgreedPersonalError ? "auth-consent-title-error" : "auth-consent-title"}>{'개인정보동의'}</div>
-                  <div className="auth-consent-link">{'더보기 >'}</div>
+                <div className="auth-check-box" onClick={onAgreedPersonalClickHandler}>
+                    <div className={`icon ${agreedPersonal ? 'check-round-fill-icon' : 'check-ring-light-icon'}`}></div>
+                </div>
+                <div className={isAgreedPersonalError ? "auth-consent-title-error" : "auth-consent-title"}>
+                    {'개인정보동의'}
+                </div>
+                <div className="auth-consent-link">{'더보기 >'}</div>
               </div>
               <div className='admin-sign-up-content-button-box'>
                   <div className={signUpButtonClass + ' full-width'} onClick={onSignUpButtonClickHandler}>{'회원가입'}</div>
