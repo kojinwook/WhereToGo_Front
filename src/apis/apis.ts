@@ -27,7 +27,7 @@ import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, Fi
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
 // const DOMAIN = 'http://localhost:8080';
-const DOMAIN = 'http://13.124.235.221';
+const DOMAIN = 'http://15.165.24.165';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 // const API_DOMAIN = "/api/v1";
 
