@@ -273,14 +273,14 @@ const InquireDetail: React.FC = () => {
 
   // 이미지 넘기기 함수
   const nextImage = () => {
-    if (meeting && meeting.imageList) {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % meeting.imageList.length);
+    if (question && question.imageList) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % question.imageList.length);
     }
   };
 
   const prevImage = () => {
-      if (meeting && meeting.imageList) {
-          setCurrentIndex((prevIndex) => (prevIndex - 1 + meeting.imageList.length) % meeting.imageList.length);
+      if (question && question.imageList) {
+          setCurrentIndex((prevIndex) => (prevIndex - 1 + question.imageList.length) % question.imageList.length);
       }
   };
 
