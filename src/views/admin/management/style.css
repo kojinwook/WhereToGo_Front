@@ -1,0 +1,116 @@
+.manage-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.manage-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.manage-header input[type="text"] {
+    width: 300px; /* 검색창 너비 조절 */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.manage-header select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.manage-table {
+    width: 100%;
+    border-collapse: collapse; /* 테두리 겹침 제거 */
+}
+
+.manage-list th {
+    background-color: #f4f4f4;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+}
+
+.manage-content td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.manage-content tr:nth-child(even) {
+    background-color: #f9f9f9; /* 짝수 행 배경색 */
+}
+
+.manage-content td button {
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.manage-content td button:hover {
+    background-color: #000;
+    color: #fff;
+}
+.ejection{
+    color: red
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    height: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.modal-content input[type="password"],
+.modal-content input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.modal-content button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.modal-content button:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.modal-content .cancel-button {
+    background-color: #6c757d;
+}
+
+.modal-content .cancel-button:hover {
+    background-color: #5a6268;
+}

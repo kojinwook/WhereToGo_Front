@@ -1,10 +1,11 @@
+import { BlockUserRequest, DeleteUserRequest, GetUserListRequest } from 'apis/apis';
+import { BlockUserRequestDto } from 'apis/request/user';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import User from 'types/interface/user.interface';
-import { BlockUserRequest, DeleteUserRequest, GetUserListRequest } from 'apis/apis';
-import useLoginUserStore from 'store/login-user.store';
 import { useNavigate } from 'react-router-dom';
-import { BlockUserRequestDto } from 'apis/request/user';
+import useLoginUserStore from 'store/login-user.store';
+import User from 'types/interface/user.interface';
+import './style.css';
 
 export default function Management() {
     const { loginUser } = useLoginUserStore();
@@ -140,25 +141,24 @@ export default function Management() {
     if (loginUser?.role !== "ROLE_ADMIN") return null;
 
     return (
-        <div>
-            <div>
-                <h1>회원 목록</h1>
-                <input
-                    type="text"
-                    placeholder="유저 닉네임으로 검색"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                />
+        <div className='manage-container'>
+            <div className='manage-header'>
                 <select value={sortOrder} onChange={handleSortChange}>
                     <option value="newest">가입 최신순</option>
                     <option value="oldest">가입 오래된순</option>
                     <option value="temperature-asc">온도 낮은 순</option>
                     <option value="temperature-desc">온도 높은 순</option>
                 </select>
+                <input
+                    type="text"
+                    placeholder="유저 닉네임으로 검색"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                />
             </div>
             <div>
-                <table>
-                    <thead>
+                <table className='manage-table'>
+                    <thead className='manage-list'>
                         <tr>
                             <th>번호</th>
                             <th>이메일</th>
@@ -170,7 +170,7 @@ export default function Management() {
                             <th>강퇴</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className='manage-content'>
                         {filteredUserList.map((user, index) => (
                             <tr key={index}>
                                 <td>{filteredUserList.length - index}</td>
@@ -181,7 +181,7 @@ export default function Management() {
                                 <td>{user.reportCount} 회</td>
                                 <td>{user.isBlocked ? 'O' : 'X'}</td>
                                 <td>
-                                    <button onClick={() => openModal(user.userId, false)}>강퇴</button>
+                                    <button className='ejection' onClick={() => openModal(user.userId, false)}>강퇴</button>
                                     <button onClick={() => openModal(user.userId, true)}>블랙</button>
                                     <button onClick={() => reportListClickHandler(user.nickname)}>신고목록</button>
                                 </td>
