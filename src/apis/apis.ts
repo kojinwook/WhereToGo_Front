@@ -1,29 +1,29 @@
-import { PatchAnswerRequestDto, PostAnswerRequestDto } from "./request/answer";
-import { PatchQuestionRequestDto, PostQuestionRequestDto } from "./request/question";
-import { DeleteAnswerResponseDto, GetAllAnswerResponseDto, GetAnswerResponseDto, PatchAnswerResponseDto, PostAnswerResponseDto } from "./response/answer";
-import { DeleteQuestionResponseDto, GetAllQuestionResponseDto, GetQuestionResponseDto, PatchQuestionResponseDto, PostQuestionResponseDto } from "./response/question";
-import { DeleteNoticeResponseDto, GetAllNoticeResponseDto, GetNoticeResponseDto, GetSearchNoticeListResponseDto, PatchNoticeResponseDto, PostNoticeResponseDto } from "./response/notice";
-import { PatchNoticeRequestDto, PostNoticeRequestDto } from "./request/notice";
 import axios, { AxiosResponse } from "axios";
-import { ResponseDto } from "./response/response";
-import Festival from "types/interface/festival.interface";
-import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
-import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
-import { BlockUserResponseDto, DeleteUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, PatchProfileImageResponseDto, PatchUserResponseDto, ReportUserListResponseDto, ReportUserResponseDto, VerifyPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import { ResponseBody } from "types";
-import { DeleteMeetingResponseDto, Get5RecentMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
-import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
-import { PatchReviewRequestDto } from "./request/review";
-import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
-import { GetAllFavoriteResponseDto, GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, GetTop5FestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
+import Festival from "types/interface/festival.interface";
 import { Images } from "types/interface/interface";
-import { BlockUserRequestDto, FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, PatchProfileImageRequestDto, PatchUserRequestDto, ReportUserRequestDto, VerifyPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
-import { GetChatMessageListResponseDto, GetChatMessageResponseDto, PostChatRoomResponseDto, GetChatRoomResponseDto, GetChatRoomListResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto } from "./response/chat";
+import { PatchAnswerRequestDto, PostAnswerRequestDto } from "./request/answer";
+import { AdminSignInRequestDto, AdminSignUpRequestDto, CheckCertificationRequestDto, EmailCertificationRequestDto, NicknameCheckRequestDto, SignInRequestDto, SignUpRequestDto, UserIdCheckRequestDto } from "./request/auth";
+import { PostChatMessageRequestDto, PostChatRoomRequestDto } from "./request/chat";
 import { PatchMeetingRequestDto, PostJoinMeetingRequestDto, PostMeetingRequestDto } from "./request/meeting";
 import { PatchMeetingBoardRequestDto, PostMeetingBoardRequestDto } from "./request/meeting/board";
-import { GetMeetingBoardImageListResponseDto, GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
 import { PatchBoardReplyRequestDto, PatchReplyReplyRequestDto, PostBoardReplyRequestDto, PostReplyReplyRequestDto } from "./request/meeting/board/reply";
+import { PatchNoticeRequestDto, PostNoticeRequestDto } from "./request/notice";
+import { PatchQuestionRequestDto, PostQuestionRequestDto } from "./request/question";
+import { PatchReviewRequestDto } from "./request/review";
+import { BlockUserRequestDto, FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, PatchProfileImageRequestDto, PatchUserRequestDto, ReportUserRequestDto, VerifyPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
+import { DeleteAnswerResponseDto, GetAllAnswerResponseDto, GetAnswerResponseDto, PatchAnswerResponseDto, PostAnswerResponseDto } from "./response/answer";
+import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
+import { GetChatMessageListResponseDto, GetChatMessageResponseDto, GetChatRoomListResponseDto, GetChatRoomResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto, PostChatRoomResponseDto } from "./response/chat";
+import { GetAllFavoriteResponseDto, GetFestivalListResponseDto, GetFestivalResponseDto, GetSearchFestivalListResponseDto, GetTop5FestivalListResponseDto, PatchFestivalResponseDto, PostFestivalResponseDto, PutFavoriteResponseDto } from "./response/festival";
+import { DeleteMeetingResponseDto, Get5RecentMeetingResponseDto, GetJoinMeetingMemberResponseDto, GetMeetingListResponseDto, GetMeetingRequestsResponseDto, GetMeetingResponseDto, GetUserMeetingListResponseDto, PatchMeetingResponseDto, PostJoinMeetingResponseDto, PostMeetingResponseDto } from "./response/meeting";
+import { GetMeetingBoardImageListResponseDto, GetMeetingBoardListResponseDto, GetMeetingBoardResponseDto, GetUserBoardListResponseDto, PatchMeetingBoardResponseDto, PostMeetingBoardResponseDto } from "./response/meeting/board";
 import { DeleteBoardReplyResponseDto, DeleteReplyReplyResponseDto, GetBoardReplyListResponseDto, PatchBoardReplyResponseDto, PatchReplyReplyResponseDto, PostBoardReplyResponseDto, PostReplyReplyResponseDto } from "./response/meeting/board/reply";
+import { DeleteNoticeResponseDto, GetAllNoticeResponseDto, GetNoticeResponseDto, GetSearchNoticeListResponseDto, PatchNoticeResponseDto, PostNoticeResponseDto } from "./response/notice";
+import { DeleteQuestionResponseDto, GetAllQuestionResponseDto, GetQuestionResponseDto, PatchQuestionResponseDto, PostQuestionResponseDto } from "./response/question";
+import { ResponseDto } from "./response/response";
+import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
+import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, LikeUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, PatchProfileImageResponseDto, PatchUserResponseDto, ReportUserListResponseDto, ReportUserResponseDto, VerifyPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
 const DOMAIN = 'http://localhost:8080';
@@ -100,6 +100,8 @@ const REPORT_USER_URL = (userId: string) => `${API_DOMAIN}/user/report-user/${us
 const GET_REPORT_USER_LIST_URL = (nickname: string) => `${API_DOMAIN}/user/report-list/${nickname}`;
 const BLOCK_USER_URL = (userId: string) => `${API_DOMAIN}/user/block-user/${userId}`;
 const GET_TOP5_TEMPERATURE_USER_LIST_URL = () => `${API_DOMAIN}/user/temperature-top5`;
+const LIKE_USER_URL = (nickname: string, meetingId: string) => `${API_DOMAIN}/user/like-user/${meetingId}/${nickname}`;
+const DISLIKE_USER_URL = (nickname: string, meetingId: string) => `${API_DOMAIN}/user/dislike-user/${meetingId}/${nickname}`;
 
 const GET_ALL_ANSWER_URL = (questionId: number | string) => `${API_DOMAIN}/question/answer/list/${questionId}`;
 const POST_ANSWER_URL = () => `${API_DOMAIN}/question/answer`;
@@ -282,6 +284,20 @@ export const Top5TemperatureUserRequest = async () => {
         .catch(errorHandler);
     return result;
 }
+
+export const LikeUserRequest = async (nickname: string, meetingId: string, accessToken: string) => {
+    const result = await axios.post(LIKE_USER_URL(nickname, meetingId), {}, authorization(accessToken))
+        .then(responseHandler<LikeUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
+export const DislikeUserRequest = async (nickname: string, meetingId: string, accessToken: string) => {
+    const result = await axios.post(DISLIKE_USER_URL(nickname, meetingId), {}, authorization(accessToken))
+        .then(responseHandler<DislikeUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
 
 export const RecoveryPasswordRequest = async (requestBody: PasswordRecoveryRequestDto): Promise<ResponseBody<PasswordRecoveryResponseDto>> => {
     const result = await axios.post(RECOVER_PASSWORD_URL(), requestBody)

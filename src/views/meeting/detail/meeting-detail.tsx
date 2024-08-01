@@ -1,11 +1,11 @@
-import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingBoardImageListRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import { DeleteMeetingRequest, DislikeUserRequest, GetJoinMeetingMemberRequest, GetMeetingBoardImageListRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, LikeUserRequest, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { Images, Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
+import { Images, Meeting, MeetingBoard, MeetingRequest, MeetingUser } from 'types/interface/interface';
 import moreButton from 'assets/images/more.png';
 import './style.css';
 
@@ -49,7 +49,7 @@ export default function MeetingDetail() {
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [activeTab, setActiveTab] = useState('detail');
-    const [joinMemberList, setJoinMemberList] = useState<string[]>([]);
+    const [joinMemberList, setJoinMemberList] = useState<MeetingUser[]>([]);
     const [joinMembers, setJoinMembers] = useState<number>();
     const [boardList, setBoardList] = useState<MeetingBoard[]>([]);
     const [boardImageList, setBoardImageList] = useState<Images[]>([]);
@@ -71,7 +71,7 @@ export default function MeetingDetail() {
                 if (!response) return;
                 console.log(response)
                 const members = response.meetingUsersList.map(member => member.userNickname);
-                setJoinMemberList(members);
+                setJoinMemberList(response.meetingUsersList);
                 setJoinMembers(response.meetingUsersList.length);
             } catch (error) {
                 console.error('Failed to fetch join members:', error);
@@ -116,7 +116,7 @@ export default function MeetingDetail() {
         if (!meetingId) return;
         const fetchMeetingBoardImageList = async () => {
             const response = await GetMeetingBoardImageListRequest(meetingId);
-            console.log("response",response)
+            console.log("response", response)
             if (response && response.code === 'SU') {
                 setBoardImageList(response.imageList);
             } else {
@@ -167,7 +167,7 @@ export default function MeetingDetail() {
 
     const handleJoinMeeting = async () => {
         if (!meetingId || !nickname) return;
-        const isAlreadyJoined = joinMemberList.includes(nickname);
+        const isAlreadyJoined = joinMemberList.map(member => member.userNickname).includes(nickname);
         if (isAlreadyJoined) {
             alert('이미 모임에 가입된 멤버입니다.');
             return;
@@ -289,11 +289,38 @@ export default function MeetingDetail() {
     }
 
     const handleBoardDetail = (meetingBoardId: string) => {
-        if (!joinMemberList.includes(nickname)) {
+        if (!joinMemberList.map(member => member.userNickname).includes(nickname)) {
             alert('모임에 가입해야 게시물을 볼 수 있습니다.');
             return;
         }
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    }
+
+    const handleLike = async (nickname: string) => {
+        if(!meetingId || !nickname) return;
+        const response = await LikeUserRequest(nickname, meetingId, cookies.accessToken);
+        if (response) {
+            if (response.code === 'SU') {
+                alert('좋아요를 눌렀습니다.');
+            }
+            if (response.code === 'AR') {
+                alert('이미 좋아요를 눌렀습니다.');
+            }
+        }
+    }
+
+    const handleUnlike = async (nickname: string) => {
+        if(!meetingId || !nickname) return;
+        const response = await DislikeUserRequest(nickname, meetingId, cookies.accessToken);
+        console.log(response);
+        if (response) {
+            if (response.code === 'SU') {
+                alert('싫어요를 눌렀습니다.');
+            }
+            if (response.code === 'AR') {
+                alert('이미 싫어요를 눌렀습니다.');
+            }
+        }
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -320,7 +347,6 @@ export default function MeetingDetail() {
                 <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
 
-
             <div className="meeting-detail-body">
                 {activeTab === 'detail' && (
                     <div>
@@ -342,7 +368,7 @@ export default function MeetingDetail() {
                             <div className="meeting-detail-right">
                                 <div className="meeting-more-options">
                                     {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="meeting-more-button" src= {moreButton} alt="더보기" onClick={toggleOptions} />
+                                        <img className="meeting-more-button" src={moreButton} alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
@@ -379,7 +405,7 @@ export default function MeetingDetail() {
                                 <div className="bordered-div">{joinMembers}/{meeting.maxParticipants}</div>
                                 <div className='meeting-detail-btn'>
                                     <button onClick={handleCreateRoom}>1 : 1 채팅</button>
-                                    {joinMemberList.includes(nickname) ? (
+                                    {joinMemberList.map(member => member.userNickname).includes(nickname) ? (
                                         <div></div>) : (
                                         <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>)}
                                     {nickname === creatorNickname && (
@@ -407,10 +433,10 @@ export default function MeetingDetail() {
                             <button className='meeting-board-add-btn' onClick={handleCreateBoard}>{"게시물 작성"}</button>
 
                             <div className='meeting-board-header'>
-                            <div className='header-item'>프로필 사진</div>
-                            <div className='header-item'>닉네임</div>
-                            <div className='header-item'>제목</div>
-                            <div className='header-item'>작성 날짜</div>
+                                <div className='header-item'>프로필 사진</div>
+                                <div className='header-item'>닉네임</div>
+                                <div className='header-item'>제목</div>
+                                <div className='header-item'>작성 날짜</div>
                             </div>
                             {boardList.length === 0 ? (
                                 <div className="no-posts-message">게시물이 없습니다.</div>
@@ -484,6 +510,27 @@ export default function MeetingDetail() {
                     </div>
                 </div>
             </Modal>
+
+
+
+
+
+
+            <div>
+                <div>
+                    {joinMemberList.map((member, index) => (
+                        <div key={index} className="participant">
+                            <img
+                                src={member.userProfileImage || defaultProfileImage}
+                                alt="profile"
+                            />
+                            <p>{member.userNickname}</p>
+                            <button onClick={() => handleLike(member.userNickname)}>{'좋'}</button>
+                            <button onClick={() => handleUnlike(member.userNickname)}>{'싫'}</button>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }
