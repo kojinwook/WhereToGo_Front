@@ -27,6 +27,7 @@
     font-size: 20px;
     color: #333;
     font-weight: bold;
+    display: inline-block;
 }
 
 .nav-container {

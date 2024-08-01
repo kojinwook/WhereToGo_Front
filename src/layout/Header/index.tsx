@@ -153,10 +153,18 @@ export default function Header() {
         <img src={logoImage} alt="뒤로가기" onClick={LogoClickHandler} />
       </div>
       <div className="main-header">
-        <div className="header-item" onClick={inquirePathClickHandler}>고객센터</div>
-        <div className="header-item" onClick={NoticePathClickHandler}>공지사항</div>
-        <div className="header-item" onClick={FestivalPathClickHandler}>축제</div>
-        <div className="header-item" onClick={meetingPathClickHandler}>모임</div>
+        <div className="header-item">
+          <span onClick={inquirePathClickHandler}>고객센터</span>
+        </div>
+        <div className="header-item">
+          <span onClick={NoticePathClickHandler}>공지사항</span>
+        </div>
+        <div className="header-item">
+          <span onClick={FestivalPathClickHandler}>축제</span>
+        </div>
+        <div className="header-item">
+          <span onClick={meetingPathClickHandler}>모임</span>
+        </div>
       </div>
       <div className='nav-container'>
         {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div>}
