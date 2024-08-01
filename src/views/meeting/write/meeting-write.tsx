@@ -282,19 +282,17 @@ export default function MeetingWrite() {
 
       <p><strong>사진</strong></p>
       <input type="file" multiple onChange={handleImageChange} />
-      <div style={{ display: 'flex', marginTop: '10px' }}>
+      <div className='image-meeting-write-container'>
         {imagePreviews.map((preview, index) => (
-          <div key={index} style={{ position: 'relative', marginRight: '10px', marginBottom: '10px' }}>
+          <div key={index} className='image-meeting-write-preview'>
             <img
               src={preview}
               alt={`이미지 미리보기 ${index}`}
-              style={{ width: '100px', height: 'auto', marginRight: '10px' }}
             />
             <button
-              style={{ position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', cursor: 'pointer' }}
               onClick={() => handleImageRemove(index)}
             >
-              <i className="fas fa-times-circle" style={{ fontSize: '1.5rem', color: 'gray' }} />
+              <i className="fas fa-times-circle" />
             </button>
           </div>
         ))}
