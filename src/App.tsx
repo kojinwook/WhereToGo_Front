@@ -116,7 +116,7 @@ function App() {
       </Route>
 
         <Route path='/authentication'>
-          <Route path="admin" element={<AdminSignUp />} />
+          <Route path=" " element={<AdminSignUp />} />
           <Route path="signin" element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
         </Route>
