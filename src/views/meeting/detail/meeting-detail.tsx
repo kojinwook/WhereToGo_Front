@@ -297,6 +297,7 @@ export default function MeetingDetail() {
     }
 
     const handleLike = async (nickname: string) => {
+        window.confirm('정말로 좋아요를 누르시겠습니까?')
         if(!meetingId || !nickname) return;
         const response = await LikeUserRequest(nickname, meetingId, cookies.accessToken);
         if (response) {
@@ -310,6 +311,7 @@ export default function MeetingDetail() {
     }
 
     const handleUnlike = async (nickname: string) => {
+        window.confirm('정말로 싫어요를 누르시겠습니까?')
         if(!meetingId || !nickname) return;
         const response = await DislikeUserRequest(nickname, meetingId, cookies.accessToken);
         console.log(response);
