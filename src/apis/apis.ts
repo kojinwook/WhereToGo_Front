@@ -26,15 +26,12 @@ import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListRespon
 import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, LikeUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, PatchProfileImageResponseDto, PatchUserResponseDto, ReportUserListResponseDto, ReportUserResponseDto, VerifyPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
-// const DOMAIN = 'http://localhost:8080';
-// const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+// const DOMAIN = 'http://localhost:8088';
 const DOMAIN = 'http://15.165.24.165:8088';
-// const domain = proxyUrl + DOMAIN;
 const API_DOMAIN = `${DOMAIN}/api/v1`;
-// const API_DOMAIN = "/api/v1";
 
-
-const FILE_DOMAIN = `${DOMAIN}/file`;
+// const FILE_DOMAIN = `${DOMAIN}/file`;
+const FILE_DOMAIN = `${DOMAIN}/sftp/file`;
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 const multipartFormData = { headers: { 'Url-Type': 'multipart/form-data' } };
 
