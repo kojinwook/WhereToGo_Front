@@ -9,7 +9,6 @@ import { ResponseDto } from 'apis/response/response';
 
 interface ResponseData {
     code: string;
-    message: string;
     reviews: Review[];
     festivalList: Festival[];
 }

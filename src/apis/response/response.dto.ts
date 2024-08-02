@@ -2,11 +2,10 @@ import ChatMessage from "types/interface/chat-message.interface";
 import { Answer, BoardReply, ChatRoom, Favorite, Festival, Images, Meeting, MeetingBoard, MeetingRequest, MeetingUser, Notice, ReportUser, User } from "types/interface/interface";
 import Question from "types/interface/question.interface";
 import Review from "types/interface/review.interface";
-import { ResponseCode, ResponseMessage } from "../../types/enums/enums";
+import { ResponseCode } from "../../types/enums/enums";
 
 export default interface ResponseDto {
     code: ResponseCode;
-    message: ResponseMessage;
     success: boolean;
     festivalList: Festival[];
     questions: Question[];

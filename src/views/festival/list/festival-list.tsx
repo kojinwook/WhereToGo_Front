@@ -168,7 +168,7 @@ export default function FestivalPage() {
                     [contentId]: !prevFavorites[contentId]
                 }));
             } else {
-                console.error('Failed to toggle favorite:', response.message);
+                console.error('Failed to toggle favorite:');
             }
         } catch (error) {
             console.error('Error toggling favorite:', error);

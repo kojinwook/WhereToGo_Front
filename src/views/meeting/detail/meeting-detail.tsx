@@ -161,7 +161,7 @@ export default function MeetingDetail() {
                     console.error('Failed to create chat room: No roomId returned');
                 }
             } else {
-                console.error('Failed to create chat room:', response.message);
+                console.error('Failed to create chat room:');
             }
         } catch (error) {
             console.error('Failed to create chat room:', error);
@@ -194,7 +194,7 @@ export default function MeetingDetail() {
                 alert("이미 가입 신청이 되었습니다.")
             }
             else {
-                console.error('Failed to join meeting:', response.message);
+                console.error('Failed to join meeting:');
             }
         } catch (error) {
             console.error('Failed to join meeting:', error);
@@ -211,7 +211,7 @@ export default function MeetingDetail() {
                 alert('요청이 처리되었습니다.');
                 setRequests(prevRequests => prevRequests.filter(request => request.requestId !== requestId));
             } else {
-                console.error('Failed to respond to join request:', response.message);
+                console.error('Failed to respond to join request:');
             }
         } catch (error) {
             console.error('Failed to respond to join request:', error);
@@ -286,7 +286,7 @@ export default function MeetingDetail() {
             if (response.code !== 'SU') {
                 alert('모임 삭제에 실패했습니다.');
             } else {
-                console.error('Failed to delete meeting:', response.message);
+                console.error('Failed to delete meeting:');
             }
         }
     }

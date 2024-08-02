@@ -71,7 +71,7 @@ const FestivalAdmin: React.FC = () => {
                     setTags([]);
                     setModalOpen(false);
                 } else {
-                    console.error('Failed to update festival:', response.message);
+                    console.error('Failed to update festival:');
                 }
             } catch (error) {
                 console.error('Error updating festival:', error);

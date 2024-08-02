@@ -68,7 +68,7 @@ export default function FestivalDetail() {
                     fetchedFestival.endDate = formatDate(fetchedFestival.endDate);
                     setFestival(fetchedFestival);
                 } else {
-                    console.error('Failed to fetch festival:', festivalResponse.message);
+                    console.error('Failed to fetch festival:');
                 }
                 const averageRateResponse = await GetAverageRateRequest(contentId);
                 if (!averageRateResponse) return;
@@ -76,7 +76,7 @@ export default function FestivalDetail() {
                     const { average } = averageRateResponse;
                     setAverageRate(average[contentId] || 0);
                 } else {
-                    console.error('Failed to fetch average rate:', averageRateResponse.message);
+                    console.error('Failed to fetch average rate:');
                     setAverageRate(0);
                 }
             } catch (error) {
@@ -201,7 +201,7 @@ export default function FestivalDetail() {
                     [contentId]: !prevFavorites[contentId]
                 }));
             } else {
-                console.error('Failed to toggle favorite:', response.message);
+                console.error('Failed to toggle favorite:');
             }
         } catch (error) {
             console.error('Error toggling favorite:', error);
