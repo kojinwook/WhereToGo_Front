@@ -27,8 +27,10 @@ import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, Fi
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
 // const DOMAIN = 'http://localhost:8080';
+const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 const DOMAIN = 'http://15.165.24.165';
-const API_DOMAIN = `${DOMAIN}/api/v1`;
+const domain = proxyUrl + DOMAIN;
+const API_DOMAIN = `${domain}/api/v1`;
 // const API_DOMAIN = "/api/v1";
 
 
