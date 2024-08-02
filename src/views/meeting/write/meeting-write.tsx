@@ -124,6 +124,10 @@ export default function MeetingWrite() {
   };
 
   const handlePost = async () => {
+    if (!cookies.accessToken) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
     const formData = new FormData();
     formData.append('title', title);
     formData.append('introduction', introduction);

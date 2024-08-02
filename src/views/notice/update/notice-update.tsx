@@ -22,7 +22,6 @@ const NoticeUpdate: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
-  const [imageError, setImageError] = useState("");
   const [imageFileList, setImageFileList] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [noticeLoaded, setNoticeLoaded] = useState(false);
@@ -49,7 +48,12 @@ const NoticeUpdate: React.FC = () => {
   }, [noticeId]);
 
   useEffect(() => {
-    const nickname = loginUser?.nickname;
+    if(!loginUser){
+      alert('로그인이 필요합니다.');
+      navigate('/authentication/signin');
+      return;
+    }
+    const nickname = loginUser.nickname;
     if (nickname) {
       setNickname(nickname);
       setIsLoggedIn(true);
@@ -101,7 +105,6 @@ const NoticeUpdate: React.FC = () => {
         imageList.push(imageUrl);
       }
     }
-
 
     let hasError = false;
 
@@ -202,7 +205,6 @@ const NoticeUpdate: React.FC = () => {
                 </div>
               ))}
             </div>
-            {imageError && <div style={{ color: 'red' }}>{imageError}</div>}
           </td>
           </div>
         </tr>

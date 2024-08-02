@@ -182,6 +182,10 @@ export default function FestivalDetail() {
     };
 
     const reviewWriteButtonClickHandler = (contentId: string) => {
+        if (!loginUser || !cookies.accessToken) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
         navigate(`/festival/review/write?contentId=${contentId}`)
     }
 

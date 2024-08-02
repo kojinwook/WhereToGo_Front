@@ -36,13 +36,13 @@ export default function MeetingDetail() {
     const { loginUser } = useLoginUserStore();
     const { meetingId } = useParams<{ meetingId: string }>();
     const [meeting, setMeeting] = useState<Meeting>();
-    const [cookies, setCookie] = useCookies();
+    const [cookies] = useCookies();
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
     const [creatorId, setCreatorId] = useState<string>('');
     const [creatorNickname, setCreatorNickname] = useState<string>('');
-    const [roomName, setRoomName] = useState<string>(''); // 채팅방 이름
+    const [roomName, setRoomName] = useState<string>('');
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -145,7 +145,10 @@ export default function MeetingDetail() {
 
     const handleCreateRoom = async () => {
         const meetingTitle = meeting?.title;
-
+        if(!cookies.accessToken){
+            alert('로그인이 필요합니다.');
+            return;
+        }
         if (!roomName || !nickname || !creatorId || !meetingTitle) return;
         try {
             const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorId, meetingTitle }, cookies.accessToken);
@@ -167,6 +170,10 @@ export default function MeetingDetail() {
 
     const handleJoinMeeting = async () => {
         if (!meetingId || !nickname) return;
+        if (!cookies.accessToken) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
         const isAlreadyJoined = joinMemberList.map(member => member.userNickname).includes(nickname);
         if (isAlreadyJoined) {
             alert('이미 모임에 가입된 멤버입니다.');
@@ -342,13 +349,11 @@ export default function MeetingDetail() {
                     }
                 }} />
             </div>
-
             <div className="tab-menu">
                 <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
                 <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
                 <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
-
             <div className="meeting-detail-body">
                 {activeTab === 'detail' && (
                     <div>
@@ -433,7 +438,6 @@ export default function MeetingDetail() {
                     <div className="participants-list">
                         <div className='meeting-board-list'>
                             <button className='meeting-board-add-btn' onClick={handleCreateBoard}>{"게시물 작성"}</button>
-
                             <div className='meeting-board-header'>
                                 <div className='header-item'>프로필 사진</div>
                                 <div className='header-item'>닉네임</div>
@@ -469,15 +473,12 @@ export default function MeetingDetail() {
                             {boardImageList.map((image) => (
                                 <div key={image.imageId} className="image-container">
                                     <img src={image.image} alt="image" className="board-image" onClick={() => handleBoardDetail(image.meetingBoardId)} />
-
                                 </div>
                             ))}
                         </div>
-
                     </div>
                 )}
             </div>
-
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}

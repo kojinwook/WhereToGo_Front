@@ -155,7 +155,10 @@ export default function FestivalPage() {
     };
 
     const onFavoriteClickHandler = async (contentId: string) => {
-        if (!nickname) return;
+        if(!cookies.accessToken || !nickname) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
         try {
             const response = await PutFavoriteRequest(contentId, nickname, cookies.accessToken);
             if (!response) return;

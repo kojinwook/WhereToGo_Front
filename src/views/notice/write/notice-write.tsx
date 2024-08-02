@@ -16,12 +16,16 @@ export default function InquireWrite() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
-  const [imageError, setImageError] = useState("");
   const [imageFileList, setImageFileList] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   useEffect(() => {
-    const nickname = loginUser?.nickname;
+    if (!loginUser) {
+      alert('로그인이 필요합니다.');
+      navigate('/authentication/signin');
+      return;
+    }
+    const nickname = loginUser.nickname;
     if (!nickname) return;
     setNickname(nickname);
     setIsLoggedIn(true);
@@ -160,7 +164,6 @@ export default function InquireWrite() {
                 </div>
               ))}
             </div>
-            {imageError && <div style={{ color: 'red' }}>{imageError}</div>}
           </td>
         </div>
       </tbody>

@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './style.css';
-import useReviewStore from 'store/review.store';
 import useLoginUserStore from 'store/login-user.store';
 import { Images } from 'types/interface/interface';
 

@@ -211,9 +211,7 @@ export default function MeetingUpdate() {
                     value={title}
                     onChange={handleTitleChange}
                 />
-
                 <br />
-
                 <p><strong>한 줄 소개</strong></p>
                 <label>
                     <textarea
@@ -222,9 +220,7 @@ export default function MeetingUpdate() {
                         onChange={handleIntroductionChange}
                     ></textarea>
                 </label>
-
                 <br />
-
                 <p><strong>내용</strong></p>
                 <label>
                     <textarea
@@ -233,9 +229,7 @@ export default function MeetingUpdate() {
                         onChange={handleContentChange}
                     ></textarea>
                 </label>
-
                 <br />
-
                 <p><strong>최대 인원</strong></p>
                 <input
                     type="number"
@@ -245,9 +239,7 @@ export default function MeetingUpdate() {
                     min={1}
                     max={20}
                 />
-
                 <br />
-
                 <p><strong>태그</strong></p>
                 <input
                     type="text"
@@ -262,9 +254,7 @@ export default function MeetingUpdate() {
                         </div>
                     ))}
                 </div>
-
                 <br />
-
                 <p><strong>카테고리</strong></p>
                 <div className='category-select'>
                     {categoryOptions.map((category) => (
@@ -285,9 +275,7 @@ export default function MeetingUpdate() {
                         </div>
                     ))}
                 </div>
-
                 <br />
-
                 <p><strong>지역</strong></p>
                 <div className='category-select'>
                     {locationOptions.map((location) => (
@@ -308,7 +296,6 @@ export default function MeetingUpdate() {
                         </div>
                     ))}
                 </div>
-
                 <p><strong>사진</strong></p>
                 <input type="file" multiple onChange={handleImageChange} />
                 <div style={{ display: 'flex', marginTop: '10px' }}>
@@ -328,7 +315,6 @@ export default function MeetingUpdate() {
                         </div>
                     ))}
                 </div>
-
                 <button onClick={updateButtonHandler}>수정</button>
             </div>
         </div>
