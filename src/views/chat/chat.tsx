@@ -61,7 +61,7 @@ const ChatRoom: React.FC = () => {
 
     useEffect(() => {
         if (!roomId || !loginUser) return;
-        const socket = new SockJS('http://15.165.24.165:8080/ws');
+        const socket = new SockJS('http://15.165.24.165:8088/ws');
         const client = new Client({
             webSocketFactory: () => socket,
             onConnect: () => {
