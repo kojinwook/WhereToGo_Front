@@ -39,7 +39,7 @@ export default function BoardDetail() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const socket = new SockJS('http://15.165.24.165:8080/ws');
+        const socket = new SockJS('http://15.165.24.165:8088/ws');
         stompClient.current = Stomp.over(socket);
 
         const headers = {
