@@ -28,7 +28,7 @@ import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-t
 
 // const DOMAIN = 'http://localhost:8080';
 // const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-const DOMAIN = 'http://15.165.24.165';
+const DOMAIN = 'http://15.165.24.165:8088';
 // const domain = proxyUrl + DOMAIN;
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 // const API_DOMAIN = "/api/v1";
