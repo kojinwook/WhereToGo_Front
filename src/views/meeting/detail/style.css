@@ -144,12 +144,7 @@
     gap: 10px;
 }
 
-.meeting-more-options {
-    align-self: flex-end;
-    padding-right: 10px;
-    position: relative;
-}
-
+/* 채팅, 신청목록 */
 .meeting-detail-btn {
     display: flex;
     justify-content: space-between;
@@ -179,31 +174,38 @@
 }
 
 /* 모임 수정 삭제 */
-.button-box {
-display: flex;
-width: 6.25rem;
-flex-direction: column;
-position: absolute;
-top: 32px;
-right: 0;
-background-color: white;
-border: 1px solid #ccc;
-border-radius: 10px;
-padding: 10px;
-z-index: 1000;
+.meeting-more-options {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    position: relative;
 }
 
 .meeting-more-button {
-border: none;
-cursor: pointer;
-width: 20px;
+    border: none;
+    cursor: pointer;
+    width: 20px;
+}
+
+.button-box {
+    display: flex;
+    width: 6.25rem;
+    flex-direction: column;
+    position: absolute;
+    top: 32px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 1000;
 }
 
 .bordered-div {
-    border: .0625rem solid #ccc; /* Add border */
-    padding: .625rem; /* Add some padding for better appearance */
-    border-radius: .3125rem; /* Optional: Add rounded corners */
-    margin-bottom: .625rem; /* Add some space between elements */
+    border: .0625rem solid #ccc;
+    padding: .625rem;
+    border-radius: .3125rem;
+    margin-bottom: .625rem;
 }
 
 .meeting-detail-right h1 {
@@ -264,11 +266,22 @@ width: 20px;
 }
 
 /* 모임 참가 요청 목록 모달 */
+.meeting-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    z-index: 1000;
+}
+
 .modal-content {
     display: flex;
     flex-direction: column;
     height: 100%;
     position: relative;
+    border: 1px solid #000;
+    overflow-y: scroll;
 }
 
 .modal-footer {
@@ -305,6 +318,7 @@ width: 20px;
     margin-bottom: 10px;
 }
 
+/* 프로필 사진 */
 .profile-info {
     display: flex;
     align-items: center;
@@ -460,4 +474,81 @@ width: 20px;
 
 .image-container:hover .board-image {
     transform: scale(1.1);
+}
+
+/* 멤버 리스트 */
+.bordered-div.member {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.meeting-member-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    z-index: 1000;
+    width: 80%;
+    max-width: 500px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.member-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.member-modal-close {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.participant img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid;
+}
+
+.participant p {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.participant button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.participant button:first-child {
+    margin-left: 0;
+}
+
+.participant button:hover {
+    background-color: #000;
 }

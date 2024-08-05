@@ -181,7 +181,7 @@ const NoticeUpdate: React.FC = () => {
             />
             {contentError && <div style={{ color: 'red' }}>{contentError}</div>}
           </td>
-          </div>
+        </div>
         </tr>
         <tr>
         <div className='inquire-update-tr'>
