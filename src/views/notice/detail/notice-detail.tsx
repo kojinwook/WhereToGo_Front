@@ -140,7 +140,6 @@ const NoticeDetail: React.FC = () => {
         </div>
 
         <div className="detail-row">
-
           <p><span className="label">제목 |</span> <span className="value">{notice.title}</span></p>
           <p><span className="label">내용 |</span> <span className="value">{notice.content}</span></p>
         </div>
