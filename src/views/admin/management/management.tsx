@@ -1,5 +1,5 @@
-import { BlockUserRequest, DeleteUserRequest, GetUserListRequest } from 'apis/apis';
-import { BlockUserRequestDto } from 'apis/request/user';
+import { BlockUserRequest, DeleteUserRequest, GetUserListRequest, UnBlockUserRequest } from 'apis/apis';
+import { BlockUserRequestDto, UnBlockUserRequestDto } from 'apis/request/user';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,8 @@ export default function Management() {
     const [cookies] = useCookies();
     const [showModal, setShowModal] = useState<boolean>(false);
     const [isBlocking, setIsBlocking] = useState<boolean>(false);
-    const [blockDays, setBlockDays] = useState<number>(3);
+    const [blockDays, setBlockDays] = useState<string>('3');
+    const [unBlocking, setUnBlocking] = useState<boolean>(false);
     const [currentUserId, setCurrentUserId] = useState<string>('');
     const [adminCode, setAdminCode] = useState<string>('');
     const navigate = useNavigate();
@@ -70,16 +71,17 @@ export default function Management() {
         setFilteredUserList(filteredUsers);
     };
 
-    const openModal = (userId: string, isBlocking: boolean) => {
+    const openModal = (userId: string, isBlocking: boolean, unBlocking: boolean = false) => {
         setCurrentUserId(userId);
         setIsBlocking(isBlocking);
+        setUnBlocking(unBlocking);
         setShowModal(true);
     };
 
     const closeModal = () => {
         setShowModal(false);
         setAdminCode('');
-        setBlockDays(3);
+        setBlockDays('3');
     };
 
     const handleAdminCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,10 +89,12 @@ export default function Management() {
     };
 
     const handleBlockDaysChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setBlockDays(parseInt(event.target.value, 10));
+        console.log(event.target.value)
+        setBlockDays((event.target.value));
     };
 
     const handleDelete = async () => {
+        window.confirm('정말로 강퇴하시겠습니까?');
         if (adminCode !== ADMIN_CONFIRMATION_CODE) {
             alert('확인 코드가 일치하지 않습니다.');
             return;
@@ -105,14 +109,20 @@ export default function Management() {
     };
 
     const handleBlock = async () => {
+        window.confirm('정말로 블랙하시겠습니까?');
         if (adminCode !== ADMIN_CONFIRMATION_CODE) {
             alert('확인 코드가 일치하지 않습니다.');
             return;
         }
         const requestBody: BlockUserRequestDto = { userId: currentUserId, blockDays: blockDays };
-        const response = await BlockUserRequest(currentUserId, requestBody, cookies.accessToken);
+        const response = await BlockUserRequest(requestBody, cookies.accessToken);
+        console.log(response)
         if (!response) return;
-        alert('블랙 처리되었습니다.');
+        if (response.code === 'SU') {
+            alert('블랙 처리되었습니다.');
+        } else {
+            alert('블랙 처리에 실패했습니다.');
+        }
         closeModal();
         const updatedUserList = userList.map(user =>
             user.userId === currentUserId ? { ...user, isBlocked: true } : user
@@ -120,6 +130,29 @@ export default function Management() {
         setUserList(updatedUserList);
         setFilteredUserList(updatedUserList);
     };
+
+    const handleUnBlock = async () => {
+        window.confirm('정말로 블랙을 해제하시겠습니까?');
+        if (adminCode !== ADMIN_CONFIRMATION_CODE) {
+            alert('확인 코드가 일치하지 않습니다.');
+            return;
+        }
+        const requestBody: UnBlockUserRequestDto = { userId: currentUserId };
+        const response = await UnBlockUserRequest(requestBody, cookies.accessToken);
+        console.log(response)
+        if (!response) return;
+        if (response.code === 'SU') {
+            alert('블랙이 해제되었습니다.');
+        } else {
+            alert('블랙 해제에 실패했습니다.');
+        }
+        closeModal();
+        const updatedUserList = userList.map(user =>
+            user.userId === currentUserId ? { ...user, isBlocked: false } : user
+        );
+        setUserList(updatedUserList);
+        setFilteredUserList(updatedUserList);
+    }
 
     const formatDate = (createDateTime: string) => {
         const isoDate = createDateTime;
@@ -167,7 +200,7 @@ export default function Management() {
                             <th>온도</th>
                             <th>신고누적</th>
                             <th>블랙</th>
-                            <th>강퇴</th>
+                            <th>관리</th>
                         </tr>
                     </thead>
                     <tbody className='manage-content'>
@@ -182,7 +215,11 @@ export default function Management() {
                                 <td>{user.isBlocked ? 'O' : 'X'}</td>
                                 <td>
                                     <button className='ejection' onClick={() => openModal(user.userId, false)}>강퇴</button>
-                                    <button onClick={() => openModal(user.userId, true)}>블랙</button>
+                                    {user.isBlocked ? (
+                                        <button onClick={() => openModal(user.userId, false, true)}>블랙 해제</button>
+                                    ) : (
+                                        <button onClick={() => openModal(user.userId, true)}>블랙</button>
+                                    )}
                                     <button onClick={() => reportListClickHandler(user.nickname)}>신고목록</button>
                                 </td>
                             </tr>
@@ -200,7 +237,7 @@ export default function Management() {
                             value={adminCode}
                             onChange={handleAdminCodeChange}
                         />
-                        {isBlocking && (
+                        {isBlocking && !unBlocking && (
                             <>
                                 <input
                                     type="number"
@@ -211,7 +248,7 @@ export default function Management() {
                                 />
                             </>
                         )}
-                        <button onClick={isBlocking ? handleBlock : handleDelete}>확인</button>
+                        <button onClick={isBlocking ? handleBlock : (unBlocking ? handleUnBlock : handleDelete)}>확인</button>
                         <button onClick={closeModal}>취소</button>
                     </div>
                 </div>

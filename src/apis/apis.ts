@@ -11,7 +11,7 @@ import { PatchBoardReplyRequestDto, PatchReplyReplyRequestDto, PostBoardReplyReq
 import { PatchNoticeRequestDto, PostNoticeRequestDto } from "./request/notice";
 import { PatchQuestionRequestDto, PostQuestionRequestDto } from "./request/question";
 import { PatchReviewRequestDto } from "./request/review";
-import { BlockUserRequestDto, FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, PatchProfileImageRequestDto, PatchUserRequestDto, ReportUserRequestDto, VerifyPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
+import { BlockUserRequestDto, FindUserIdRequestDto, PasswordRecoveryRequestDto, PatchNicknameRequestDto, PatchPasswordRequestDto, PatchProfileImageRequestDto, PatchUserRequestDto, ReportUserRequestDto, UnBlockUserRequestDto, VerifyPasswordRequestDto, WithdrawalUserRequestDto } from "./request/user";
 import { DeleteAnswerResponseDto, GetAllAnswerResponseDto, GetAnswerResponseDto, PatchAnswerResponseDto, PostAnswerResponseDto } from "./response/answer";
 import { AdminSignInResponseDto, AdminSignUpResponseDto, CheckCertificationResponseDto, EmailCertificationResponseDto, NicknameCheckResponseDto, SignInResponseDto, SignUpResponseDto, UserIdCheckResponseDto } from "./response/auth";
 import { GetChatMessageListResponseDto, GetChatMessageResponseDto, GetChatRoomListResponseDto, GetChatRoomResponseDto, GetChatRoomUsersResponseDto, PostChatMessageResponseDto, PostChatRoomResponseDto } from "./response/chat";
@@ -23,15 +23,15 @@ import { DeleteNoticeResponseDto, GetAllNoticeResponseDto, GetNoticeResponseDto,
 import { DeleteQuestionResponseDto, GetAllQuestionResponseDto, GetQuestionResponseDto, PatchQuestionResponseDto, PostQuestionResponseDto } from "./response/question";
 import { ResponseDto } from "./response/response";
 import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListResponseDto, GetReviewResponseDto, PatchReviewResponseDto, PostReviewResponseDto } from "./response/review/review";
-import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, LikeUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, PatchProfileImageResponseDto, PatchUserResponseDto, ReportUserListResponseDto, ReportUserResponseDto, VerifyPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
+import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, LikeUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, PatchProfileImageResponseDto, PatchUserResponseDto, ReportUserListResponseDto, ReportUserResponseDto, UnBlockUserResponseDto, VerifyPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
-// const DOMAIN = 'http://localhost:8088';
-const DOMAIN = 'http://15.165.24.165:8088';
+const DOMAIN = 'http://localhost:8088';
+// const DOMAIN = 'http://15.165.24.165:8088';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
-// const FILE_DOMAIN = `${DOMAIN}/file`;
-const FILE_DOMAIN = `${DOMAIN}/sftp/file`;
+const FILE_DOMAIN = `${DOMAIN}/file`;
+// const FILE_DOMAIN = `${DOMAIN}/sftp/file`;
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 const multipartFormData = { headers: { 'Url-Type': 'multipart/form-data' } };
 
@@ -97,8 +97,9 @@ const WIDTHDRAWAL_USER_URL = () => `${API_DOMAIN}/user/withdrawal`;
 const DELETE_USER_URL = (userId: string) => `${API_DOMAIN}/user/delete-user/${userId}`;
 const REPORT_USER_URL = (userId: string) => `${API_DOMAIN}/user/report-user/${userId}`;
 const GET_REPORT_USER_LIST_URL = (nickname: string) => `${API_DOMAIN}/user/report-list/${nickname}`;
-const BLOCK_USER_URL = (userId: string) => `${API_DOMAIN}/user/block-user/${userId}`;
-const GET_TOP5_TEMPERATURE_USER_LIST_URL = () => `${API_DOMAIN}/user/temperature-top5`;
+const BLOCK_USER_URL = () => `${API_DOMAIN}/user/block-user`;
+const UNBLOCK_USER_URL = () => `${API_DOMAIN}/user/unblock-user`;
+const GET_TOP3_TEMPERATURE_USER_LIST_URL = () => `${API_DOMAIN}/user/temperature-top3`;
 const LIKE_USER_URL = (nickname: string, meetingId: string) => `${API_DOMAIN}/user/like-user/${meetingId}/${nickname}`;
 const DISLIKE_USER_URL = (nickname: string, meetingId: string) => `${API_DOMAIN}/user/dislike-user/${meetingId}/${nickname}`;
 
@@ -270,15 +271,22 @@ export const GetUserReportListRequest = async (nickname: string, accessToken: st
     return result;
 };
 
-export const BlockUserRequest = async (userId: string, requestBody: BlockUserRequestDto, accessToken: string) => {
-    const result = await axios.post(BLOCK_USER_URL(userId), requestBody, authorization(accessToken))
+export const BlockUserRequest = async (requestBody: BlockUserRequestDto, accessToken: string) => {
+    const result = await axios.post(BLOCK_USER_URL(), requestBody, authorization(accessToken))
         .then(responseHandler<BlockUserResponseDto>)
         .catch(errorHandler);
     return result;
 };
 
+export const UnBlockUserRequest = async (requestBody: UnBlockUserRequestDto, accessToken: string) => {
+    const result = await axios.post(UNBLOCK_USER_URL(), requestBody, authorization(accessToken))
+        .then(responseHandler<UnBlockUserResponseDto>)
+        .catch(errorHandler);
+    return result;
+};
+
 export const Top5TemperatureUserRequest = async () => {
-    const result = await axios.get(GET_TOP5_TEMPERATURE_USER_LIST_URL())
+    const result = await axios.get(GET_TOP3_TEMPERATURE_USER_LIST_URL())
         .then(responseHandler<GetTop5TemperatureUserResponseDto>)
         .catch(errorHandler);
     return result;
