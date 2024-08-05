@@ -26,8 +26,8 @@ import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListRespon
 import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, LikeUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, PatchProfileImageResponseDto, PatchUserResponseDto, ReportUserListResponseDto, ReportUserResponseDto, VerifyPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
-// const DOMAIN = 'http://localhost:8088';
-const DOMAIN = 'http://15.165.24.165:8088';
+const DOMAIN = 'http://localhost:8088';
+// const DOMAIN = 'http://15.165.24.165:8088';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
 // const FILE_DOMAIN = `${DOMAIN}/file`;
