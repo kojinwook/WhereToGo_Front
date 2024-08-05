@@ -1,55 +1,36 @@
-import { DeleteMeetingRequest, GetJoinMeetingMemberRequest, GetMeetingBoardImageListRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import { DeleteMeetingRequest, DislikeUserRequest, GetJoinMeetingMemberRequest, GetMeetingBoardImageListRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, LikeUserRequest, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import moreButton from 'assets/images/more.png';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
-import { Images, Meeting, MeetingBoard, MeetingRequest } from 'types/interface/interface';
-import moreButton from 'assets/images/more.png';
+import { Images, Meeting, MeetingBoard, MeetingRequest, MeetingUser } from 'types/interface/interface';
 import './style.css';
 
 Modal.setAppElement('#root');
-
-const ModalStyle = {
-    overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    content: {
-        width: '300px',
-        height: '400px',
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        transform: 'translate(-50%, -50%)',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        backgroundColor: '#fff',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        zIndex: '100',
-    }
-}
 
 export default function MeetingDetail() {
 
     const { loginUser } = useLoginUserStore();
     const { meetingId } = useParams<{ meetingId: string }>();
     const [meeting, setMeeting] = useState<Meeting>();
-    const [cookies, setCookie] = useCookies();
+    const [cookies] = useCookies();
     const [userId, setUserId] = useState<string>('');
     const [role, setRole] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
     const [creatorId, setCreatorId] = useState<string>('');
     const [creatorNickname, setCreatorNickname] = useState<string>('');
-    const [roomName, setRoomName] = useState<string>(''); // 채팅방 이름
+    const [roomName, setRoomName] = useState<string>('');
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [activeTab, setActiveTab] = useState('detail');
-    const [joinMemberList, setJoinMemberList] = useState<string[]>([]);
+    const [joinMemberList, setJoinMemberList] = useState<MeetingUser[]>([]);
     const [joinMembers, setJoinMembers] = useState<number>();
     const [boardList, setBoardList] = useState<MeetingBoard[]>([]);
     const [boardImageList, setBoardImageList] = useState<Images[]>([]);
@@ -71,7 +52,7 @@ export default function MeetingDetail() {
                 if (!response) return;
                 console.log(response)
                 const members = response.meetingUsersList.map(member => member.userNickname);
-                setJoinMemberList(members);
+                setJoinMemberList(response.meetingUsersList);
                 setJoinMembers(response.meetingUsersList.length);
             } catch (error) {
                 console.error('Failed to fetch join members:', error);
@@ -116,7 +97,7 @@ export default function MeetingDetail() {
         if (!meetingId) return;
         const fetchMeetingBoardImageList = async () => {
             const response = await GetMeetingBoardImageListRequest(meetingId);
-            console.log("response",response)
+            console.log("response", response)
             if (response && response.code === 'SU') {
                 setBoardImageList(response.imageList);
             } else {
@@ -145,7 +126,10 @@ export default function MeetingDetail() {
 
     const handleCreateRoom = async () => {
         const meetingTitle = meeting?.title;
-
+        if(!cookies.accessToken){
+            alert('로그인이 필요합니다.');
+            return;
+        }
         if (!roomName || !nickname || !creatorId || !meetingTitle) return;
         try {
             const response = await PostChatRoomRequest({ userId, roomName, nickname, creatorId, meetingTitle }, cookies.accessToken);
@@ -158,7 +142,7 @@ export default function MeetingDetail() {
                     console.error('Failed to create chat room: No roomId returned');
                 }
             } else {
-                console.error('Failed to create chat room:', response.message);
+                console.error('Failed to create chat room:');
             }
         } catch (error) {
             console.error('Failed to create chat room:', error);
@@ -167,7 +151,11 @@ export default function MeetingDetail() {
 
     const handleJoinMeeting = async () => {
         if (!meetingId || !nickname) return;
-        const isAlreadyJoined = joinMemberList.includes(nickname);
+        if (!cookies.accessToken) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+        const isAlreadyJoined = joinMemberList.map(member => member.userNickname).includes(nickname);
         if (isAlreadyJoined) {
             alert('이미 모임에 가입된 멤버입니다.');
             return;
@@ -187,7 +175,7 @@ export default function MeetingDetail() {
                 alert("이미 가입 신청이 되었습니다.")
             }
             else {
-                console.error('Failed to join meeting:', response.message);
+                console.error('Failed to join meeting:');
             }
         } catch (error) {
             console.error('Failed to join meeting:', error);
@@ -204,7 +192,7 @@ export default function MeetingDetail() {
                 alert('요청이 처리되었습니다.');
                 setRequests(prevRequests => prevRequests.filter(request => request.requestId !== requestId));
             } else {
-                console.error('Failed to respond to join request:', response.message);
+                console.error('Failed to respond to join request:');
             }
         } catch (error) {
             console.error('Failed to respond to join request:', error);
@@ -279,7 +267,7 @@ export default function MeetingDetail() {
             if (response.code !== 'SU') {
                 alert('모임 삭제에 실패했습니다.');
             } else {
-                console.error('Failed to delete meeting:', response.message);
+                console.error('Failed to delete meeting:');
             }
         }
     }
@@ -289,11 +277,45 @@ export default function MeetingDetail() {
     }
 
     const handleBoardDetail = (meetingBoardId: string) => {
-        if (!joinMemberList.includes(nickname)) {
+        if (!joinMemberList.map(member => member.userNickname).includes(nickname)) {
             alert('모임에 가입해야 게시물을 볼 수 있습니다.');
             return;
         }
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
+    }
+
+    // 멤버 리스트
+    const toggleMemberModal = () => {
+        setIsMemberModalOpen(!isMemberModalOpen);
+    };
+
+    const handleLike = async (nickname: string) => {
+        window.confirm('정말로 좋아요를 누르시겠습니까?')
+        if(!meetingId || !nickname) return;
+        const response = await LikeUserRequest(nickname, meetingId, cookies.accessToken);
+        if (response) {
+            if (response.code === 'SU') {
+                alert('좋아요를 눌렀습니다.');
+            }
+            if (response.code === 'AR') {
+                alert('이미 좋아요를 눌렀습니다.');
+            }
+        }
+    }
+
+    const handleUnlike = async (nickname: string) => {
+        window.confirm('정말로 싫어요를 누르시겠습니까?')
+        if(!meetingId || !nickname) return;
+        const response = await DislikeUserRequest(nickname, meetingId, cookies.accessToken);
+        console.log(response);
+        if (response) {
+            if (response.code === 'SU') {
+                alert('싫어요를 눌렀습니다.');
+            }
+            if (response.code === 'AR') {
+                alert('이미 싫어요를 눌렀습니다.');
+            }
+        }
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
@@ -313,14 +335,11 @@ export default function MeetingDetail() {
                     }
                 }} />
             </div>
-
             <div className="tab-menu">
                 <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>
                 <button className={`tab-button ${activeTab === 'participants' ? 'active' : ''}`} onClick={() => setActiveTab('participants')}>게시판</button>
                 <button className={`tab-button ${activeTab === 'requests' ? 'active' : ''}`} onClick={() => setActiveTab('requests')}>사진첩</button>
             </div>
-
-
             <div className="meeting-detail-body">
                 {activeTab === 'detail' && (
                     <div>
@@ -341,12 +360,12 @@ export default function MeetingDetail() {
                             </div>
                             <div className="meeting-detail-right">
                                 <div className="meeting-more-options">
-                                    {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="meeting-more-button" src= {moreButton} alt="더보기" onClick={toggleOptions} />
+                                    {(meeting.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
+                                        <img className="meeting-more-button" src={moreButton} alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
-                                            {meeting.userNickname !== nickname && (
+                                            {meeting.userDto.nickname === nickname && (
                                                 <button
                                                     className="update-button"
                                                     onClick={() => updatePostClickHandler(meeting.meetingId)}
@@ -354,7 +373,7 @@ export default function MeetingDetail() {
                                                     수정
                                                 </button>
                                             )}
-                                            {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
+                                            {(meeting.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
                                                 <button
                                                     className="delete-button"
                                                     onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
@@ -375,11 +394,39 @@ export default function MeetingDetail() {
                                 <div className="bordered-div">
                                     {Array.isArray(meeting.locations) ? meeting.locations.join(', ') : meeting.locations}
                                 </div>
-                                <p>인원</p>
-                                <div className="bordered-div">{joinMembers}/{meeting.maxParticipants}</div>
+                                <p className='meeting-member'>인원</p>
+                                <div>
+                                    <div className="bordered-div member" onClick={toggleMemberModal}>
+                                        {joinMembers}/{meeting.maxParticipants}
+                                    </div>
+
+                                    {isMemberModalOpen && (
+                                        <div className="meeting-member-modal">
+                                            <div className="member-modal-content">
+                                                <button className="member-modal-close" onClick={toggleMemberModal}>
+                                                    X
+                                                </button>
+                                                <div>
+                                                    {joinMemberList.map((member, index) => (
+                                                        <div key={index} className="participant">
+                                                            <img
+                                                                src={member.userProfileImage || defaultProfileImage}
+                                                                alt="profile"
+                                                            />
+                                                            <p>{member.userNickname}</p>
+                                                            <button onClick={() => handleLike(member.userNickname)}>{'좋아요'}</button>
+                                                            <button onClick={() => handleUnlike(member.userNickname)}>{'싫어요'}</button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className='meeting-detail-btn'>
                                     <button onClick={handleCreateRoom}>1 : 1 채팅</button>
-                                    {joinMemberList.includes(nickname) ? (
+                                    {joinMemberList.map(member => member.userNickname).includes(nickname) ? (
                                         <div></div>) : (
                                         <button onClick={handleJoinMeeting} style={{ display: nickname === creatorNickname ? 'none' : 'inline-block' }}>가입 신청</button>)}
                                     {nickname === creatorNickname && (
@@ -405,12 +452,11 @@ export default function MeetingDetail() {
                     <div className="participants-list">
                         <div className='meeting-board-list'>
                             <button className='meeting-board-add-btn' onClick={handleCreateBoard}>{"게시물 작성"}</button>
-
                             <div className='meeting-board-header'>
-                            <div className='header-item'>프로필 사진</div>
-                            <div className='header-item'>닉네임</div>
-                            <div className='header-item'>제목</div>
-                            <div className='header-item'>작성 날짜</div>
+                                <div className='header-item'>프로필 사진</div>
+                                <div className='header-item'>닉네임</div>
+                                <div className='header-item'>제목</div>
+                                <div className='header-item'>작성 날짜</div>
                             </div>
                             {boardList.length === 0 ? (
                                 <div className="no-posts-message">게시물이 없습니다.</div>
@@ -441,11 +487,9 @@ export default function MeetingDetail() {
                             {boardImageList.map((image) => (
                                 <div key={image.imageId} className="image-container">
                                     <img src={image.image} alt="image" className="board-image" onClick={() => handleBoardDetail(image.meetingBoardId)} />
-
                                 </div>
                             ))}
                         </div>
-
                     </div>
                 )}
             </div>
@@ -454,7 +498,7 @@ export default function MeetingDetail() {
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 contentLabel="신청 목록"
-                style={ModalStyle}
+                className="meeting-modal"
             >
                 <div className="modal-content">
                     <div className="modal-footer">

@@ -38,9 +38,12 @@ export default function ReportUser() {
     ];
 
     useEffect(() => {
-        if (loginUser) {
-            setUserId(loginUser.userId);
+        if (!loginUser) {
+            alert('로그인이 필요합니다.');
+            navigate('/authentication/signin');
+            return;
         }
+        setUserId(loginUser.userId);
     }, [loginUser]);
 
     const handleReportTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

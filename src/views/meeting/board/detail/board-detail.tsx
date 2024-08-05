@@ -39,7 +39,7 @@ export default function BoardDetail() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/ws');
+        const socket = new SockJS('http://15.165.24.165:8088/ws');
         stompClient.current = Stomp.over(socket);
 
         const headers = {
@@ -117,6 +117,10 @@ export default function BoardDetail() {
 
     const onReplyButtonClickHandler = async () => {
         if (!meetingBoardId || !reply || !nickname || !meetingId) return;
+        if (!cookies.accessToken) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
         const requestBody: PostBoardReplyRequestDto = { meetingBoardId, reply: reply, meetingId: meetingId }
         const response = await PostBoardReplyRequest(requestBody, cookies.accessToken);
         if (!response) return;
@@ -148,13 +152,17 @@ export default function BoardDetail() {
 
     const onReplyReplyButtonClickHandler = async (parentCommentId: number) => {
         if (!replyReply || !nickname) return;
+        if (!cookies.accessToken) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
         const requestBody: PostReplyReplyRequestDto = { parentCommentId, replyReply: replyReply }
         const response = await PostReplyReplyRequest(requestBody, cookies.accessToken);
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('대댓글이 작성되었습니다.');
             setReplyReply("");
-            fetchReplyList(); // 댓글 리스트를 다시 불러옵니다.
+            fetchReplyList();
         } else {
             console.error('Failed to post reply');
         }

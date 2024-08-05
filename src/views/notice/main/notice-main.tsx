@@ -23,12 +23,13 @@ const NoticeList: React.FC = () => {
 
 
   useEffect(() => {
-    const userId = loginUser?.userId;
-    const role = loginUser?.role;
-    console.log("userId", userId, "role", role);
-    if(!userId || !role) return;
-    setUserId(userId);
-    setRole(role);
+    if (!loginUser){
+      alert('로그인이 필요합니다.');
+      navigator('/authentication/signin');
+      return;
+    }
+    setUserId(loginUser?.userId);
+    setRole(loginUser?.role);
     setIsLoggedIn(true);
   }, [loginUser]);
 
@@ -71,7 +72,7 @@ const NoticeList: React.FC = () => {
 
   const handleSearch = () => {
     if (searchTerm.trim() === '') {
-      return posts; 
+      return posts;
     } else {
       return posts.filter(notice =>
         notice.title.includes(searchTerm)

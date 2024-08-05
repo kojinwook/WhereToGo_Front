@@ -9,7 +9,6 @@ import { ResponseDto } from 'apis/response/response';
 
 interface ResponseData {
     code: string;
-    message: string;
     reviews: Review[];
     festivalList: Festival[];
 }
@@ -17,13 +16,16 @@ interface ResponseData {
 export default function ReviewList() {
     const { loginUser } = useLoginUserStore();
     const { nickname } = useParams();
-    const [userId, setUserId] = useState<string>('');
     const [reviewList, setReviewList] = useState<Review[]>([]);
     const [festivalList, setFestivalList] = useState<Festival[]>([]);
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!nickname) return;
+        if (!nickname) {
+            alert('로그인이 필요합니다.');
+            navigate('/authentication/signin');
+            return;
+        };
         const fetchReviewList = async () => {
             const response: GetReviewListResponseDto | ResponseDto | null = await GetReviewListRequest(nickname);
             if (response && 'reviews' in response && 'festivalList' in response) {

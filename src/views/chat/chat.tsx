@@ -61,7 +61,7 @@ const ChatRoom: React.FC = () => {
 
     useEffect(() => {
         if (!roomId || !loginUser) return;
-        const socket = new SockJS('http://localhost:8080/ws');
+        const socket = new SockJS('http://15.165.24.165:8088/ws');
         const client = new Client({
             webSocketFactory: () => socket,
             onConnect: () => {
@@ -118,7 +118,7 @@ const ChatRoom: React.FC = () => {
                 if (response.code === 'SU') {
                     setChatPartnerNickname(response.nickname);
                 } else {
-                    console.error('Failed to get chat partner:', response.message);
+                    console.error('Failed to get chat partner');
                 }
             } else {
                 console.error('Failed to get chat partner: Response is null');
@@ -183,7 +183,7 @@ const ChatRoom: React.FC = () => {
                     setNickname(nickname);
                     setProfileImage(profileImage);
                 } else {
-                    console.error('Failed to get user:', response.message);
+                    console.error('Failed to get user:');
                 }
             } catch (error) {
                 console.error('Failed to get user:', error);
@@ -215,7 +215,7 @@ const ChatRoom: React.FC = () => {
                     setMessages(formattedMessages);
                 }
             } else {
-                console.error('Failed to fetch messages:', response.message);
+                console.error('Failed to fetch messages:');
             }
         } catch (error) {
             console.error('Failed to fetch messages:', error);

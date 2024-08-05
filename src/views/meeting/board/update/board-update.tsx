@@ -10,7 +10,6 @@ import './style.css';
 export default function BoardUpdate() {
 
     const { meetingId, meetingBoardId } = useParams();
-    // const {meetingId} = 
     const { loginUser } = useLoginUserStore();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -105,8 +104,6 @@ export default function BoardUpdate() {
         }
     }
 
-
-
     return (
         <div className='board-update-container'>
             <p>게시물 수정</p>
@@ -119,9 +116,7 @@ export default function BoardUpdate() {
                         value={title}
                         onChange={handleTitle}
                     />
-
                     <br />
-
                     <p><strong>내용</strong></p>
                     <label>
                         <textarea
@@ -130,9 +125,7 @@ export default function BoardUpdate() {
                             onChange={handleContent}
                         ></textarea>
                     </label>
-
                     <br />
-
                     <p><strong>주소</strong></p>
                     <label>
                         <textarea
@@ -141,9 +134,7 @@ export default function BoardUpdate() {
                             onChange={handleAddress}
                         ></textarea>
                     </label>
-
                     <br />
-
                     <p><strong>사진</strong></p>
                     <input type="file" multiple onChange={handleImageChange} />
                     <div className='image-preview-container'>

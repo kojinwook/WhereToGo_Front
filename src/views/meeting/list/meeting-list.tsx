@@ -16,9 +16,9 @@ export interface Location {
 export default function MeetingList() {
 
   const [meetingList, setMeetingList] = useState<Meeting[]>([])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // 선택된 카테고리 상태
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([]); // 선택된 지역 상태
-  const [searchTerms, setSearchTerms] = useState<string[]>([]); // 검색어 배열
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
+  const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [joinMembersMap, setJoinMembersMap] = useState<{ [key: number]: number }>({});
   const [cookies] = useCookies();
   const navigate = useNavigate()
@@ -78,7 +78,7 @@ export default function MeetingList() {
         }
       } catch (error) {
         console.error('Error fetching meeting list:', error);
-        setMeetingList([]); // 에러 발생 시 빈 배열로 초기화
+        setMeetingList([]);
       }
     };
     getMeetingList();
@@ -109,7 +109,6 @@ export default function MeetingList() {
     navigate(`/meeting/detail/${meetingId}`)
   }
 
-  // "전체"를 클릭하면 선택 해제
   const categoryClickHandler = (categoryName: string) => {
     if (categoryName === '전체') {
       setSelectedCategories([]);
@@ -138,7 +137,6 @@ export default function MeetingList() {
     }
   };
 
-  // 카테고리 선택 여부 확인
   const isSelectedCategory = (categoryName: string) => {
     if (categoryName === '전체') {
       return selectedCategories.length === 0;
@@ -228,7 +226,6 @@ export default function MeetingList() {
         <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
         <button className='meeting-list-create-btn' onClick={createMeetingClickHandler}>모임 만들기</button>
       </div>
-
       <div className='meeting-list-categories'>
         <div className='meeting-list-category'>
           <h4>카테고리</h4>
@@ -277,7 +274,6 @@ export default function MeetingList() {
           </div>
         </div>
       </div>
-
       <div className='meeting-list-header'>
         <div>모임 사진</div>
         <div>모임 명</div>

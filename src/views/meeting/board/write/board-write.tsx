@@ -97,9 +97,7 @@ export default function BoardWrite() {
                     value={title}
                     onChange={handleTitle}
                 />
-
                 <br />
-
                 <p><strong>내용</strong></p>
                 <label>
                     <textarea
@@ -108,9 +106,7 @@ export default function BoardWrite() {
                         onChange={handleContent}
                     ></textarea>
                 </label>
-
                 <br />
-
                 <p><strong>주소</strong></p>
                 <label>
                     <textarea
@@ -119,9 +115,7 @@ export default function BoardWrite() {
                         onChange={handleAddress}
                     ></textarea>
                 </label>
-
                 <br />
-
                 <p><strong>사진</strong></p>
                 <input type="file" multiple onChange={handleImageChange} />
                 <div className='image-preview-container'>
@@ -142,4 +136,3 @@ export default function BoardWrite() {
         </div>
     )
 }
-    
