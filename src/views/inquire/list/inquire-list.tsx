@@ -2,15 +2,22 @@ import { GetAllQuestionRequest } from "apis/apis";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Question from "types/interface/question.interface";
+import Pagination from "components/Pagination";
 import './style.css';
- import useLoginUserStore from "store/login-user.store";
+import useLoginUserStore from "store/login-user.store";
 
 const InquireList: React.FC = () => {
   const navigator = useNavigate();
-  const {loginUser} = useLoginUserStore();
+  const { loginUser } = useLoginUserStore();
   const { questionId } = useParams();
   const [posts, setPosts] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 2; // 페이지당 항목 수
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedPosts = posts.slice(startIndex, endIndex);
 
   const nickname = loginUser?.nickname;
   const role = loginUser?.role;
@@ -103,13 +110,13 @@ const InquireList: React.FC = () => {
       </div>
       
       <div className="inquire-list-body">
-        {loading ? (
-          <p>문의 목록이 없습니다.</p>
+        {posts.length === 0 ? (
+          <p className="posts-zero">문의 목록이 없습니다.</p>
         ) : (
           <div className="posts">
-            {posts.map((post, index) => (
+            {displayedPosts.map((post, index) => (
               <div className="post" key={post.questionId} onClick={() => inquireListClickHandler(post.questionId)}>
-                <p>{posts.length - index}</p>
+                <p>{posts.length - startIndex - index}</p>
                 <p>{getTypeText(post.type)}</p>
                 <p onClick={() => inquireListClickHandler(post.questionId)}>
                   {post.title}
@@ -120,6 +127,13 @@ const InquireList: React.FC = () => {
             ))}
           </div>
         )}
+      </div>
+      <div className="pagination-box">
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          viewPageList={Array.from({ length: Math.ceil(posts.length / itemsPerPage) }, (_, i) => i + 1)}
+        />
       </div>
     </div>
   );
