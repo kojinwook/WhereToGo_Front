@@ -2,12 +2,12 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    padding: 20px; /* 양쪽에 20px의 여백을 추가합니다 */
+    padding: 40px; /* 양쪽에 20px의 여백을 추가합니다 */
 }
 
 .review-item {
     border: 1px solid #ccc;
-    padding: 16px;
+    padding: 20px;
     border-radius: 8px;
     text-align: center; /* 텍스트를 가운데 정렬합니다 */
     display: flex;
