@@ -1,4 +1,5 @@
 import { DeleteMeetingRequest, DislikeUserRequest, GetJoinMeetingMemberRequest, GetMeetingBoardImageListRequest, GetMeetingBoardListRequest, GetMeetingRequest, GetMeetingRequests, LikeUserRequest, PostChatRoomRequest, PostJoinMeetingRequest, PostRespondToJoinRequest } from 'apis/apis';
+import moreButton from 'assets/images/more.png';
 import defaultProfileImage from 'assets/images/user.png';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
@@ -6,31 +7,10 @@ import Modal from 'react-modal';
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images, Meeting, MeetingBoard, MeetingRequest, MeetingUser } from 'types/interface/interface';
-import moreButton from 'assets/images/more.png';
 import './style.css';
 import Pagination from 'components/Pagination';
 
 Modal.setAppElement('#root');
-
-const ModalStyle = {
-    overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    content: {
-        width: '300px',
-        height: '400px',
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        transform: 'translate(-50%, -50%)',
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        backgroundColor: '#fff',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        zIndex: '100',
-    }
-}
 
 export default function MeetingDetail() {
 
@@ -47,6 +27,7 @@ export default function MeetingDetail() {
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
     const navigate = useNavigate();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [activeTab, setActiveTab] = useState('detail');
@@ -312,6 +293,11 @@ export default function MeetingDetail() {
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
     }
 
+    // 멤버 리스트
+    const toggleMemberModal = () => {
+        setIsMemberModalOpen(!isMemberModalOpen);
+    };
+
     const handleLike = async (nickname: string) => {
         window.confirm('정말로 좋아요를 누르시겠습니까?')
         if (!meetingId || !nickname) return;
@@ -383,12 +369,12 @@ export default function MeetingDetail() {
                             </div>
                             <div className="meeting-detail-right">
                                 <div className="meeting-more-options">
-                                    {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
+                                    {(meeting.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
                                         <img className="meeting-more-button" src={moreButton} alt="더보기" onClick={toggleOptions} />
                                     )}
                                     {showOptions && (
                                         <div className="button-box">
-                                            {meeting.userNickname !== nickname && (
+                                            {meeting.userDto.nickname === nickname && (
                                                 <button
                                                     className="update-button"
                                                     onClick={() => updatePostClickHandler(meeting.meetingId)}
@@ -396,7 +382,7 @@ export default function MeetingDetail() {
                                                     수정
                                                 </button>
                                             )}
-                                            {(meeting.userNickname === nickname || role === "ROLE_ADMIN") && (
+                                            {(meeting.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
                                                 <button
                                                     className="delete-button"
                                                     onClick={() => deleteMeetingButtonClickHandler(meeting.meetingId)}
@@ -417,8 +403,36 @@ export default function MeetingDetail() {
                                 <div className="bordered-div">
                                     {Array.isArray(meeting.locations) ? meeting.locations.join(', ') : meeting.locations}
                                 </div>
-                                <p>인원</p>
-                                <div className="bordered-div">{joinMembers}/{meeting.maxParticipants}</div>
+                                <p className='meeting-member'>인원</p>
+                                <div>
+                                    <div className="bordered-div member" onClick={toggleMemberModal}>
+                                        {joinMembers}/{meeting.maxParticipants}
+                                    </div>
+
+                                    {isMemberModalOpen && (
+                                        <div className="meeting-member-modal">
+                                            <div className="member-modal-content">
+                                                <button className="member-modal-close" onClick={toggleMemberModal}>
+                                                    X
+                                                </button>
+                                                <div>
+                                                    {joinMemberList.map((member, index) => (
+                                                        <div key={index} className="participant">
+                                                            <img
+                                                                src={member.userProfileImage || defaultProfileImage}
+                                                                alt="profile"
+                                                            />
+                                                            <p>{member.userNickname}</p>
+                                                            <button onClick={() => handleLike(member.userNickname)}>{'좋아요'}</button>
+                                                            <button onClick={() => handleUnlike(member.userNickname)}>{'싫어요'}</button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className='meeting-detail-btn'>
                                     <button onClick={handleCreateRoom}>1 : 1 채팅</button>
                                     {joinMemberList.map(member => member.userNickname).includes(nickname) ? (
@@ -494,11 +508,12 @@ export default function MeetingDetail() {
                     </div>
                 )}
             </div>
+
             <Modal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}
                 contentLabel="신청 목록"
-                style={ModalStyle}
+                className="meeting-modal"
             >
                 <div className="modal-content">
                     <div className="modal-footer">

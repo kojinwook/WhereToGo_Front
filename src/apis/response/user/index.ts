@@ -15,6 +15,7 @@ import VerifyPasswordResponseDto from "./verify-password.response.dto";
 import ReportUserListResponseDto from "./get-report-user-list.response.dto";
 import DislikeUserResponseDto from "./dislike-user.response.dto";
 import LikeUserResponseDto from "./like-user.response.dto";
+import UnBlockUserResponseDto from "./unblock-user.response.dto";
 
 export type {
     GetUserResponseDto,
@@ -33,5 +34,6 @@ export type {
     VerifyPasswordResponseDto,
     ReportUserListResponseDto,
     DislikeUserResponseDto,
-    LikeUserResponseDto
+    LikeUserResponseDto,
+    UnBlockUserResponseDto
 }
