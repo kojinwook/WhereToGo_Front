@@ -9,6 +9,7 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import Notification from 'types/interface/notification.interface';
 import { GetMeetingBoardsTitleRequest } from 'apis/apis';
+import NotificationsModal from 'components/notification/notification';
 
 export default function Header() {
   const { loginUser, setLoginUser, resetLoginUser } = useLoginUserStore();
@@ -17,16 +18,16 @@ export default function Header() {
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [meetingBoardTitles, setMeetingBoardTitles] = useState<Map<number, string>>(new Map());
+  const [isNotificationsModalOpen, setNotificationsModalOpen] = useState<boolean>(false);
   const [cookies, setCookie] = useCookies();
   const client = React.useRef<Client | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (loginUser && cookies.accessToken) {
-      const socket = new SockJS('http://15.165.24.165:8088/ws');
+      const socket = new SockJS('http://localhost:8088/ws');
       const stompClient = new Client({
         webSocketFactory: () => socket,
-        // debug: (str) => console.log(str),
         onConnect: () => {
           stompClient.subscribe(`/topic/notifications/${loginUser.nickname}`, (message) => {
             const notification = JSON.parse(message.body);
@@ -133,6 +134,10 @@ export default function Header() {
     localStorage.setItem(`notifications_${loginUser?.userId}`, JSON.stringify(updatedNotifications));
   };
 
+  const handleBellClick = () => {
+    setNotificationsModalOpen(!isNotificationsModalOpen);
+  };
+
   const NoticePathClickHandler = () => {
     navigate('/notice');
   }
@@ -146,59 +151,59 @@ export default function Header() {
     navigate('/inquire');
   }
 
-
   return (
-    <header className='header'>
-      <div className='logo-container'>
-        <img src={logoImage} alt="뒤로가기" onClick={LogoClickHandler} />
-      </div>
-      <div className="main-header">
-        <div className="header-item">
-          <span onClick={inquirePathClickHandler}>고객센터</span>
+    <>
+      <header className='header'>
+        <div className='logo-container'>
+          <img src={logoImage} alt="뒤로가기" onClick={LogoClickHandler} />
         </div>
-        <div className="header-item">
-          <span onClick={NoticePathClickHandler}>공지사항</span>
+        <div className="main-header">
+          <div className="header-item">
+            <span onClick={inquirePathClickHandler}>고객센터</span>
+          </div>
+          <div className="header-item">
+            <span onClick={NoticePathClickHandler}>공지사항</span>
+          </div>
+          <div className="header-item">
+            <span onClick={FestivalPathClickHandler}>축제</span>
+          </div>
+          <div className="header-item">
+            <span onClick={meetingPathClickHandler}>모임</span>
+          </div>
         </div>
-        <div className="header-item">
-          <span onClick={FestivalPathClickHandler}>축제</span>
-        </div>
-        <div className="header-item">
-          <span onClick={meetingPathClickHandler}>모임</span>
-        </div>
-      </div>
-      <div className='nav-container'>
-        {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div>}
-        {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div>}
-        {isLogin && (
-          <div className="header-user-info">
-            <img className="notification" src={bellButton} alt='알림' />
-            {notifications.map((notification, index) => (
-              <div key={index} className={`notification ${notification.type === 'CHAT' ? 'chat-notification' : ''}`} onClick={() => handleNotificationClick(notification)}>
-                {notification.type === 'CHAT' ? (
-                  <span>{/*채팅메세지*/}{notification.message} : {/*보낸사람*/}{notification.senderId}</span>
-                ) : (
-                  <span>{/*댓글 작성자*/}{notification.replySender} : {/*게시물 제목*/}{meetingBoardTitles.get(notification.meetingBoardId!)} : {/*댓글*/}{notification.replyContent}</span>
-                )}
-                <button onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notification.id); }}>삭제</button>
-              </div>
-            ))}
-            <div className="nickname-container">
-              {role === 'ROLE_ADMIN' && <span className="role">(관리자)</span>}
-              <div className="nickname" onClick={nicknamePathClickHandler}>
-                {loginUser?.nickname}님
+        <div className='nav-container'>
+          {!isLogin && <div onClick={onSignInButtonClickHandler}>로그인</div>}
+          {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div>}
+          {isLogin && (
+            <div className="header-user-info">
+              <img className="notification" src={bellButton} alt='알림' onClick={handleBellClick} />
+              <div className="nickname-container">
+                {role === 'ROLE_ADMIN' && <span className="role">(관리자)</span>}
+                <div className="nickname" onClick={nicknamePathClickHandler}>
+                  {loginUser?.nickname}님
+                </div>
               </div>
             </div>
+          )}
+        </div >
+        {dropdownVisible && (
+          <div className="dropdown-menu">
+            <div>
+              <div className='dropdown-menu-profile' onClick={MyProfilePathClickHandler}>프로필</div>
+            </div>
+            <div className='dropdown-menu-logout' onClick={onSignOutButtonClickHandler}>로그아웃</div>
           </div>
         )}
-      </div >
-      {dropdownVisible && (
-        <div className="dropdown-menu">
-          <div>
-            <div className='dropdown-menu-profile' onClick={MyProfilePathClickHandler}>프로필</div>
-          </div>
-          <div className='dropdown-menu-logout' onClick={onSignOutButtonClickHandler}>로그아웃</div>
-        </div>
+      </header >
+      {isNotificationsModalOpen && (
+        <NotificationsModal
+          notifications={notifications}
+          meetingBoardTitles={meetingBoardTitles}
+          onNotificationClick={handleNotificationClick}
+          onDeleteNotification={handleDeleteNotification}
+          onClose={() => setNotificationsModalOpen(false)}
+        />
       )}
-    </header >
+    </>
   )
 }
