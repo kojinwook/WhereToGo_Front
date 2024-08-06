@@ -44,7 +44,6 @@ const Main: React.FC = () => {
   useEffect(() => {
     const fetchTop3TemperatureUserList = async () => {
       const response = await Top5TemperatureUserRequest();
-      console.log(response)
       if (!response) return;
       setTop3TemperatureUserList(response.userList);
       setLoading(false);
@@ -85,7 +84,6 @@ const Main: React.FC = () => {
   };
   // 배너 끝
 
-  console.log(top3TemperatureUserList.length)
   return (
     <div className='main-container'>
       <div className='banner'>
