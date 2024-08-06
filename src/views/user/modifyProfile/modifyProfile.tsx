@@ -1,13 +1,14 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FileUploadRequest, GetUserRequest, PatchPasswordRequest, PatchUserRequest } from 'apis/apis';
 import { PatchPasswordRequestDto, PatchUserRequestDto } from 'apis/request/user';
-import { GetUserResponseDto, PatchUserResponseDto } from 'apis/response/user';
 import { ResponseDto } from 'apis/response/response';
-import useLoginUserStore from 'store/login-user.store';
-import { useCookies } from 'react-cookie';
-import Images from 'types/interface/image.interface';
+import { GetUserResponseDto, PatchUserResponseDto } from 'apis/response/user';
 import defaultProfileImage from 'assets/images/user.png';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
+import useLoginUserStore from 'store/login-user.store';
+import Images from 'types/interface/image.interface';
+import './style.css';
 
 export default function UserModifyProfile() {
     const { loginUser } = useLoginUserStore();
@@ -148,9 +149,12 @@ export default function UserModifyProfile() {
         GetUserRequest(userId).then(getUserResponse);
     }, [userId]);
 
+    const handleBackSubmit = () => {
+        navigate ('/user/profile')
+    }
+
     return (
-        <div>
-            <h2>사용자 프로필 수정</h2>
+        <div className='mp-container'>
             <div className='profile-image' onClick={onProfileBoxClickHandler}>
                 <img src={profileImage ? profileImage : defaultProfileImage} alt="프로필 이미지" />
             </div>
@@ -160,41 +164,51 @@ export default function UserModifyProfile() {
                 style={{ display: 'none' }}
                 onChange={onProfileImageChangeHandler}
             />
-            닉네임
+            <label className='mp-input-label'>닉네임</label>
             <input
+                className='mp-input-field'
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="새 닉네임 입력"
             />
-            이메일
+            <label className='mp-input-label'>이메일</label>
             <input
+                className='mp-input-field'
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="새 이메일 입력"
             />
-            전화번호
+            <label className='mp-input-label'>전화번호</label>
             <input
+                className='mp-input-field'
                 type="text"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder="전화번호 입력"
             />
+            <label className='mp-input-label'>현재 비밀번호</label>
             <input
+                className='mp-input-field'
                 type="password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="현재 비밀번호 입력"
             />
+            <label className='mp-input-label'>새 비밀번호</label>
             <input
+                className='mp-input-field'
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="새 비밀번호 입력"
             />
-            <button onClick={onPatchPassword}>비밀번호 수정</button>
-            <button onClick={handleSubmit}>수정</button>
+            <div className='mp-buttons'>
+                <button  className='mp-button mp-button-secondary' onClick={onPatchPassword}>비밀번호 수정</button>
+                <button className='mp-button' onClick={handleSubmit}>수정</button>
+                <button className='mp-button mp-back' onClick={handleBackSubmit}>취소</button>
+            </div>
         </div>
     )
 }

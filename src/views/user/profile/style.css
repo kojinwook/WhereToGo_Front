@@ -9,17 +9,19 @@
     height: 300px;
     border: 2px solid #ccc;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 0 20%;
+    box-sizing: border-box;
 }
 
 .user-profile-image-box {
-    margin-bottom: 20px;
+    margin-right: 20px;
 }
 
 .user-profile-image {
-    width: 100px; /* Adjust the size as needed */
+    width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
@@ -27,7 +29,8 @@
 }
 
 .user-profile-info-box {
-    text-align: center;
+    text-align: left;
+    flex: 1;
 }
 
 .user-profile-info-nickname {
@@ -41,14 +44,6 @@
     color: #555;
 }
 
-.user-profile-image {
-    width: 100px; /* Adjust the size as needed */
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #ddd;
-}
-
 .user-profile-button {
     display: flex;
     flex-wrap: wrap;
@@ -57,31 +52,31 @@
 }
 
 .user-profile-button > div {
-    flex: 0 1 30%; /* Ensure each button takes up roughly 30% of the container width */
+    flex: 0 1 30%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 40px; /* Add space between rows */
+    margin-bottom: 40px;
     cursor: pointer;
 }
 
 .user-profile-button > div:not(:last-child) {
-    border-right: 1px solid #ccc; /* Add border between buttons */
+    border-right: 1px solid #ccc;
 }
 
 .user-profile-button > div:nth-child(3n) {
-    border-right: none; /* 마지막 열 제외한 모든 열에 오른쪽 선 추가 */
+    border-right: none;
 }
 
 .heart-icon, .group-icon, .board-icon, .star-icon, .chat-icon, .setting-icon {
-    width: 60px; /* Adjust the size as needed */
+    width: 60px;
     height: 60px;
     border: none;
 }
 
 .heart-text, .group-text, .board-text, .star-text, .chat-text, .setting-text {
     margin-top: 5px;
-    font-size: 14px; /* Adjust the size as needed */
+    font-size: 14px;
 }
 
 .favorite-item > span {
@@ -110,22 +105,6 @@
     color: grey;
 }
 
-.board-list-close-botton {
-    padding: 10px 20px;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: black;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.board-list-close-botton:hover {
-    background-color: white;
-    color: black;
-}
-
 .favorite-list-title {
     margin-bottom: 30px;
     margin-left: 10px;
@@ -149,4 +128,65 @@
 .board-item > div {
     font-size: 15px;
     cursor: pointer;
+}
+
+/* 모달 */
+.profile-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.profile-modal-header h2 {
+    margin: 0;
+}
+
+.profile-modal-header button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.profile-modal-header button:hover {
+    background-color: white;
+    color: black;
+}
+
+/* 설정 */
+.profile-setting-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.profile-setting-button {
+    width: 100%;
+    padding: 15px 20px;
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+    border: 1px solid;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.profile-setting-button:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.profile-setting-button.logout {
+    color: #c82333;
+}
+
+.profile-setting-button.logout:hover {
+    background-color: #c82333;
+    color: #fff;
 }

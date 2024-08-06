@@ -486,6 +486,7 @@
 }
 
 .meeting-member-modal {
+    height: 500px;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -498,6 +499,7 @@
     max-width: 500px;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: auto;
 }
 
 .member-modal-content {

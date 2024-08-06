@@ -1,10 +1,10 @@
 import { Get5RecentMeetingRequest, GetTop5FestivalListRequest, Top5TemperatureUserRequest } from 'apis/apis';
+import defaultProfileImage from 'assets/images/user.png';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Festival from 'types/interface/festival.interface';
 import Meeting from 'types/interface/meeting.interface';
 import User from 'types/interface/user.interface';
-import defaultProfileImage from 'assets/images/user.png';
 import './style.css';
 
 const Main: React.FC = () => {
@@ -94,6 +94,7 @@ const Main: React.FC = () => {
               <img src="https://i.imgur.com/DeFG48l.png" alt="왕관" className='king' />
               <div className="section-title">온도왕</div>
             </div>
+            
             <div className='temper-king-list'>
               {top3TemperatureUserList.length > 0 ? (
                 top3TemperatureUserList.map((user, index) => (

@@ -1,23 +1,22 @@
 import { GetAllFavoriteRequest, GetChatRoomRequest, GetUserBoardListRequest, GetUserMeetingListRequest, GetUserRequest, VerifyPasswordRequest } from 'apis/apis';
+import { VerifyPasswordRequestDto } from 'apis/request/user';
+import { ResponseDto } from 'apis/response/response';
 import { GetUserResponseDto } from 'apis/response/user';
-import { useEffect, useState } from 'react';
-import { useCookies } from 'react-cookie';
-import Modal from 'react-modal';
-import Switch from 'react-switch';
-import { useNavigate } from 'react-router-dom';
-import useLoginUserStore from 'store/login-user.store';
-import './style.css';
-import defaultProfileImage from 'assets/images/user.png';
 import boardIcon from 'assets/images/board.png';
 import chatIcon from 'assets/images/chat.png';
 import groupIcon from 'assets/images/group.png';
 import heartIcon from 'assets/images/heartIcon.png';
 import settingIcon from 'assets/images/setting.png';
 import starIcon from 'assets/images/star.png';
-import { ResponseDto } from 'apis/response/response';
-import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
+import defaultProfileImage from 'assets/images/user.png';
 import Thermometer from 'components/Thermometer/Thermometer';
-import { VerifyPasswordRequestDto } from 'apis/request/user';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
+import useLoginUserStore from 'store/login-user.store';
+import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
+import './style.css';
 
 // 모달 스타일 설정
 const modalStyle = {
@@ -258,8 +257,8 @@ export default function UserProfile() {
                 <div className='user-profile-info-box'>
                     <div className='user-profile-info-nickname'>{nickname}</div>
                     <div className='user-profile-info-email'>{email}</div>
-                    <Thermometer temperature={temperature} />
                 </div>
+                <Thermometer temperature={temperature} />
             </div>
             <div className='user-profile-button'>
                 <div className='heart-button' onClick={toggleHeartModal}>
@@ -293,7 +292,10 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='찜 목록'
             >
-                <h2 className='favorite-list-title'>나의 찜 목록</h2>
+                <div className='profile-modal-header'>
+                    <h2 className='favorite-list-title'>나의 찜 목록</h2>
+                    <button onClick={toggleHeartModal}>X</button>
+                </div>
                 <div className='favorite-list'>
                     {favorites.map((favorite) => (
                         <div key={favorite.id} className='favorite-item'>
@@ -303,7 +305,6 @@ export default function UserProfile() {
                         </div>
                     ))}
                 </div>
-                <button className='board-list-close-botton' onClick={toggleHeartModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isBoardModalOpen}
@@ -311,7 +312,10 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='내 게시물'
             >
-                <h2>내 게시물</h2>
+                <div className='profile-modal-header'>
+                    <h2>내 게시물</h2>
+                    <button onClick={toggleBoardModal}>X</button>
+                </div>
                 <div className='board-list'>
                     {boardList.map((board) => (
                         <div key={board.meetingBoardId} className='board-item'>
@@ -324,7 +328,6 @@ export default function UserProfile() {
                         </div>
                     ))}
                 </div>
-                <button className='board-list-close-botton' onClick={toggleBoardModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isChatModalOpen}
@@ -332,7 +335,10 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='채팅'
             >
-                <h2>내 채팅 목록</h2>
+                <div className='profile-modal-header'>
+                    <h2>내 채팅 목록</h2>
+                    <button onClick={toggleChatModal}>X</button>
+                </div>
                 <div className='chat-list'>
                     {chatRooms.map((chatRoom) => {
                         const otherUser = loginUser?.nickname === chatRoom.creator.nickname ? chatRoom.user : chatRoom.creator;
@@ -352,7 +358,6 @@ export default function UserProfile() {
                         );
                     })}
                 </div>
-                <button className='board-list-close-botton' onClick={toggleChatModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isGroupModalOpen}
@@ -360,7 +365,10 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='내 모임'
             >
-                <h2>내 모임 목록</h2>
+                <div className='profile-modal-header'>
+                    <h2>내 모임 목록</h2>
+                    <button onClick={toggleGroupModal}>X</button>
+                </div>
                 <div className='meeting-list'>
                     {meetingList.map((meeting) => (
                         <div key={meeting.meetingId} className='meeting-item' onClick={() => handleMeetingTitleClick(meeting.meetingId)}>
@@ -372,7 +380,6 @@ export default function UserProfile() {
                     ))}
                     
                 </div>
-                <button className='board-list-close-botton' onClick={toggleGroupModal}>닫기</button>
             </Modal>
             <Modal
                 isOpen={isPasswordModalOpen}
@@ -397,10 +404,14 @@ export default function UserProfile() {
                 style={modalStyle}
                 contentLabel='설정'
             >
-                <h2>설정</h2>
-                <div onClick={handleProfileChangeClick}>프로필 변경</div>
-                <div onClick={handleLogoutClick} >로그아웃</div>
-                <button onClick={toggleSettingModal}>닫기</button>
+                <div className='profile-modal-header'>
+                    <h2>설정</h2>
+                    <button onClick={toggleSettingModal}>X</button>
+                </div>
+                <div className='profile-setting-content'>
+                    <div className='profile-setting-button' onClick={handleProfileChangeClick}>프로필 변경</div>
+                    <div className='profile-setting-button logout' onClick={handleLogoutClick} >로그아웃</div>
+                </div>
             </Modal>
         </div>
     );

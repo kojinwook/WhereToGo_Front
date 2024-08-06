@@ -543,21 +543,6 @@ export default function MeetingDetail() {
                     </div>
                 </div>
             </Modal>
-            <div>
-                <div>
-                    {joinMemberList.map((member, index) => (
-                        <div key={index} className="participant">
-                            <img
-                                src={member.userProfileImage || defaultProfileImage}
-                                alt="profile"
-                            />
-                            <p>{member.userNickname}</p>
-                            <button onClick={() => handleLike(member.userNickname)}>{'좋'}</button>
-                            <button onClick={() => handleUnlike(member.userNickname)}>{'싫'}</button>
-                        </div>
-                    ))}
-                </div>
-            </div>
         </div>
     );
 }
