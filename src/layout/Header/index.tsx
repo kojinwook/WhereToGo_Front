@@ -61,7 +61,7 @@ export default function Header() {
       };
     }
   }, [loginUser, cookies.accessToken]);
-  
+
   useEffect(() => {
     const role = loginUser?.role;
     if (!role) return;
@@ -132,7 +132,7 @@ export default function Header() {
     setNotifications(updatedNotifications);
     localStorage.setItem(`notifications_${loginUser?.userId}`, JSON.stringify(updatedNotifications));
   };
-  
+
   const NoticePathClickHandler = () => {
     navigate('/notice');
   }
@@ -171,30 +171,34 @@ export default function Header() {
         {!isLogin && <div onClick={onSignUpButtonClickHandler}>회원가입</div>}
         {isLogin && (
           <div className="header-user-info">
-            <img className="notification" src={bellButton} alt='알림'/>
+            <img className="notification" src={bellButton} alt='알림' />
             {notifications.map((notification, index) => (
               <div key={index} className={`notification ${notification.type === 'CHAT' ? 'chat-notification' : ''}`} onClick={() => handleNotificationClick(notification)}>
                 {notification.type === 'CHAT' ? (
-                  <span>{/*채팅메세지*/ }{notification.message} : {/*보낸사람*/}{notification.senderId}</span>
+                  <span>{/*채팅메세지*/}{notification.message} : {/*보낸사람*/}{notification.senderId}</span>
                 ) : (
                   <span>{/*댓글 작성자*/}{notification.replySender} : {/*게시물 제목*/}{meetingBoardTitles.get(notification.meetingBoardId!)} : {/*댓글*/}{notification.replyContent}</span>
                 )}
                 <button onClick={(e) => { e.stopPropagation(); handleDeleteNotification(notification.id); }}>삭제</button>
               </div>
             ))}
-            <div className="nickname" onClick={nicknamePathClickHandler}>
-              {loginUser?.nickname}님
-            </div>
-            {role === 'ROLE_ADMIN' && <span>(관리자)</span>}
-            {dropdownVisible && (
-              <div className="dropdown-menu">
-                <div onClick={MyProfilePathClickHandler}>프로필</div>
-                <div onClick={onSignOutButtonClickHandler}>로그아웃</div>
+            <div className="nickname-container">
+              {role === 'ROLE_ADMIN' && <span className="role">(관리자)</span>}
+              <div className="nickname" onClick={nicknamePathClickHandler}>
+                {loginUser?.nickname}님
               </div>
-            )}
+            </div>
           </div>
         )}
       </div >
+      {dropdownVisible && (
+        <div className="dropdown-menu">
+          <div>
+            <div className='dropdown-menu-profile' onClick={MyProfilePathClickHandler}>프로필</div>
+          </div>
+          <div className='dropdown-menu-logout' onClick={onSignOutButtonClickHandler}>로그아웃</div>
+        </div>
+      )}
     </header >
   )
 }
