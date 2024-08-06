@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Notice from 'types/interface/notice.interface';
 import './style.css';
+import Pagination from 'components/Pagination'; // Pagination 컴포넌트 import
 import useLoginUserStore from 'store/login-user.store';
 
 const formatDate = (date: string) => {
@@ -16,11 +17,13 @@ const NoticeList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Notice[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 5; // 페이지당 항목 수
+
   const {loginUser} = useLoginUserStore();
   const [userId, setUserId]= useState("");
   const [role, setRole] = useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
 
   useEffect(() => {
     if (!loginUser){
@@ -62,10 +65,6 @@ const NoticeList: React.FC = () => {
     setFilteredPosts(filteredNotices);
   }, [searchTerm]);
 
-  const backGoPathClickHandler = () => {
-    navigator(`/inquire/`);
-  }
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
@@ -92,8 +91,13 @@ const NoticeList: React.FC = () => {
   const noticeClickHandler = (noticeId: number | string | undefined) => {
     navigator(`/notice/detail/${noticeId}`);
   };
+
   const writePathClickHandler = () => {
     navigator(`/notice/write`);
+  }
+
+  const backGoPathClickHandler = () => {
+    navigator(`/inquire/`);
   }
 
   const handleSearchButtonClick = () => {
@@ -104,6 +108,12 @@ const NoticeList: React.FC = () => {
     setFilteredPosts(filteredNotices);
     setSearchTerm(''); 
   };
+
+  // 페이지네이션 계산
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedPosts = filteredPosts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
 
   return (
     <div className="notice-list">
@@ -123,14 +133,14 @@ const NoticeList: React.FC = () => {
       </div>
       {role === "ROLE_ADMIN" && (
         <div className="notice-write-button-container">
-        <button className="notice-write-button" onClick={writePathClickHandler}>작성</button>
-      </div>
-        )}
+          <button className="notice-write-button" onClick={writePathClickHandler}>작성</button>
+        </div>
+      )}
       <div className="notices">
         <div className='notice-header'>
-            <div>NO.</div>
-            <div>제목</div>
-            <div>날짜</div>
+          <div>NO.</div>
+          <div>제목</div>
+          <div>날짜</div>
         </div>
         <ul className='notice-content'>
           {filteredPosts.length === 0 ? (
@@ -138,15 +148,22 @@ const NoticeList: React.FC = () => {
               <div className='notice-content-non'>게시물이 없습니다.</div>
             </div> 
           ) : (
-            filteredPosts.map((notice, index) => (
+            displayedPosts.map((notice, index) => (
               <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.noticeId)}>
-                <div>{posts.length - index}</div>
+                <div>{filteredPosts.length - startIndex - index}</div>
                 <div>{notice.title}</div>
                 <div>{formatDate(notice.createDateTime)}</div>
               </div>
             ))
           )}
         </ul>
+      </div>
+      <div className="pagination-box">
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          viewPageList={Array.from({ length: totalPages }, (_, i) => i + 1)}
+        />
       </div>
     </div>
   );
