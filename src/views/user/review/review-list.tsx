@@ -73,12 +73,16 @@ export default function ReviewList() {
                 reviewList.map((review, index) => {
                     const festival = findFestivalByContentId(review.contentId);
                     return (
-                        <div key={review.reviewId}>
+                        <div key={review.reviewId} className="review-item">
                             {festival && (
                                 <div>
                                     <h3>{festival.title}</h3>
                                     {/* <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /> */}
-                                    <button onClick={() => buttonClickHandler(festival.contentId)}>{'축제 디테일'}</button>
+                                    <button 
+                                        className="custom-button"
+                                        onClick={() => buttonClickHandler(festival.contentId)}>
+                                        {'축제 디테일'}
+                                    </button>
                                 </div>
                             )}
                             <p>{renderStars(review.rate)} {review.writeDatetime}</p>

@@ -1,12 +1,45 @@
 .review-list-entitle {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px; /* 양쪽에 20px의 여백을 추가합니다 */
+}
+
+.review-item {
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center; /* 텍스트를 가운데 정렬합니다 */
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    
 }
 
-.review-list-entitle > div {
-    width: 100%;
-    max-width: 600px; /* 원하는 최대 너비를 설정하세요 */
-    margin: 10px 0;
+.star-container {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 별표를 가운데 정렬합니다 */
+}
+
+.rating-value {
+    margin-left: 8px;
+}
+
+.custom-button {
+    background-color: white;
+    color: black;
+    border: 1px solid black; /* 검정색 테두리 추가 */
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease; /* 색상 전환 추가 */
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.custom-button:hover {
+    background-color: black;
+    color: white;
 }
