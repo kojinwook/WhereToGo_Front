@@ -40,11 +40,21 @@ const FestivalAdmin: React.FC = () => {
 
     const handleEdit = (festival: Festival) => {
         setFormData(festival);
-        if (typeof festival.tags === 'string') {
-            setTags(festival.tags.split(','));
-        } else {
-            setTags(festival.tags || []);
-        }
+
+        const formatDateForInput = (dateStr: string) => {
+            const year = dateStr.substring(0, 4);
+            const month = dateStr.substring(4, 6);
+            const day = dateStr.substring(6, 8);
+            return `${year}-${month}-${day}`;
+        };
+
+        setFormData({
+            ...festival,
+            startDate: formatDateForInput(festival.startDate),
+            endDate: formatDateForInput(festival.endDate),
+        });
+
+        setTags(typeof festival.tags === 'string' ? festival.tags.split(',') : festival.tags || []);
         setModalOpen(true);
     };
 
@@ -59,7 +69,6 @@ const FestivalAdmin: React.FC = () => {
         if (formData) {
             try {
                 const updatedFormData = { ...formData, tags };
-
                 const response = await PatchFestivalRequest(updatedFormData, cookies.accessToken);
                 if (!response) return;
                 if (response.code === 'SU' && festivalList) {
@@ -69,8 +78,11 @@ const FestivalAdmin: React.FC = () => {
                     resetFormData();
                     setTags([]);
                     setModalOpen(false);
-                } else {
-                    console.error('Failed to update festival:');
+                } if (response.code === 'DHP') {
+                    alert('권한이 없습니다.');
+                }
+                else {
+                    console.error('Failed to update festival:', response);
                 }
             } catch (error) {
                 console.error('Error updating festival:', error);
