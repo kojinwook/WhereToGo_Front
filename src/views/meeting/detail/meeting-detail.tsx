@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images, Meeting, MeetingBoard, MeetingRequest, MeetingUser } from 'types/interface/interface';
 import './style.css';
+import Pagination from 'components/Pagination';
 
 Modal.setAppElement('#root');
 
@@ -35,6 +36,14 @@ export default function MeetingDetail() {
     const [boardList, setBoardList] = useState<MeetingBoard[]>([]);
     const [boardImageList, setBoardImageList] = useState<Images[]>([]);
     const [showOptions, setShowOptions] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;  
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = boardList.slice(indexOfFirstItem, indexOfLastItem);
+    const pageCount = Math.ceil(boardList.length / itemsPerPage);
+    const viewPageList = Array.from({ length: pageCount }, (_, i) => i + 1);
+
 
     useEffect(() => {
         if (loginUser) {
@@ -126,7 +135,7 @@ export default function MeetingDetail() {
 
     const handleCreateRoom = async () => {
         const meetingTitle = meeting?.title;
-        if(!cookies.accessToken){
+        if (!cookies.accessToken) {
             alert('로그인이 필요합니다.');
             return;
         }
@@ -291,7 +300,7 @@ export default function MeetingDetail() {
 
     const handleLike = async (nickname: string) => {
         window.confirm('정말로 좋아요를 누르시겠습니까?')
-        if(!meetingId || !nickname) return;
+        if (!meetingId || !nickname) return;
         const response = await LikeUserRequest(nickname, meetingId, cookies.accessToken);
         if (response) {
             if (response.code === 'SU') {
@@ -305,7 +314,7 @@ export default function MeetingDetail() {
 
     const handleUnlike = async (nickname: string) => {
         window.confirm('정말로 싫어요를 누르시겠습니까?')
-        if(!meetingId || !nickname) return;
+        if (!meetingId || !nickname) return;
         const response = await DislikeUserRequest(nickname, meetingId, cookies.accessToken);
         console.log(response);
         if (response) {
@@ -329,7 +338,7 @@ export default function MeetingDetail() {
                 <img className='meeting-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
                     try {
                         await navigator.clipboard.writeText(window.location.href);
-                        alert('링크가 복사되었습니다!'); // 성공 메시지
+                        alert('링크가 복사되었습니다!'); 
                     } catch (err) {
                         console.error('링크 복사 실패:', err);
                     }
@@ -451,18 +460,18 @@ export default function MeetingDetail() {
                 {activeTab === 'participants' && (
                     <div className="participants-list">
                         <div className='meeting-board-list'>
-                            <button className='meeting-board-add-btn' onClick={handleCreateBoard}>{"게시물 작성"}</button>
+                            <button className='meeting-board-add-btn' onClick={handleCreateBoard}>게시물 작성</button>
                             <div className='meeting-board-header'>
                                 <div className='header-item'>프로필 사진</div>
                                 <div className='header-item'>닉네임</div>
                                 <div className='header-item'>제목</div>
                                 <div className='header-item'>작성 날짜</div>
                             </div>
-                            {boardList.length === 0 ? (
+                            {currentItems.length === 0 ? (
                                 <div className="no-posts-message">게시물이 없습니다.</div>
                             ) : (
                                 <div className='board-list-content'>
-                                    {boardList.map((board) => (
+                                    {currentItems.map((board) => (
                                         <div key={board.meetingBoardId} className='meeting-board-item' onClick={() => handleBoardDetail(board.meetingBoardId)}>
                                             <div className='item-img'>
                                                 <img
@@ -478,9 +487,15 @@ export default function MeetingDetail() {
                                     ))}
                                 </div>
                             )}
+                            <Pagination
+                                currentPage={currentPage}
+                                setCurrentPage={setCurrentPage}
+                                viewPageList={viewPageList}
+                            />
                         </div>
                     </div>
                 )}
+
                 {activeTab === 'requests' && (
                     <div className="requests-list">
                         <div className='image-grid'>
@@ -528,6 +543,21 @@ export default function MeetingDetail() {
                     </div>
                 </div>
             </Modal>
+            <div>
+                <div>
+                    {joinMemberList.map((member, index) => (
+                        <div key={index} className="participant">
+                            <img
+                                src={member.userProfileImage || defaultProfileImage}
+                                alt="profile"
+                            />
+                            <p>{member.userNickname}</p>
+                            <button onClick={() => handleLike(member.userNickname)}>{'좋'}</button>
+                            <button onClick={() => handleUnlike(member.userNickname)}>{'싫'}</button>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }
