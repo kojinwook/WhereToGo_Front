@@ -2,7 +2,31 @@
     width: 80%;
     margin: 0 auto;
 }
-
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0;
+  }
+  
+  .pagination-wrapper button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .pagination-wrapper button.active {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .pagination-wrapper button:disabled {
+    cursor: not-allowed;
+    background-color: #e9ecef;
+  }
+  
 .meeting-list-container h1 {
     text-align: center;
     margin-bottom: 20px;

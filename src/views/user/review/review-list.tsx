@@ -6,6 +6,7 @@ import Review from 'types/interface/review.interface';
 import Festival from 'types/interface/festival.interface';
 import { GetReviewListResponseDto } from 'apis/response/review/review';
 import { ResponseDto } from 'apis/response/response';
+import './style.css';
 
 interface ResponseData {
     code: string;
@@ -67,21 +68,25 @@ export default function ReviewList() {
     }
 
     return (
-        <div>
+        <div className="review-list-entitle">
             {reviewList.length > 0 ? (
                 reviewList.map((review, index) => {
                     const festival = findFestivalByContentId(review.contentId);
                     return (
-                        <div key={review.reviewId}>
+                        <div key={review.reviewId} className="review-item">
                             {festival && (
                                 <div>
                                     <h3>{festival.title}</h3>
                                     {/* <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /> */}
-                                    <button onClick={() => buttonClickHandler(festival.contentId)}>{'축제 디테일'}</button>
+                                    <button 
+                                        className="custom-button"
+                                        onClick={() => buttonClickHandler(festival.contentId)}>
+                                        {'축제 디테일'}
+                                    </button>
                                 </div>
                             )}
                             <p>{renderStars(review.rate)} {review.writeDatetime}</p>
-                            <p><strong>작성자:</strong> {review.nickname}</p>
+                            {/* <p><strong>작성자:</strong> {review.nickname}</p> */}
                             {/* <div className="review-images">
                                 {review.images && review.images.length > 0 ? (
                                     review.images.map((image, idx) => (

@@ -44,8 +44,7 @@
 
 .header-user-info {
     display: flex;
-    align-items: center
-    ;
+    align-items: center;
     gap: 10px;
     position: relative;
 }
@@ -56,22 +55,37 @@
     object-fit: contain;
 }
 
+.nickname-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+}
+
+.nickname-container .role {
+    font-weight: bold;
+    color: red;
+}
+
 .nickname {
     cursor: pointer;
 }
 
 .dropdown-menu {
+    width: 70px;
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: 5%;
+    right: 20px;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
     margin-top: 5px;
     z-index: 1000;
+    white-space: nowrap;
+    cursor: pointer;
 }
 
 .dropdown-menu > div {
@@ -83,4 +97,8 @@
     display: block;
     margin: 10px 0;
     border-bottom: 1px solid #ccc;
+}
+
+.dropdown-menu-profile:hover, .dropdown-menu-logout:hover {
+    text-decoration: underline;
 }

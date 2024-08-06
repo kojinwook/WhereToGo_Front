@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Images, Meeting } from 'types/interface/interface';
 import './style.css';
 import { useCookies } from 'react-cookie';
+import Pagination from 'components/Pagination';
 
 export interface Category {
   name: string;
@@ -14,18 +15,16 @@ export interface Location {
 }
 
 export default function MeetingList() {
-
-  const [meetingList, setMeetingList] = useState<Meeting[]>([])
+  const [meetingList, setMeetingList] = useState<Meeting[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [joinMembersMap, setJoinMembersMap] = useState<{ [key: number]: number }>({});
   const [cookies] = useCookies();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const backGoPathClickHandler = () => {
-    navigate(`/`);
-  }
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 5; // Number of items per page
 
   const categories: Category[] = [
     { name: '전체' },
@@ -106,8 +105,8 @@ export default function MeetingList() {
   }, [meetingList, cookies.accessToken]);
 
   const meetingTitleClickHandler = (meetingId: number) => {
-    navigate(`/meeting/detail/${meetingId}`)
-  }
+    navigate(`/meeting/detail/${meetingId}`);
+  };
 
   const categoryClickHandler = (categoryName: string) => {
     if (categoryName === '전체') {
@@ -188,14 +187,7 @@ export default function MeetingList() {
 
   const createMeetingClickHandler = () => {
     navigate('/meeting/write');
-  }
-
-  if (!meetingList)
-    <div>
-      <div className='meeting-list-write-btn'>
-        <button onClick={() => navigate('/meeting/write')}>모임 만들기</button>
-      </div>
-    </div>
+  };
 
   const ImageSlider: React.FC<{ images: Images[] }> = ({ images }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -219,11 +211,15 @@ export default function MeetingList() {
     );
   };
 
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredMeetingList.length / itemsPerPage);
+  const paginatedMeetings = filteredMeetingList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   return (
     <div className='meeting-list-container'>
       <h1>모임 리스트</h1>
       <div className='meeting-list-write-btn'>
-        <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
+        <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={() => navigate('/')} />
         <button className='meeting-list-create-btn' onClick={createMeetingClickHandler}>모임 만들기</button>
       </div>
       <div className='meeting-list-categories'>
@@ -260,7 +256,7 @@ export default function MeetingList() {
             <input
               type='text'
               className='category-search-input'
-              placeholder='검색 (Enter로 검색어을 추가해 주세요)'
+              placeholder='검색 (Enter로 검색어를 추가해 주세요)'
               onKeyDown={handleSearchKeyDown}
             />
             <div className='category-search-content'>
@@ -282,12 +278,10 @@ export default function MeetingList() {
         <div>인원</div>
       </div>
       <ul>
-        {filteredMeetingList
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-        .length > 0 ? (
-          filteredMeetingList.map((meeting) => (
+        {paginatedMeetings.length > 0 ? (
+          paginatedMeetings.map((meeting) => (
             <li key={meeting.meetingId} className='meeting-item' onClick={() => meetingTitleClickHandler(meeting.meetingId)}>
-              {<ImageSlider images={meeting.imageList} />}
+              <ImageSlider images={meeting.imageList} />
               <div className='meeting-title'>{meeting.title}</div>
               <div>{meeting.userDto.nickname}</div>
               <div>{meeting.introduction}</div>
@@ -298,6 +292,13 @@ export default function MeetingList() {
           <li className='no-meetings-message'>선택된 조건에 해당하는 모임이 없습니다.</li>
         )}
       </ul>
+      <div className='pagination-wrapper'>
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          viewPageList={Array.from({ length: totalPages }, (_, i) => i + 1)}
+        />
+      </div>
     </div>
-  )
+  );
 }

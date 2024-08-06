@@ -1,27 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { GetAllFavoriteRequest, GetAverageRateRequest, GetFestivalListRequest, GetSearchFestivalListRequest, PutFavoriteRequest } from '../../../apis/apis';
 import { Festival } from 'types/interface/interface';
-import './style.css'
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import './style.css';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import ResponseDto from 'apis/response/response.dto';
 import useLoginUserStore from 'store/login-user.store';
+import Pagination from 'components/Pagination';
 
 export default function FestivalPage() {
     const { loginUser } = useLoginUserStore();
-    const [searchFestivalList, setSearchFestivalList] = useState<Festival[]>();
+    const [searchFestivalList, setSearchFestivalList] = useState<Festival[]>([]);
     const [averageRates, setAverageRates] = useState<{ [key: string]: number }>({});
     const [favorites, setFavorites] = useState<{ [key: string]: boolean }>({});
-    const [cookies, setCookies] = useCookies();
+    const [cookies] = useCookies();
     const [nickname, setNickname] = useState<string>('');
     const navigate = useNavigate();
     const location = useLocation();
+
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const itemsPerPage = 5;
 
     useEffect(() => {
         if (loginUser) {
             setNickname(loginUser.nickname);
         }
-    }, []);
+    }, [loginUser]);
 
     const areas = [
         { name: '전체', code: '' },
@@ -64,7 +67,7 @@ export default function FestivalPage() {
             }
         };
         fetchFavorites();
-    }, [loginUser]);
+    }, [loginUser, cookies.accessToken]);
 
     const getFestivalList = async () => {
         const response = await GetFestivalListRequest();
@@ -107,7 +110,7 @@ export default function FestivalPage() {
             });
             setAverageRates(rates);
         };
-        if (searchFestivalList) {
+        if (searchFestivalList.length > 0) {
             fetchAverageRates(searchFestivalList);
         }
     }, [searchFestivalList]);
@@ -155,7 +158,7 @@ export default function FestivalPage() {
     };
 
     const onFavoriteClickHandler = async (contentId: string) => {
-        if(!cookies.accessToken || !nickname) {
+        if (!cookies.accessToken || !nickname) {
             alert('로그인이 필요합니다.');
             return;
         }
@@ -175,7 +178,17 @@ export default function FestivalPage() {
         }
     };
 
-    if (!searchFestivalList) return null;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const displayedFestivals = searchFestivalList.slice(startIndex, endIndex);
+
+    // Pagination logic
+    const totalPages = Math.ceil(searchFestivalList.length / itemsPerPage);
+    const pageRange = 5;
+    const startPage = Math.max(1, currentPage - Math.floor(pageRange / 2));
+    const endPage = Math.min(totalPages, startPage + pageRange - 1);
+    const viewPageList = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+
     return (
         <div id='festival-list-wrapper'>
             <div className='festival-list-filter-container'>
@@ -191,7 +204,7 @@ export default function FestivalPage() {
                     <div>날짜</div>
                     <div>찜</div>
                 </div>
-                {searchFestivalList.map((festival, index) => (
+                {displayedFestivals.map((festival, index) => (
                     <div key={index} className='festival-list-content'>
                         <div className='festival-list-content-title' onClick={() => handleTitleClick(festival.contentId)}>{festival.title}</div>
                         <div>{festival.address1}</div>
@@ -205,6 +218,13 @@ export default function FestivalPage() {
                         </div>
                     </div>
                 ))}
+            </div>
+            <div className="pagination-box">
+                <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    viewPageList={viewPageList}
+                />
             </div>
         </div>
     );
