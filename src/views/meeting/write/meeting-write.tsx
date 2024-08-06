@@ -145,7 +145,14 @@ export default function MeetingWrite() {
 
     try {
       const requestBody = { title, introduction, content, imageList, nickname, maxParticipants, tags, categories, locations };
-      console.log(requestBody)
+      if(!requestBody.categories.length) {
+        alert('카테고리를 선택해주세요.');
+        return;
+      }
+      if(!requestBody.locations.length) {
+        alert('지역을 선택해주세요.');
+        return;
+      }
       const response = await PostMeetingRequest(requestBody, cookies.accessToken);
       if (!response) return;
       if (response.code === 'SU') {
@@ -153,12 +160,15 @@ export default function MeetingWrite() {
         navigate('/meeting/list');
       } else if (response.code === 'CCM') {
         alert('모임 생성 권한이 없습니다.');
+        return;
       } else {
         alert('모임 등록에 실패했습니다.');
+        return;
       }
     } catch (error) {
       console.error('Error:', error);
       alert('모임 등록 중 오류가 발생했습니다.');
+      return;
     }
   };
 
