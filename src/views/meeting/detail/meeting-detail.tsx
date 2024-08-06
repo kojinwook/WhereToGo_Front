@@ -37,7 +37,7 @@ export default function MeetingDetail() {
     const [boardImageList, setBoardImageList] = useState<Images[]>([]);
     const [showOptions, setShowOptions] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;  
+    const itemsPerPage = 5;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = boardList.slice(indexOfFirstItem, indexOfLastItem);
@@ -328,6 +328,7 @@ export default function MeetingDetail() {
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
+
     return (
         <div className="meeting-detail-container">
             <div className='meeting-detail-header'>
@@ -338,7 +339,7 @@ export default function MeetingDetail() {
                 <img className='meeting-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
                     try {
                         await navigator.clipboard.writeText(window.location.href);
-                        alert('링크가 복사되었습니다!'); 
+                        alert('링크가 복사되었습니다!');
                     } catch (err) {
                         console.error('링크 복사 실패:', err);
                     }
@@ -498,13 +499,17 @@ export default function MeetingDetail() {
 
                 {activeTab === 'requests' && (
                     <div className="requests-list">
-                        <div className='image-grid'>
-                            {boardImageList.map((image) => (
-                                <div key={image.imageId} className="image-container">
-                                    <img src={image.image} alt="image" className="board-image" onClick={() => handleBoardDetail(image.meetingBoardId)} />
-                                </div>
-                            ))}
-                        </div>
+                        {boardImageList.length === 0 ? (
+                            <div className="no-images-message">사진이 없습니다.</div>
+                        ) : (
+                            <div className='image-grid'>
+                                {boardImageList.map((image) => (
+                                    <div key={image.imageId} className="image-container">
+                                        <img src={image.image} alt="image" className="board-image" onClick={() => handleBoardDetail(image.meetingBoardId)} />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

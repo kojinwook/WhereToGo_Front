@@ -163,6 +163,14 @@ export default function MeetingUpdate() {
             }
         }
         const requestBody = { title, introduction, content, nickname, imageList, maxParticipants, tags, categories, locations };
+        if (!requestBody.categories.length) {
+            alert('카테고리를 선택해주세요.');
+            return;
+        }
+        if (!requestBody.locations.length) {
+            alert('지역을 선택해주세요.');
+            return;
+        }
         const response = await PatchMeetingRequest(meetingId, requestBody, cookies.accessToken);
         if (!response) return;
         if (response.code === 'SU') {
@@ -170,6 +178,7 @@ export default function MeetingUpdate() {
             navigate(`/meeting/detail/${meetingId}`);
         } else {
             alert('수정에 실패했습니다.');
+            return;
         }
     }
 
