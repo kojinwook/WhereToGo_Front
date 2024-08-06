@@ -33,6 +33,7 @@ const Main: React.FC = () => {
   useEffect(() => {
     const fetchRecent5MeetingList = async () => {
       const response = await Get5RecentMeetingRequest();
+      console.log(response)
       if (!response) return;
       setRecent5MeetingList(response.meetingList);
       setLoading(false);
