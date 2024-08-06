@@ -1,0 +1,53 @@
+#pagination-wrapper {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 10%;
+    justify-content: center; /* 수평 가운데 정렬 */
+}
+
+.pagination-change-link-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.pagination-change-link-text {
+    color: rgba(0, 0, 0, 1);
+    flex-shrink: 0; /* 줄어들지 않도록 고정 */
+    font-size: 16px;
+    font-weight: 600px;
+    line-height: 140%;
+    white-space: nowrap;
+}
+
+.pagination-divider {
+    color: rgba(0, 0, 0, 0.3);
+    margin-left: 5%;
+    margin-right: 5%;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 140%;
+    cursor: default;
+}
+
+.pagination-text-active {
+    color: rgba(0, 0, 0, 1);
+
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 140%;
+    margin : 0 10px;
+    cursor: default;
+}
+
+.pagination-text {
+    color: rgba(0, 0, 0, 0.4);
+
+    font-size: 16px;
+    
+    font-weight: 600;
+    line-height: 140%;
+    margin : 0 10px;
+    cursor: pointer;
+}
