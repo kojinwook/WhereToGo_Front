@@ -7,7 +7,6 @@ import useFestivalStore from 'store/festival.store';
 
 const FestivalAdmin: React.FC = () => {
     const [festivalList, setFestivalList] = useState<Festival[]>([]);
-    const [editingFestival, setEditingFestival] = useState<Festival | null>(null);
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [tags, setTags] = useState<string[]>([]);
     const { formData, setFormData, resetFormData } = useFestivalStore();
@@ -17,7 +16,7 @@ const FestivalAdmin: React.FC = () => {
         const year = dateStr.substring(0, 4);
         const month = dateStr.substring(4, 6);
         const day = dateStr.substring(6, 8);
-        return `${year}년 ${month}월 ${day}일`;
+        return `${year}-${month}-${day}`;
     };
 
     useEffect(() => {
@@ -36,7 +35,6 @@ const FestivalAdmin: React.FC = () => {
     }, []);
 
     const handleEdit = (festival: Festival) => {
-        setEditingFestival(festival);
         setFormData(festival);
         if (typeof festival.tags === 'string') {
             setTags(festival.tags.split(','));
@@ -47,7 +45,6 @@ const FestivalAdmin: React.FC = () => {
     };
 
     const handleCancelEdit = () => {
-        setEditingFestival(null);
         resetFormData();
         setTags([]);
         setModalOpen(false);
@@ -58,7 +55,6 @@ const FestivalAdmin: React.FC = () => {
         if (formData) {
             try {
                 const updatedFormData = { ...formData, tags };
-                console.log('updatedFormData:', updatedFormData);
 
                 const response = await PatchFestivalRequest(updatedFormData, cookies.accessToken);
                 if(!response) return;
@@ -66,7 +62,6 @@ const FestivalAdmin: React.FC = () => {
                     setFestivalList(festivalList.map(festival =>
                         festival.contentId === updatedFormData.contentId ? updatedFormData : festival
                     ));
-                    setEditingFestival(null);
                     resetFormData();
                     setTags([]);
                     setModalOpen(false);
@@ -133,9 +128,9 @@ const FestivalAdmin: React.FC = () => {
                             <label>First Image:</label>
                             <input type="text" name="firstImage" value={formData?.firstImage || ''} onChange={handleChange} />
                             <label>Start Date:</label>
-                            <input type="text" name="startDate" value={formData?.startDate || ''} onChange={handleChange} />
+                            <input type="date" name="startDate" value={formData?.startDate || ''} onChange={handleChange} />
                             <label>End Date:</label>
-                            <input type="text" name="endDate" value={formData?.endDate || ''} onChange={handleChange} />
+                            <input type="date" name="endDate" value={formData?.endDate || ''} onChange={handleChange} />
                             <label>Telephone:</label>
                             <input type="text" name="tel" value={formData?.tel || ''} onChange={handleChange} />
                             <label>Content ID:</label>
