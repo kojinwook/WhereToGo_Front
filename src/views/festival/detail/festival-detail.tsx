@@ -213,6 +213,8 @@ export default function FestivalDetail() {
         window.history.back();
     }
 
+    console.log(reviews.map((review) => review.imageList).map((image) => image.map((img) => img.image)))
+
     if (!festival) return null;
     return (
         <div className="festival-detail-container">
@@ -288,14 +290,14 @@ export default function FestivalDetail() {
                                             <p className='review-date'>{review.writeDatetime}</p>
                                         </div>
                                         <div className="review-images">
-                                            {review.images && review.images.length > 0 ? (
-                                                review.images.map((image, idx) => (
+                                            {review.imageList && review.imageList.length > 0 ? (
+                                                review.imageList.map((image, idx) => (
                                                     <img key={idx} src={image.image} alt={`리뷰 이미지 ${idx}`} className="review-image" />
                                                 ))
-                                            ) 
-                                            : (
-                                                <p>등록된 사진이 없습니다.</p>
-                                            )}
+                                            )
+                                                : (
+                                                    <p>등록된 사진이 없습니다.</p>
+                                                )}
                                         </div>
                                         <div className='review-text'>{review.review}</div>
                                     </div>
