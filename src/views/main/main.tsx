@@ -12,7 +12,6 @@ const Main: React.FC = () => {
   const [top5FestivalList, setTop5FestivalList] = useState<Festival[]>([]);
   const [Recent5MeetingList, setRecent5MeetingList] = useState<Meeting[]>([]);
   const [top3TemperatureUserList, setTop3TemperatureUserList] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const images = [
     "https://i.imgur.com/PKqEZdk.png",
@@ -25,7 +24,6 @@ const Main: React.FC = () => {
       const response = await GetTop5FestivalListRequest();
       if (!response) return;
       setTop5FestivalList(response.festivalList);
-      setLoading(false);
     };
     fetchTop5FestivalList();
   }, []);
@@ -36,7 +34,6 @@ const Main: React.FC = () => {
       console.log(response)
       if (!response) return;
       setRecent5MeetingList(response.meetingList);
-      setLoading(false);
     };
     fetchRecent5MeetingList();
   }, []);
@@ -47,7 +44,6 @@ const Main: React.FC = () => {
       console.log(response)
       if (!response) return;
       setTop3TemperatureUserList(response.userList);
-      setLoading(false);
     };
     fetchTop3TemperatureUserList();
   }, []);

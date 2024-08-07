@@ -42,7 +42,7 @@
 .festival-admin-modal-content {
     background-color: #fefefe;
     padding: 20px;
-    /* border: 1px solid #888; */
+    border: 1px solid #888;
     width: 50%;
     max-height: 80%; /* Adjust as needed */
     overflow-y: auto;
@@ -76,15 +76,15 @@
 
 .festival-admin-modal-form button {
     cursor: pointer;
-    background-color: black;
-    color: white;
+    /* background-color: black; */
+    /* color: white; */
     border: 1px solid black;
     border-radius: 5px; /* 모서리 둥글게 */
     outline: none;
     display: flex;
     padding: 10px 20px;
     margin-right: 10px;
-    align-items: center; /* 수직 중앙 정렬 */
+    /* align-items: center; */
     justify-content: center;
 }
 
@@ -99,6 +99,16 @@
 }
 
 .festival-admin-modal-form button[type="button"]:hover {
+    background-color: black;
+    color: white;
+}
+
+.festival-admin-modal-form button[type="submit"] {
+    background-color: white;
+    color: black;
+}
+
+.festival-admin-modal-form button[type="submit"]:hover {
     background-color: black;
     color: white;
 }

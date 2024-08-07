@@ -476,6 +476,13 @@
     transform: scale(1.1);
 }
 
+.no-images-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #666;
+    margin-top: 1.25rem;
+}
+
 /* 멤버 리스트 */
 .bordered-div.member {
     border: 1px solid #ccc;
