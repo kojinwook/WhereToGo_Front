@@ -64,6 +64,7 @@ export default function UserModifyProfile() {
         if (code === 'SU') {
             alert('정보가 성공적으로 수정되었습니다.');
             GetUserRequest(userId).then(getUserResponse);
+            navigate('/user/profile');
         }
     };
 

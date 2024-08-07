@@ -31,7 +31,6 @@ const Main: React.FC = () => {
   useEffect(() => {
     const fetchRecent5MeetingList = async () => {
       const response = await Get5RecentMeetingRequest();
-      console.log(response)
       if (!response) return;
       setRecent5MeetingList(response.meetingList);
     };
@@ -41,7 +40,6 @@ const Main: React.FC = () => {
   useEffect(() => {
     const fetchTop3TemperatureUserList = async () => {
       const response = await Top5TemperatureUserRequest();
-      console.log(response)
       if (!response) return;
       setTop3TemperatureUserList(response.userList);
     };
@@ -81,7 +79,6 @@ const Main: React.FC = () => {
   };
   // 배너 끝
 
-  console.log(top3TemperatureUserList.length)
   return (
     <div className='main-container'>
       <div className='banner'>
