@@ -64,11 +64,14 @@ const Inquire: React.FC = () => {
             </div>
           </div>
           <div className="inquire-right">
-            <div className="inquire-chat">오픈 채팅</div>
-            <button className="inquire-url" onClick={OpenChatClickHandler}>URL</button>
-            <div className="inquire-number">고객센터 0000-0000</div>
-            <div className="inquire-time">평일 09:00 ~ 18:00 (주말 및 공휴일 휴무)</div>
-            <div className="inquire-rest">점심시간 12:00 ~ 13:00</div>
+            <div>
+              <div className="inquire-chat">오픈 채팅</div>
+              <button className="inquire-url" onClick={OpenChatClickHandler}>URL</button>
+              <div className="inquire-number">고객센터 0000-0000</div>
+              <div className="inquire-time">평일 09:00 ~ 18:00 (주말 및 공휴일 휴무)</div>
+              <div className="inquire-rest">점심시간 12:00 ~ 13:00</div>
+            </div>
+            <img src="https://i.imgur.com/bk6ibD5.png" alt="오픈채팅  QR" />
           </div>
         </div>
         <div className="inquire-notice-container">
