@@ -336,14 +336,26 @@ export default function MeetingDetail() {
                     <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
                     <h1>{meeting.title}</h1>
                 </div>
-                <img className='meeting-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
-                    try {
-                        await navigator.clipboard.writeText(window.location.href);
-                        alert('링크가 복사되었습니다!');
-                    } catch (err) {
-                        console.error('링크 복사 실패:', err);
-                    }
-                }} />
+                <img
+                    className='festival-detail-sharing'
+                    src="https://i.imgur.com/hA50Ys8.png"
+                    alt="공유"
+                    onClick={() => {
+                        const textarea = document.createElement('textarea');
+                        textarea.value = window.location.href;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        try {
+                            document.execCommand('copy');
+                            alert('링크가 복사되었습니다!');
+                        } catch (err) {
+                            console.error('링크 복사 실패:', err);
+                            alert('링크 복사에 실패했습니다. 다시 시도해 주세요.');
+                        }
+                        document.body.removeChild(textarea);
+                    }}
+                />
+
             </div>
             <div className="tab-menu">
                 <button className={`tab-button ${activeTab === 'detail' ? 'active' : ''}`} onClick={() => setActiveTab('detail')}>모임 홈</button>

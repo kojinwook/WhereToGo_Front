@@ -213,8 +213,6 @@ export default function FestivalDetail() {
         window.history.back();
     }
 
-    console.log(reviews.map((review) => review.imageList).map((image) => image.map((img) => img.image)))
-
     if (!festival) return null;
     return (
         <div className="festival-detail-container">
@@ -223,14 +221,26 @@ export default function FestivalDetail() {
                     <img src="https://i.imgur.com/PfK1UEF.png" alt="뒤로가기" onClick={backGoPathClickHandler} />
                 </div>
                 <div className='festival-detail-option'>
-                    <img className='festival-detail-sharing' src="https://i.imgur.com/hA50Ys8.png" alt="공유" onClick={async () => {
-                        try {
-                            await navigator.clipboard.writeText(window.location.href);
-                            alert('링크가 복사되었습니다!'); // 성공 메시지
-                        } catch (err) {
-                            console.error('링크 복사 실패:', err);
-                        }
-                    }} />
+                    <img
+                        className='festival-detail-sharing'
+                        src="https://i.imgur.com/hA50Ys8.png"
+                        alt="공유"
+                        onClick={() => {
+                            const textarea = document.createElement('textarea');
+                            textarea.value = window.location.href;
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            try {
+                                document.execCommand('copy');
+                                alert('링크가 복사되었습니다!');
+                            } catch (err) {
+                                console.error('링크 복사 실패:', err);
+                                alert('링크 복사에 실패했습니다. 다시 시도해 주세요.');
+                            }
+                            document.body.removeChild(textarea);
+                        }}
+                    />
+
                     <div className="icon-button" onClick={() => onFavoriteClickHandler(festival.contentId)}>
                         {favorites[festival.contentId] ?
                             <i className="fas fa-heart favorite-fill-icon" style={{ color: 'red' }}></i> :
