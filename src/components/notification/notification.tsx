@@ -17,7 +17,7 @@ const NotificationsModal: React.FC<NotificationsModalProps> = ({ notifications, 
             <div className="notifications-modal">
                 <div className="notifications-modal-header">
                     <h3>알림</h3>
-                    <button onClick={onClose}>닫기</button>
+                    <button onClick={onClose}>X</button>
                 </div>
                 <div className="notifications-modal-content">
                     {notifications.length === 0 ? (
@@ -26,9 +26,18 @@ const NotificationsModal: React.FC<NotificationsModalProps> = ({ notifications, 
                         notifications.map((notification) => (
                             <div key={notification.id} className={`notifications ${notification.type === 'CHAT' ? 'chat-notification' : ''}`} onClick={() => onNotificationClick(notification)}>
                                 {notification.type === 'CHAT' ? (
-                                    <span>{notification.message} : {notification.senderId}</span>
+                                    <div>
+                                        <span>{notification.senderId}님이 채팅을 보냈습니다.</span>
+                                        <br />
+                                        <span>{notification.message}</span>
+                                    </div>
                                 ) : (
-                                    <span>{notification.replySender} : {meetingBoardTitles.get(notification.meetingBoardId!)} : {notification.replyContent}</span>
+                                        
+                                    <div>
+                                        <span>{notification.replySender}님이 {meetingBoardTitles.get(notification.meetingBoardId!)}에 댓글을 작성했습니다.</span>
+                                        <br />
+                                        <span>{notification.replyContent}</span>
+                                    </div>
                                 )}
                                 <button onClick={(e) => { e.stopPropagation(); onDeleteNotification(notification.id); }}>삭제</button>
                             </div>
