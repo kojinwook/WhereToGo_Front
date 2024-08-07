@@ -1,0 +1,90 @@
+.report-user-container{
+    width: 80%;
+    margin: 0 auto;
+}
+
+.report-user-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.report-user-container div {
+    margin-bottom: 15px;
+}
+
+.report-user-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.report-user-container select,
+.report-user-container textarea,
+.report-user-container input[type="datetime-local"],
+.report-user-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.report-user-container textarea {
+    height: 100px;
+    resize: none;
+    overflow-y: auto;
+}
+
+.report-user-container input[type="file"] {
+    margin-top: 10px;
+}
+
+.report-user-container button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.report-user-container button:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.report-user-container .image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.report-user-container .image-preview div {
+    position: relative;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.report-user-container .image-preview img {
+    width: 100px;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.report-user-container .image-preview button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.report-user-container .image-preview button i {
+    font-size: 1.5rem;
+    color: gray;
+}

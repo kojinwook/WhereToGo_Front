@@ -311,7 +311,7 @@ export default function BoardDetail() {
     };
 
     // 신고버튼
-    const reportUserButtonClickHandler = (reportUserNickname: string) => {
+    const reportUserButtonClickHandler = (reportUserNickname: string | undefined) => {
         navigate(`/user/report/${reportUserNickname}`);
     }
 
@@ -353,9 +353,8 @@ export default function BoardDetail() {
                             <img className='board-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
                             <p className="writer-nickname">{writerNickname}</p>
                         </div>
-                        {(writerNickname === nickname || role === "ROLE_ADMIN") && (
-                            <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleBoardOptions} />
-                        )}
+
+                        <img className="board-more-button" src={moreButton} alt="더보기" onClick={toggleBoardOptions} />
                         {showBoardOptions && (
                             <div className="board-button-box">
                                 {writerNickname === nickname && (
@@ -374,6 +373,12 @@ export default function BoardDetail() {
                                         삭제
                                     </button>
                                 )}
+                                <button
+                                    className="report-button"
+                                    onClick={() => reportUserButtonClickHandler(board?.userDto.nickname)}
+                                >
+                                    신고
+                                </button>
                             </div>
                         )}
                     </div>
@@ -402,9 +407,7 @@ export default function BoardDetail() {
                                 <div className='answer-date'>{formatDate(replyItem.createDate)}</div>
 
                                 <div className="answer-more-options">
-                                    {(replyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                        <img className="board-more-button" src={moreButton} alt="더보기" onClick={() => toggleAnswerOptions(replyItem.replyId)} />
-                                    )}
+                                    <img className="board-more-button" src={moreButton} alt="더보기" onClick={() => toggleAnswerOptions(replyItem.replyId)} />
                                     {showAnswerOptions[replyItem.replyId] && (
                                         <div className="board-button-box">
                                             {replyItem.userDto.nickname === nickname && (
@@ -423,6 +426,12 @@ export default function BoardDetail() {
                                                     삭제
                                                 </button>
                                             )}
+                                            <button
+                                                className="report-button"
+                                                onClick={() => reportUserButtonClickHandler(replyItem?.userDto.nickname)}
+                                            >
+                                                신고
+                                            </button>
                                         </div>
                                     )}
                                 </div>
@@ -473,9 +482,7 @@ export default function BoardDetail() {
                                             <div className='answer-date'>{formatDate(replyReplyItem.createDate)}</div>
 
                                             <div className="answer-more-options">
-                                                {(replyReplyItem.userDto.nickname === nickname || role === "ROLE_ADMIN") && (
-                                                    <img className="board-more-button" src={moreButton} alt="더보기" onClick={() => toggleReplyOptions(replyReplyItem.replyReplyId)} />
-                                                )}
+                                                <img className="board-more-button" src={moreButton} alt="더보기" onClick={() => toggleReplyOptions(replyReplyItem.replyReplyId)} />
                                                 {showReplyOptions[replyReplyItem.replyReplyId] && (
                                                     <div className="board-button-box">
                                                         {replyReplyItem.userDto.nickname === nickname && (
@@ -494,6 +501,12 @@ export default function BoardDetail() {
                                                                 삭제
                                                             </button>
                                                         )}
+                                                        <button
+                                                            className="report-button"
+                                                            onClick={() => reportUserButtonClickHandler(replyReplyItem.userDto.nickname)}
+                                                        >
+                                                            신고
+                                                        </button>
                                                     </div>
                                                 )}
                                             </div>

@@ -81,6 +81,7 @@ const Main: React.FC = () => {
   };
   // 배너 끝
 
+  console.log(top3TemperatureUserList.length)
   return (
     <div className='main-container'>
       <div className='banner'>

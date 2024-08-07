@@ -2,10 +2,10 @@ import { FileUploadRequest, ReportUserRequest } from 'apis/apis';
 import { ReportUserRequestDto } from 'apis/request/user';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { Images } from 'types/interface/interface';
-// import './style.css';
+import './style.css';
 
 export default function ReportUser() {
 
@@ -95,7 +95,7 @@ export default function ReportUser() {
                 imageList.push(imageUrl);
             }
         }
-        if (!reportUserNickname || !reportType || !incidentDescription || !incidentTimeDate || !incidentLocation || !impactDescription) {
+        if (!reportUserNickname || !reportType || !incidentDescription || !incidentTimeDate || !incidentLocation) {
             alert('모든 항목을 입력해주세요.');
             return;
         }
@@ -137,12 +137,12 @@ export default function ReportUser() {
                 </select>
             </div>
             <div>
-                <label htmlFor="incidentDescription">사건 설명</label>
+                <label htmlFor="incidentDescription">신고 내용</label>
                 <textarea
                     id="incidentDescription"
                     onChange={handleIncidentDescriptionChange}
                     value={incidentDescription}
-                    placeholder="사건 설명을 입력하세요"
+                    placeholder="신고 내용을 입력하세요"
                 ></textarea>
             </div>
             <div>
@@ -155,24 +155,16 @@ export default function ReportUser() {
                 />
             </div>
             <div>
-                <label htmlFor="incidentLocation">위치</label>
+                <label htmlFor="incidentLocation">모임 URL 또는 모임 이름</label>
                 <input
                     type="text"
                     id="incidentLocation"
                     onChange={handleIncidentLocationChange}
                     value={incidentLocation}
-                    placeholder="위치를 입력하세요"
+                    placeholder="모임 URL 또는 모임 이름을 입력하세요"
                 />
             </div>
-            <div>
-                <label htmlFor="impactDescription">개인적 영향</label>
-                <textarea
-                    id="impactDescription"
-                    onChange={handleImpactDescriptionChange}
-                    value={impactDescription}
-                    placeholder="개인적 영향을 입력하세요"
-                ></textarea>
-            </div>
+
             <p><strong>사진</strong></p>
             <input type="file" multiple onChange={handleImageChange} />
             <div style={{ display: 'flex', marginTop: '10px' }}>
