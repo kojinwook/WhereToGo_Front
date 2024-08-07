@@ -25,7 +25,7 @@ export default function Header() {
 
   useEffect(() => {
     if (loginUser && cookies.accessToken) {
-      const socket = new SockJS('http://localhost:8088/ws');
+      const socket = new SockJS('http://15.165.24.165:8088/ws');
       const stompClient = new Client({
         webSocketFactory: () => socket,
         onConnect: () => {

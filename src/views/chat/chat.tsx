@@ -36,17 +36,13 @@ const ChatRoom: React.FC = () => {
     const params = new URLSearchParams(location.search);
     const roomId = params.get('roomId');
     const { loginUser } = useLoginUserStore();
-    const [nickname, setNickname] = useState<string>('');
-    const stompClient = useRef<any>(null);
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [cookies] = useCookies();
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState<string>('');
-    const [isTyping, setIsTyping] = useState<boolean>(false);
     const [otherUserTyping, setOtherUserTyping] = useState<string[]>([]);
     const [otherUserStatus, setOtherUserStatus] = useState<UserStatus[]>([]);
     const [chatPartnerNickname, setChatPartnerNickname] = useState<string>(''); // 상대방 닉네임 상태 변수 추가
-    const navigator = useNavigate();
     const userId = params.get('userId'); // userId를 URL에서 가져오기
 
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -61,7 +57,7 @@ const ChatRoom: React.FC = () => {
 
     useEffect(() => {
         if (!roomId || !loginUser) return;
-        const socket = new SockJS('http://localhost:8088/ws');
+        const socket = new SockJS('http://15.165.24.165:8088/ws');
         const client = new Client({
             webSocketFactory: () => socket,
             onConnect: () => {
@@ -111,7 +107,7 @@ const ChatRoom: React.FC = () => {
     }, [roomId, loginUser, userId]);
 
     const fetchChatPartnerNickname = async () => {
-        if (!userId) return; // userId가 없으면 함수 종료
+        if (!userId) return;
         try {
             const response = await GetUserRequest(userId);
             if (response) {
@@ -127,7 +123,6 @@ const ChatRoom: React.FC = () => {
             console.error('Failed to get chat partner:', error);
         }
     };
-
     const handleChatMessage = (message: IMessage) => {
         if (!loginUser) return;
         const parsedBody = JSON.parse(message.body);
@@ -139,10 +134,6 @@ const ChatRoom: React.FC = () => {
             readByReceiver: parsedBody.body.chatMessage.readByReceiver,
         };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-
-        if (newMessage.sender !== loginUser.nickname) {
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
-        }
     };
 
     const handleTypingMessage = (message: IMessage) => {
@@ -179,8 +170,7 @@ const ChatRoom: React.FC = () => {
                 const response = await GetUserRequest(loginUser.userId);
                 if (!response) return;
                 if (response.code === 'SU') {
-                    const { nickname, profileImage } = response;
-                    setNickname(nickname);
+                    const { profileImage } = response;
                     setProfileImage(profileImage);
                 } else {
                     console.error('Failed to get user:');
@@ -204,6 +194,7 @@ const ChatRoom: React.FC = () => {
             if (!response) return;
             if (response.code === 'SU') {
                 const chatMessageList = response.chatMessageList;
+                console.log(chatMessageList);
                 if (chatMessageList && Array.isArray(chatMessageList)) {
                     const formattedMessages: Message[] = chatMessageList.map((msg: any) => ({
                         messageId: msg.messageId,
