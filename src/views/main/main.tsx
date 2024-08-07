@@ -41,6 +41,7 @@ const Main: React.FC = () => {
   useEffect(() => {
     const fetchTop3TemperatureUserList = async () => {
       const response = await Top5TemperatureUserRequest();
+      console.log(response)
       if (!response) return;
       setTop3TemperatureUserList(response.userList);
     };
