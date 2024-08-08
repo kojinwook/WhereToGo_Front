@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { GetChatMessageListRequest, GetUserRequest } from 'apis/apis';
+import { GetChatMessageListRequest, GetChatRoomUsersRequest, GetUserRequest } from 'apis/apis';
 import './style.css';
 import useLoginUserStore from 'store/login-user.store';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -43,9 +43,33 @@ const ChatRoom: React.FC = () => {
     const [otherUserTyping, setOtherUserTyping] = useState<string[]>([]);
     const [otherUserStatus, setOtherUserStatus] = useState<UserStatus[]>([]);
     const [chatPartnerNickname, setChatPartnerNickname] = useState<string>(''); // 상대방 닉네임 상태 변수 추가
+    const [chatPartnerProfileImage, setChatPartnerProfileImage] = useState<string | null>(null); // 상대방 프로필 이미지 상태 변수 추가
     const userId = params.get('userId'); // userId를 URL에서 가져오기
 
     const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const getOtherUserId = async () => {
+        if (!roomId || !cookies.accessToken) return '';
+    
+        try {
+            const response = await GetChatRoomUsersRequest(roomId, cookies.accessToken);
+            if (response && response.code === 'SU') {
+                const users = response.users;
+                if (users && users.length === 2) {
+                    const otherUser = users.find(user => user.userId !== loginUser?.userId);
+                    return otherUser ? otherUser.userId : '';
+                } else {
+                    console.error('Unexpected number of users in chat room.');
+                }
+            } else {
+                console.error('Failed to fetch chat room users:', response);
+            }
+        } catch (error) {
+            console.error('Error fetching chat room users:', error);
+        }
+        return '';
+    };
+    
 
     useEffect(() => {
         scrollToBottom();
@@ -82,7 +106,7 @@ const ChatRoom: React.FC = () => {
                 });
                 fetchMessages();
                 if (userId) {
-                    fetchChatPartnerNickname();
+                    fetchChatPartnerInfo();
                 }
             },
             onDisconnect: () => {
@@ -106,23 +130,26 @@ const ChatRoom: React.FC = () => {
         };
     }, [roomId, loginUser, userId]);
 
-    const fetchChatPartnerNickname = async () => {
-        if (!userId) return;
+    const fetchChatPartnerInfo = async () => {
+        const otherUserId = getOtherUserId();  // 상대방 ID를 가져옵니다.
+        if (!otherUserId) return;
         try {
-            const response = await GetUserRequest(userId);
+            const response = await GetUserRequest(await otherUserId);
             if (response) {
                 if (response.code === 'SU') {
                     setChatPartnerNickname(response.nickname);
+                    setChatPartnerProfileImage(response.profileImage || defaultProfileImage);
                 } else {
-                    console.error('Failed to get chat partner');
+                    console.error('Failed to get chat partner info');
                 }
             } else {
-                console.error('Failed to get chat partner: Response is null');
+                console.error('Failed to get chat partner info: Response is null');
             }
         } catch (error) {
-            console.error('Failed to get chat partner:', error);
+            console.error('Failed to get chat partner info:', error);
         }
     };
+    
     const handleChatMessage = (message: IMessage) => {
         if (!loginUser) return;
         const parsedBody = JSON.parse(message.body);
@@ -194,7 +221,6 @@ const ChatRoom: React.FC = () => {
             if (!response) return;
             if (response.code === 'SU') {
                 const chatMessageList = response.chatMessageList;
-                console.log(chatMessageList);
                 if (chatMessageList && Array.isArray(chatMessageList)) {
                     const formattedMessages: Message[] = chatMessageList.map((msg: any) => ({
                         messageId: msg.messageId,

@@ -26,12 +26,12 @@ import { GetAllReviewResponseDto, GetAverageRateResponseDto, GetReviewListRespon
 import { BlockUserResponseDto, DeleteUserResponseDto, DislikeUserResponseDto, FindUserIdResponseDto, GetSignInUserResponseDto, GetUserListResponseDto, GetUserResponseDto, LikeUserResponseDto, PasswordRecoveryResponseDto, PatchNicknameResponseDto, PatchPasswordResponseDto, PatchProfileImageResponseDto, PatchUserResponseDto, ReportUserListResponseDto, ReportUserResponseDto, UnBlockUserResponseDto, VerifyPasswordResponseDto, WithdrawalUserResponseDto } from "./response/user";
 import GetTop5TemperatureUserResponseDto from "./response/user/get-temperature-top5-user.response.dto";
 
-// const DOMAIN = 'http://localhost:8088';
-const DOMAIN = 'http://15.165.24.165:8088';
+const DOMAIN = 'http://localhost:8088';
+// const DOMAIN = 'http://15.165.24.165:8088';
 const API_DOMAIN = `${DOMAIN}/api/v1`;
 
-// const FILE_DOMAIN = `${DOMAIN}/file`;
-const FILE_DOMAIN = `${DOMAIN}/sftp/file`;
+const FILE_DOMAIN = `${DOMAIN}/file`;
+// const FILE_DOMAIN = `${DOMAIN}/sftp/file`;
 const FILE_UPLOAD_URL = () => `${FILE_DOMAIN}/upload`;
 const multipartFormData = { headers: { 'Url-Type': 'multipart/form-data' } };
 
@@ -409,8 +409,8 @@ export const GetAnswerRequest = async (questionId: number | string) => {
         .catch(errorHandler);
     return result;
 };
-export const PostReviewRequest = async (contentId: string | number, rate: number, review: string, imageList: Images[], nickname: string, accessToken: string) => {
-    const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList, nickname }, authorization(accessToken))
+export const PostReviewRequest = async (contentId: string | number, rate: number, review: string, imageList: Images[], nickname: string, profileImage: string | null, accessToken: string) => {
+    const result = await axios.post(POST_REVIEW_URL(), { contentId, rate, review, imageList, nickname, profileImage }, authorization(accessToken))
         .then(responseHandler<PostReviewResponseDto>)
         .catch(errorHandler);
     return result;

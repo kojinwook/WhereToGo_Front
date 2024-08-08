@@ -74,7 +74,7 @@ export default function ReviewWritePage() {
             return;
         }
         
-        const response = await PostReviewRequest(contentIds, rate, review, ImageList, loginUser?.nickname, cookies.accessToken);
+        const response = await PostReviewRequest(contentIds, rate, review, ImageList, loginUser?.nickname, loginUser?.profileImage, cookies.accessToken);
         if (!response) return;
         if (response.code === 'SU') {
             alert('리뷰가 성공적으로 등록되었습니다.');

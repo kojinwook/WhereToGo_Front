@@ -213,6 +213,8 @@ export default function FestivalDetail() {
         window.history.back();
     }
 
+    console.log(reviews)
+
     if (!festival) return null;
     return (
         <div className="festival-detail-container">
@@ -273,7 +275,7 @@ export default function FestivalDetail() {
                                 <p><strong>기간 | </strong>{festival.startDate} ~ {festival.endDate}</p>
                                 <p><strong>시간 | </strong></p>
                                 <p><strong>번호 | </strong>{festival.tel}</p>
-                                <p><strong>웹사이트 | </strong>{festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> : 'N/A'}</p>
+                                <p><strong>웹사이트 | </strong>{festival.homepage ? <a href={festival.homepage}>{festival.homepage}</a> :''}</p>
                                 <p><strong>태그 | </strong> {Array.isArray(festival.tags) ? festival.tags.map(tag => `#${tag}`).join(' ') : `#${festival.tags}`}</p>
                             </div>
                             <div className="map-container">

@@ -83,6 +83,7 @@ export default function UserProfile() {
         const fetchUser = async () => {
             try {
                 const response = await GetUserRequest(userId);
+                console.log('response:', response);
                 if (!response) return;
                 const { nickname, email, profileImage, temperature } = response;
                 setNickname(nickname);
@@ -163,8 +164,9 @@ export default function UserProfile() {
     }, [userId, cookies.accessToken]);
 
     useEffect(() => {
-        getAllFavorite(nickname);
-        getChatRooms(nickname);
+        if(!loginUser) return;
+        getAllFavorite(loginUser.nickname);
+        getChatRooms(loginUser.nickname);
     }, [loginUser]);
 
     // 모달 열기/닫기 이벤트 핸들러
