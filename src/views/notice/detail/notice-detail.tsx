@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import Notice from 'types/interface/notice.interface';
+import './style.css'
 
 const NoticeDetail: React.FC = () => {
 
@@ -118,8 +119,8 @@ const NoticeDetail: React.FC = () => {
             <img className="more-button" src="https://i.imgur.com/MzCE4nf.png" alt="더보기" onClick={toggleOptions} />
           )}
           {showOptions && (
-            <div className="button-box">
-              {(notice.nickname === nickname || role === "ADMIN") && (
+            <div className="more-button-box">
+              {(notice.nickname === nickname || role === "ROLE_ADMIN") && (
                 <button
                   className="update-button"
                   onClick={() => updatePostClickHandler(notice.noticeId)}
@@ -127,7 +128,7 @@ const NoticeDetail: React.FC = () => {
                   수정
                 </button>
               )}
-              {(notice.nickname === nickname || role === "ADMIN") && (
+              {(notice.nickname === nickname || role === "ROLE_ADMIN") && (
                 <button
                   className="delete-button"
                   onClick={() => deletePostClickHandler(notice.noticeId)}
@@ -143,7 +144,7 @@ const NoticeDetail: React.FC = () => {
           <p><span className="label">제목 |</span> <span className="value">{notice.title}</span></p>
           <p><span className="label">내용 |</span> <span className="value">{notice.content}</span></p>
         </div>
-        <div className='images'>
+        <div className='image'>
           {notice.imageList.map((image, index) => (
             <img key={index} src={image.image} alt={`Meeting Image ${index + 1}`} className='meeting-image' />
           ))}

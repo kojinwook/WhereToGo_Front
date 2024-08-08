@@ -53,6 +53,10 @@ const Main: React.FC = () => {
     return `${year}년 ${month}월 ${day}일`;
   };
 
+  const handleProfileClick = (userId: string | number) => {
+    navigator(`/user/profile?userId=${userId}`);
+  }
+
   const handleTitleClick = (contentId: string | number) => {
     navigator(`/festival/detail?contentId=${contentId}`);
   };
@@ -93,11 +97,10 @@ const Main: React.FC = () => {
               <img src="https://i.imgur.com/DeFG48l.png" alt="왕관" className='king' />
               <div className="section-title">온도왕</div>
             </div>
-            
             <div className='temper-king-list'>
               {top3TemperatureUserList.length > 0 ? (
                 top3TemperatureUserList.map((user, index) => (
-                  <div key={index} className='user-item'>
+                  <div key={index} className='user-item' onClick={() => handleProfileClick(user.userId)}>
                     <div className='user-rank'>{index + 1}</div>
                     <img src={user.profileImage ? user.profileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
                     <div className='user-info'>

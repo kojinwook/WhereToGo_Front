@@ -96,7 +96,7 @@ export default function Header() {
 
   const MyProfilePathClickHandler = () => {
     if (role === 'ROLE_ADMIN') navigate('/admin/profile');
-    if (role === 'ROLE_USER') navigate('/user/profile');
+    if (role === 'ROLE_USER') navigate(`/user/profile?userId=${loginUser?.userId}`);
     setDropdownVisible(false);
   }
 
@@ -111,7 +111,6 @@ export default function Header() {
   const onSignOutButtonClickHandler = () => {
     resetLoginUser();
     setCookie('accessToken', '', { path: '/', expires: new Date() })
-    // localStorage.removeItem(`notifications_${loginUser?.userId}`);
     navigate('/');
     setDropdownVisible(false);
   }
@@ -126,6 +125,7 @@ export default function Header() {
     } else if (notification.meetingBoardId && notification.meetingId) {
       navigate(`/meeting/board/detail/${notification.meetingId}/${notification.meetingBoardId}`);
     }
+    setNotificationsModalOpen(!isNotificationsModalOpen);
   };
 
   const handleDeleteNotification = (id: string) => {

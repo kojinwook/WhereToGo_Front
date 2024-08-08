@@ -13,7 +13,7 @@ import Thermometer from 'components/Thermometer/Thermometer';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import Modal from 'react-modal';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import useLoginUserStore from 'store/login-user.store';
 import { ChatRoom, Favorite, Meeting } from 'types/interface/interface';
 import './style.css';
@@ -56,7 +56,8 @@ export default function UserProfile() {
     const { loginUser } = useLoginUserStore();
     const navigate = useNavigate();
     const [cookies, setCookie, removeCookie] = useCookies();
-    const userId = loginUser?.userId;
+    const [searchParams] = useSearchParams();
+    const userId = searchParams.get('userId');
     const [nickname, setNickname] = useState<string>('');
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [email, setEmail] = useState<string>('');
@@ -75,6 +76,25 @@ export default function UserProfile() {
     const [isBoardModalOpen, setIsBoardModalOpen] = useState<boolean>(false); // 게시물 모달 열림 상태
     const [isChatModalOpen, setIsChatModalOpen] = useState<boolean>(false); // 채팅 모달 열림 상태
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
+
+    useEffect(() => {
+        console.log('userId:', userId);
+        if (!userId) return;
+        const fetchUser = async () => {
+            try {
+                const response = await GetUserRequest(userId);
+                if (!response) return;
+                const { nickname, email, profileImage, temperature } = response;
+                setNickname(nickname);
+                setEmail(email);
+                setProfileImage(profileImage);
+                setTemperature(temperature);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchUser();
+    }, []);
 
     // 로그아웃
     const handleLogoutClick = () => {
@@ -104,7 +124,6 @@ export default function UserProfile() {
         const fetchUserMeetingList = async () => {
             try {
                 const response = await GetUserMeetingListRequest(cookies.accessToken);
-                console.log('response', response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setMeetingList(response.meetingList);
@@ -144,9 +163,8 @@ export default function UserProfile() {
     }, [userId, cookies.accessToken]);
 
     useEffect(() => {
-        if (!loginUser) { alert('로그인 후 이용해주세요.'); navigate('/authentication/signin'); return; };
-        getAllFavorite(loginUser.nickname);
-        getChatRooms(loginUser.nickname);
+        getAllFavorite(nickname);
+        getChatRooms(nickname);
     }, [loginUser]);
 
     // 모달 열기/닫기 이벤트 핸들러
@@ -157,11 +175,6 @@ export default function UserProfile() {
     const toggleSettingModal = () => setIsSettingModalOpen(!isSettingModalOpen);
 
     const getAllFavorite = async (nickname: string) => {
-        if (!loginUser) {
-            alert('로그인 후 이용해주세요.');
-            navigate('/authentication/signin');
-            return;
-        }
         try {
             const response = await GetAllFavoriteRequest(nickname, cookies.accessToken);
             if (!response) return;
@@ -183,14 +196,8 @@ export default function UserProfile() {
     };
 
     const getChatRooms = async (nickname: string) => {
-        if (!loginUser) {
-            alert('로그인 후 이용해주세요.');
-            navigate('/login');
-            return;
-        }
         try {
             const response = await GetChatRoomRequest(nickname, cookies.accessToken);
-            console.log('response', response);
             if (!response) return;
             if (response.code === 'SU') {
                 setChatRooms(response.chatRoomList);
@@ -248,6 +255,8 @@ export default function UserProfile() {
         navigate(`/user/review/${nickname}`)
     }
 
+    const isCurrentUser = loginUser?.userId === userId;
+
     return (
         <div id='user-profile-wrapper'>
             <div className='user-profile-container'>
@@ -260,32 +269,35 @@ export default function UserProfile() {
                 </div>
                 <Thermometer temperature={temperature} />
             </div>
-            <div className='user-profile-button'>
-                <div className='heart-button' onClick={toggleHeartModal}>
-                    <img src={heartIcon} alt='하트 아이콘' className='heart-icon' />
-                    <div className='heart-text'>나의 찜</div>
+            {isCurrentUser && (
+                <div className='user-profile-button'>
+                    <div className='heart-button' onClick={toggleHeartModal}>
+                        <img src={heartIcon} alt='하트 아이콘' className='heart-icon' />
+                        <div className='heart-text'>나의 찜</div>
+                    </div>
+                    <div className='group-button' onClick={toggleGroupModal}>
+                        <img src={groupIcon} alt='모임 아이콘' className='group-icon' />
+                        <div className='group-text'>내 모임</div>
+                    </div>
+                    <div className='board-button' onClick={toggleBoardModal}>
+                        <img src={boardIcon} alt='게시물 아이콘' className='board-icon' />
+                        <div className='board-text'>내 게시물</div>
+                    </div>
+                    <div className='star-button'>
+                        <img src={starIcon} alt='후기 아이콘' className='star-icon' onClick={handleStarIconClick} />
+                        <div className='star-text'>축제 후기</div>
+                    </div>
+                    <div className='chat-button' onClick={toggleChatModal}>
+                        <img src={chatIcon} alt='채팅 아이콘' className='chat-icon' />
+                        <div className='chat-text'>채팅</div>
+                    </div>
+                    <div className='setting-button' onClick={toggleSettingModal}>
+                        <img src={settingIcon} alt='설정 아이콘' className='setting-icon' />
+                        <div className='setting-text'>설정</div>
+                    </div>
                 </div>
-                <div className='group-button' onClick={toggleGroupModal}>
-                    <img src={groupIcon} alt='모임 아이콘' className='group-icon' />
-                    <div className='group-text'>내 모임</div>
-                </div>
-                <div className='board-button' onClick={toggleBoardModal}>
-                    <img src={boardIcon} alt='게시물 아이콘' className='board-icon' />
-                    <div className='board-text'>내 게시물</div>
-                </div>
-                <div className='star-button'>
-                    <img src={starIcon} alt='후기 아이콘' className='star-icon' onClick={handleStarIconClick} />
-                    <div className='star-text'>축제 후기</div>
-                </div>
-                <div className='chat-button' onClick={toggleChatModal}>
-                    <img src={chatIcon} alt='채팅 아이콘' className='chat-icon' />
-                    <div className='chat-text'>채팅</div>
-                </div>
-                <div className='setting-button' onClick={toggleSettingModal}>
-                    <img src={settingIcon} alt='설정 아이콘' className='setting-icon' />
-                    <div className='setting-text'>설정</div>
-                </div>
-            </div>
+            )}
+
             <Modal
                 isOpen={isHeartModalOpen}
                 onRequestClose={toggleHeartModal}
@@ -299,13 +311,13 @@ export default function UserProfile() {
                 <div className='favorite-list'>
                     {favorites.map((favorite) => (
                         <div key={favorite.id} className='favorite-item'>
-                            {/* 여기에 각 찜 목록 항목의 내용을 출력 */}
                             <span onClick={() => handleFestivalTitleClick(favorite.contentId)}>{favorite.title}</span>
                             <div>{formatDate(favorite.startDate)} ~ {formatDate(favorite.endDate)}</div>
                         </div>
                     ))}
                 </div>
             </Modal>
+
             <Modal
                 isOpen={isBoardModalOpen}
                 onRequestClose={toggleBoardModal}
@@ -320,15 +332,11 @@ export default function UserProfile() {
                     {boardList.map((board) => (
                         <div key={board.meetingBoardId} className='board-item'>
                             <div onClick={() => handleBoardTitleClick(board.meetingBoardId, board.meetingId)}>{board.title}</div>
-                            {/* <div>{board.content}</div> */}
-                            {/* 이미지가 있다면 출력 */}
-                            {/* {board.imageList && board.imageList.length > 0 && (
-                                <img src={board.imageList[0].image} alt='게시물 이미지' className='board-image' />
-                            )} */}
                         </div>
                     ))}
                 </div>
             </Modal>
+
             <Modal
                 isOpen={isChatModalOpen}
                 onRequestClose={toggleChatModal}
@@ -359,6 +367,7 @@ export default function UserProfile() {
                     })}
                 </div>
             </Modal>
+
             <Modal
                 isOpen={isGroupModalOpen}
                 onRequestClose={toggleGroupModal}
@@ -372,15 +381,14 @@ export default function UserProfile() {
                 <div className='meeting-list'>
                     {meetingList.map((meeting) => (
                         <div key={meeting.meetingId} className='meeting-item' onClick={() => handleMeetingTitleClick(meeting.meetingId)}>
-                            {/* 여기에 각 모임 목록 항목의 내용을 출력 */}
                             <img src={meeting.creatorProfileImage ? meeting.creatorProfileImage : defaultProfileImage} alt="profile" className='board-list-profile-image' />
                             <div>{meeting.creatorNickname}</div>
                             <span>{meeting.title}</span>
                         </div>
                     ))}
-                    
                 </div>
             </Modal>
+
             <Modal
                 isOpen={isPasswordModalOpen}
                 onRequestClose={togglePasswordModal}
@@ -398,6 +406,7 @@ export default function UserProfile() {
                 <button onClick={handlePasswordSubmit}>확인</button>
                 <button onClick={togglePasswordModal}>취소</button>
             </Modal>
+
             <Modal
                 isOpen={isSettingModalOpen}
                 onRequestClose={toggleSettingModal}

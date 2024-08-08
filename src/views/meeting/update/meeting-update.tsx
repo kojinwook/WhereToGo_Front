@@ -10,7 +10,6 @@ export default function MeetingUpdate() {
 
     const { meetingId } = useParams();
     const { loginUser } = useLoginUserStore();
-    const [meeting, setMeeting] = useState<Meeting>();
     const [title, setTitle] = useState("");
     const [introduction, setIntroduction] = useState("");
     const [content, setContent] = useState("");
@@ -81,7 +80,6 @@ export default function MeetingUpdate() {
                     setTags(tags);
                     setCategories(categories);
                     setLocations(locations);
-                    setMeeting(response.meeting);
                 }
             } catch (error) {
                 console.error('Error fetching meeting list:', error);
@@ -276,14 +274,6 @@ export default function MeetingUpdate() {
                         </div>
                     ))}
                 </div>
-                <div>
-                    {categories.map((categoryName) => (
-                        <div key={categoryName}>
-                            #{categoryName}
-                            <span onClick={() => handleTagSelect(categoryName)}>&times;</span>
-                        </div>
-                    ))}
-                </div>
                 <br />
                 <p><strong>지역</strong></p>
                 <div className='category-select'>
@@ -294,14 +284,6 @@ export default function MeetingUpdate() {
                             onClick={() => handleAreaSelect(location.name)}
                         >
                             {location.name}
-                        </div>
-                    ))}
-                </div>
-                <div>
-                    {locations.map((locationName) => (
-                        <div key={locationName}>
-                            #{locationName}
-                            <span onClick={() => handleAreaSelect(locationName)}>&times;</span>
                         </div>
                     ))}
                 </div>
