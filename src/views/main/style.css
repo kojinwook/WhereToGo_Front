@@ -92,6 +92,7 @@
     padding: 17px 10px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 .user-rank {

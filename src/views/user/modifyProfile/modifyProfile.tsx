@@ -30,7 +30,6 @@ export default function UserModifyProfile() {
 
     const getUserResponse = (responseBody: GetUserResponseDto | ResponseDto | null) => {
         if (!responseBody) return;
-        console.log(responseBody);
         const { code } = responseBody;
         if (code === 'NU') alert('존재하지 않는 유저입니다.');
         if (code === 'DBE') alert('데이터베이스 오류입니다.');

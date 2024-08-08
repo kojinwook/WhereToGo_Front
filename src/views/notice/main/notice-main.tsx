@@ -14,26 +14,21 @@ const NoticeList: React.FC = () => {
   const navigator = useNavigate();
   const { noticeId } = useParams();
   const [posts, setPosts] = useState<Notice[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Notice[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 5; // 페이지당 항목 수
 
-  const {loginUser} = useLoginUserStore();
-  const [userId, setUserId]= useState("");
+  const { loginUser } = useLoginUserStore();
   const [role, setRole] = useState<string>("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!loginUser){
+    if (!loginUser) {
       alert('로그인이 필요합니다.');
       navigator('/authentication/signin');
       return;
     }
-    setUserId(loginUser?.userId);
     setRole(loginUser?.role);
-    setIsLoggedIn(true);
   }, [loginUser]);
 
   useEffect(() => {
@@ -48,7 +43,6 @@ const NoticeList: React.FC = () => {
         }
         if (code !== 'SU') return;
         setPosts(notices);
-        setLoading(false);
       } catch (error) {
         console.log('공지사항을 불러오는데 실패했습니다.', error);
       }
@@ -106,7 +100,7 @@ const NoticeList: React.FC = () => {
       alert('해당하는 게시물이 없습니다.');
     }
     setFilteredPosts(filteredNotices);
-    setSearchTerm(''); 
+    setSearchTerm('');
   };
 
   // 페이지네이션 계산
@@ -145,11 +139,11 @@ const NoticeList: React.FC = () => {
         <ul className='notice-content'>
           {filteredPosts.length === 0 ? (
             <div>
-              <div className='notice-content-non'>게시물이 없습니다.</div>
-            </div> 
+              <div className='notice-content-non'>공지사항이 없습니다.</div>
+            </div>
           ) : (
             displayedPosts.map((notice, index) => (
-              <div className='notice-content-item' key={notice.id} onClick={() => noticeClickHandler(notice.noticeId)}>
+              <div className='notice-content-item' key={index} onClick={() => noticeClickHandler(notice.noticeId)}>
                 <div>{filteredPosts.length - startIndex - index}</div>
                 <div>{notice.title}</div>
                 <div>{formatDate(notice.createDateTime)}</div>

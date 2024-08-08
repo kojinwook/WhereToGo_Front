@@ -17,20 +17,11 @@ const InquireDetail: React.FC = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const navigator = useNavigate();
   const { loginUser } = useLoginUserStore();
-  const [deletingQuestionId, setDeletingQuestionId] = useState<number | null>(null);
   const [nickname, setNickname] = useState("");
   const [role, setRole] = useState<string>("");
   const [content, setContent] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [meeting, setMeeting] = useState<Meeting>();
-  const [postRequest, setPostRequest] = useState<PostAnswerRequestDto>({
-    content: "",
-    nickname: "",
-    questionId,
-  });
-
   const [answerVisible, setAnswerVisible] = useState(false);
   const [answerContent, setAnswerContent] = useState("");
   const [editingAnswerId, setEditingAnswerId] = useState<string | null | number>(null);
@@ -44,7 +35,6 @@ const InquireDetail: React.FC = () => {
     if (!nickname || !role) return;
     setNickname(nickname);
     setRole(role);
-    setIsLoggedIn(true);
   }, [loginUser]);
 
   const updateAnswerList = async () => {
@@ -151,7 +141,6 @@ const InquireDetail: React.FC = () => {
     } else {
       alert("삭제 실패");
     }
-    setDeletingQuestionId(null);
   };
 
   const toggleAnswerSection = () => {

@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Notice from "types/interface/notice.interface";
 import './style.css';
-import Question from "types/interface/question.interface";
+import Pagination from "components/Pagination";
 
 const Inquire: React.FC = () => {
   const navigator = useNavigate();
-  const [posts, setPosts] = useState<Question[]>([]);
   const [notices, setNotices] = useState<Notice[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [filteredPosts, setFilteredPosts] = useState<Notice[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 5; // 페이지당 항목 수
 
   useEffect(() => {
     const fetchNotices = async () => {
@@ -30,6 +31,10 @@ const Inquire: React.FC = () => {
     fetchNotices();
   }, []);
 
+  useEffect(() => {
+    setFilteredPosts(notices);
+  }, [notices]);
+
   const writePathClickHandler = () => {
     navigator(`/inquire/write`);
   }
@@ -46,8 +51,14 @@ const Inquire: React.FC = () => {
     navigator(`/notice`);
   }
 
-  // Limit notices to the first 5 items
-  const limitedNotices = notices.slice(0, 5);
+  const noticeClickHandler = (noticeId: number | string | undefined) => {
+    navigator(`/notice/detail/${noticeId}`);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedPosts = filteredPosts.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
 
   return (
     <div className="inquire">
@@ -89,9 +100,9 @@ const Inquire: React.FC = () => {
             <div className="inquire-nothing">공지사항이 없습니다.</div>
           ) : (
             <>
-              {limitedNotices.map((notice) => (
-                <div className="inquire-sort" key={notice.noticeId}>
-                  <div className="inquire-num">{notice.noticeId}</div>
+              {displayedPosts.map((notice, index) => (
+                <div className="inquire-sort" key={notice.noticeId} onClick={() => noticeClickHandler(notice.noticeId)}>
+                  <div className="inquire-num">{displayedPosts.length - startIndex - index}</div>
                   <div className="inquire-title">{notice.title}</div>
                   <div className="inquire-date">{new Date(notice.createDateTime).toLocaleString()}</div>
                 </div>
@@ -99,6 +110,13 @@ const Inquire: React.FC = () => {
             </>
           )}
         </div>
+      </div>
+      <div className="pagination-box">
+        <Pagination
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          viewPageList={Array.from({ length: totalPages }, (_, i) => i + 1)}
+        />
       </div>
     </div>
   );
