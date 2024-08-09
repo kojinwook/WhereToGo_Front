@@ -122,7 +122,6 @@ export default function InquireWrite() {
     try {
       const requestBody = { title, content, nickname, type, imageList };
       const result = await PostQuestionRequest(requestBody, cookies.accessToken);
-      console.log(result);
       if (result && result.code === "SU") {
         alert("해당 문의가 업로드되었습니다.");
         navigate("/inquire");

@@ -68,7 +68,6 @@ export default function MeetingUpdate() {
                 const response = await GetMeetingRequest(meetingId);
                 if (!response) return;
                 const { title, introduction, content, userDto, imageList, maxParticipants, tags, categories, locations } = response.meeting;
-                console.log(response.meeting)
                 if (response.code === 'SU') {
                     setTitle(title);
                     setIntroduction(introduction);

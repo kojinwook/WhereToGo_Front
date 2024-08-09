@@ -78,12 +78,10 @@ export default function UserProfile() {
     const [isSettingModalOpen, setIsSettingModalOpen] = useState<boolean>(false); // 설정 모달 열림 상태
 
     useEffect(() => {
-        console.log('userId:', userId);
         if (!userId) return;
         const fetchUser = async () => {
             try {
                 const response = await GetUserRequest(userId);
-                console.log('response:', response);
                 if (!response) return;
                 const { nickname, email, profileImage, temperature } = response;
                 setNickname(nickname);

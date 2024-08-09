@@ -36,7 +36,6 @@ export default function Management() {
 
         const fetchUserList = async () => {
             const response = await GetUserListRequest(cookies.accessToken);
-            console.log(response)
             if (!response) return;
             setUserList(response.userList);
             setFilteredUserList(response.userList);
@@ -89,7 +88,6 @@ export default function Management() {
     };
 
     const handleBlockDaysChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value)
         setBlockDays((event.target.value));
     };
 
@@ -116,7 +114,7 @@ export default function Management() {
         }
         const requestBody: BlockUserRequestDto = { userId: currentUserId, blockDays: blockDays };
         const response = await BlockUserRequest(requestBody, cookies.accessToken);
-        console.log(response)
+        
         if (!response) return;
         if (response.code === 'SU') {
             alert('블랙 처리되었습니다.');
@@ -139,7 +137,6 @@ export default function Management() {
         }
         const requestBody: UnBlockUserRequestDto = { userId: currentUserId };
         const response = await UnBlockUserRequest(requestBody, cookies.accessToken);
-        console.log(response)
         if (!response) return;
         if (response.code === 'SU') {
             alert('블랙이 해제되었습니다.');

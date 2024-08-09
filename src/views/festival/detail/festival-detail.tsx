@@ -153,7 +153,6 @@ export default function FestivalDetail() {
         // 축제의 좌표를 URI 인코딩합니다.
         const lat = festival.mapY;
         const lng = festival.mapX;
-        console.log(`Latitude: ${lat}, Longitude: ${lng}`);
 
         // Kakao 맵 링크 생성
         const kakaoLink = `https://map.kakao.com/link/to/${festival.title},${lat},${lng}`;
@@ -193,7 +192,6 @@ export default function FestivalDetail() {
     const onFavoriteClickHandler = async (contentId: string) => {
         try {
             const response = await PutFavoriteRequest(contentId, nickname, cookies.accessToken);
-            console.log(response)
             if (!response) return;
             if (response.code === 'SU') {
                 setFavorites(prevFavorites => ({
@@ -209,11 +207,8 @@ export default function FestivalDetail() {
     };
 
     const backGoPathClickHandler = () => {
-        // navigate(`/festival/search`);
         window.history.back();
     }
-
-    console.log(reviews)
 
     if (!festival) return null;
     return (

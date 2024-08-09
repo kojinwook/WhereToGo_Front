@@ -15,13 +15,11 @@ export default function ReportList() {
         const fetchReportList = async () => {
             try {
                 const response = await GetUserReportListRequest(nickname, cookies.accessToken);
-                console.log(response);
                 if (!response) return;
                 if (response.code === 'SU') {
                     setReportList(response?.reportList);
                 }
                 else if (response.code === 'DHP') {
-                    console.log('No Permission');
                     alert('접근 권한이 없습니다.');
                     return;
                 }

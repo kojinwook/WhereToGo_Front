@@ -31,7 +31,6 @@ export default function Header() {
         onConnect: () => {
           stompClient.subscribe(`/topic/notifications/${loginUser.nickname}`, (message) => {
             const notification = JSON.parse(message.body);
-            console.log('notification', notification);
             if (notification.senderId !== loginUser.userId && (!notification.replySender || notification.replySender !== loginUser.nickname)) {
               setNotifications((prev) => {
                 const isAlreadyExist = prev.some((n) => n.id === notification.id);

@@ -87,7 +87,7 @@ export default function BoardDetail() {
         if (!meetingBoardId) return;
         const response = await GetBoardReplyRequest(meetingBoardId);
         if (!response) return;
-        console.log(response);
+        ;
         if (response && response.code === 'SU') {
             setReplyList(response.replyList);
         } else {
@@ -206,7 +206,6 @@ export default function BoardDetail() {
 
     // 수정
     const updateBoardClickHandler = (meetingBoardId: number | string | undefined) => {
-        console.log("meetingBoardId", meetingBoardId);
         if (!meetingBoardId) return;
         navigate(`/meeting/board/update/${meetingId}/${meetingBoardId}`);
     };
@@ -261,7 +260,6 @@ export default function BoardDetail() {
     const deleteAnswerButtonClickHandler = async (replyId: number) => {
         window.confirm('정말로 삭제하시겠습니까?')
         const response = await DeleteBoardReplyRequest(replyId, cookies.accessToken);
-        console.log(response);
         if (!response) return;
         if (response && response.code === 'SU') {
             alert('댓글이 삭제되었습니다.');

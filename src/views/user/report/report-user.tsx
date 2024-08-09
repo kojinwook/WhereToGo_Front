@@ -109,7 +109,7 @@ export default function ReportUser() {
             imageList: imageList
         };
         const response = await ReportUserRequest(userId, requestBody, cookies.accessToken);
-        console.log(response);
+        ;
         if (!response) return;
         if (response.code === 'SU') {
             alert('신고가 접수되었습니다.');

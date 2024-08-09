@@ -28,7 +28,7 @@ const NoticeDetail: React.FC = () => {
     const fetchNotice = async () => {
       try {
         const response = await GetNoticeRequest(noticeId);
-        console.log(response)
+        
         if(!response) return;
         const { title, content, nickname } = response.notice;
         if (!title || !content || !nickname) {

@@ -26,7 +26,6 @@ const InquireList: React.FC = () => {
     const fetchPosts = async () => {
       try {
         const result = await GetAllQuestionRequest();
-        console.log(result);
         if (!result) return;
         const { code, questions } = result;
         if (code === 'DBE') {

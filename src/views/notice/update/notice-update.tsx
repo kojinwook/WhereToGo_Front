@@ -121,7 +121,6 @@ const NoticeUpdate: React.FC = () => {
     try {
       const requestBody = { title, content, nickname, imageList };
       const result = await PatchNoticeRequest(noticeId, requestBody, cookies.accessToken);
-      console.log(result);
       if (result && result.code === "SU") {
         alert("공지사항이 성공적으로 수정되었습니다.");
         navigate(`/notice/detail/${noticeId}`);

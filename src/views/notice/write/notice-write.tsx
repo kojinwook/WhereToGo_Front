@@ -91,7 +91,6 @@ export default function InquireWrite() {
     try {
       const requestBody = { title, content, nickname, imageList };
       const result = await PostNoticeRequest(requestBody, cookies.accessToken);
-      console.log(result);
       if (result && result.code === "SU") {
         alert("해당 공지가 업로드되었습니다.");
         navigate("/notice");

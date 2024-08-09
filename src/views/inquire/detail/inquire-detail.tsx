@@ -31,7 +31,6 @@ const InquireDetail: React.FC = () => {
   useEffect(() => {
     const nickname = loginUser?.nickname;
     const role = loginUser?.role;
-    console.log("userId", nickname, "role", role);
     if (!nickname || !role) return;
     setNickname(nickname);
     setRole(role);

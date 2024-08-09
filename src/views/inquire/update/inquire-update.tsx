@@ -155,7 +155,6 @@ const InquireUpdate: React.FC = () => {
     try {
       const requestBody = { title, content, nickname, type, imageList };
       const result = await PatchQuestionRequest(questionId, requestBody, cookies.accessToken);
-      console.log(result);
       if (result && result.code === "SU") {
         alert("질문이 성공적으로 수정되었습니다.");
         navigate(`/inquire/detail/${questionId}`);

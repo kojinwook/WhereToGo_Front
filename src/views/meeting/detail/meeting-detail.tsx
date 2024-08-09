@@ -196,7 +196,6 @@ export default function MeetingDetail() {
 
     const handleRequestResponse = async (requestId: number, status: boolean) => {
         try {
-            console.log(requestId, status);
             const response = await PostRespondToJoinRequest(requestId, status, cookies.accessToken);
             if (!response) return;
             const { code } = response;
@@ -216,7 +215,6 @@ export default function MeetingDetail() {
         const fetchRequests = async () => {
             try {
                 const response = await GetMeetingRequests(meetingId, cookies.accessToken);
-                console.log(response);
                 if (!response) return;
                 setMeetingRequests(response.requests);
                 if (response.code === 'SU') {
@@ -320,7 +318,6 @@ export default function MeetingDetail() {
         window.confirm('정말로 싫어요를 누르시겠습니까?')
         if (!meetingId || !nickname) return;
         const response = await DislikeUserRequest(nickname, meetingId, cookies.accessToken);
-        console.log(response);
         if (response) {
             if (response.code === 'SU') {
                 alert('싫어요를 눌렀습니다.');
@@ -332,8 +329,6 @@ export default function MeetingDetail() {
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
-
-    console.log('request',meetingRequests)
 
     return (
         <div className="meeting-detail-container">

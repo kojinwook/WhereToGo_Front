@@ -50,8 +50,6 @@ export default function BoardList() {
         navigate(`/meeting/board/detail/${meetingId}/${meetingBoardId}`);
     }
 
-    console.log(boardList);
-
     return (
         <div className='festival-board-list'>
             <button onClick={handleCreateBoard}>{"게시물 작성"}</button>
