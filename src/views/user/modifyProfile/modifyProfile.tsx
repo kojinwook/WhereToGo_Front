@@ -150,7 +150,7 @@ export default function UserModifyProfile() {
     }, [userId]);
 
     const handleBackSubmit = () => {
-        navigate ('/user/profile')
+        navigate (`/user/profile?userId=${userId}`);
     }
 
     return (
