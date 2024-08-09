@@ -26,6 +26,7 @@ export default function MeetingDetail() {
     const [roomName, setRoomName] = useState<string>('');
     const [profileImages, setProfileImages] = useState<string[]>([]);
     const [requests, setRequests] = useState<MeetingRequest[]>([]);
+    const [meetingRequests, setMeetingRequests] = useState<MeetingRequest[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
     const navigate = useNavigate();
@@ -132,7 +133,7 @@ export default function MeetingDetail() {
         } else if (hours > 12) {
             hours -= 12;
         }
-        return `${year}.${month}.${day}. ${period} ${hours}:${minutes}`;
+        return `${year}.${month}.${day} ${period} ${hours}:${minutes}`;
     };
 
     const handleCreateRoom = async () => {
@@ -201,7 +202,7 @@ export default function MeetingDetail() {
             const { code } = response;
             if (code === 'SU') {
                 alert('요청이 처리되었습니다.');
-                setRequests(prevRequests => prevRequests.filter(request => request.requestId !== requestId));
+                setMeetingRequests(prevRequests => prevRequests.filter(request => request.requestId !== requestId));
             } else {
                 console.error('Failed to respond to join request:');
             }
@@ -215,10 +216,11 @@ export default function MeetingDetail() {
         const fetchRequests = async () => {
             try {
                 const response = await GetMeetingRequests(meetingId, cookies.accessToken);
+                console.log(response);
                 if (!response) return;
-                setRequests(response.requests);
+                setMeetingRequests(response.requests);
                 if (response.code === 'SU') {
-                    setRequests(response.requests);
+                    setMeetingRequests(response.requests);
                     const images: string[] = response.requests.map(request => request.user?.profileImage || '');
                     setProfileImages(images);
                 }
@@ -330,6 +332,8 @@ export default function MeetingDetail() {
     }
 
     if (!meeting) return <div>모임 정보를 불러오는 중입니다...</div>;
+
+    console.log('request',meetingRequests)
 
     return (
         <div className="meeting-detail-container">
@@ -558,15 +562,15 @@ export default function MeetingDetail() {
                         <button className='modal-x' onClick={closeModal}>X</button>
                     </div>
                     <div className="modal-body">
-                        {requests.length > 0 ? (
-                            requests.map((request, index) => (
+                        {meetingRequests.length > 0 ? (
+                            meetingRequests.map((request, index) => (
                                 <div key={request.requestId} className="request-item">
                                     <div className="profile-info">
                                         <img
                                             src={profileImages[index] || defaultProfileImage}
                                             alt="profile"
                                         />
-                                        <p>{request.user?.nickname || "Unknown User"}</p>
+                                        <p>{request.user.nickname || "Unknown User"}</p>
                                     </div>
                                     <p>요청 날짜: {new Date(request.requestDate).toLocaleString()}</p>
                                     <div className="request-buttons">

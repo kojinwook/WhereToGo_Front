@@ -31,6 +31,7 @@ const Main: React.FC = () => {
   useEffect(() => {
     const fetchRecent5MeetingList = async () => {
       const response = await Get5RecentMeetingRequest();
+      console.log(response);
       if (!response) return;
       const sortedMeetingList = response.meetingList.sort((a: Meeting, b: Meeting) => {
         return new Date(b.createDate).getTime() - new Date(a.createDate).getTime();
@@ -40,7 +41,6 @@ const Main: React.FC = () => {
     fetchRecent5MeetingList();
   }, []);
   
-
   useEffect(() => {
     const fetchTop3TemperatureUserList = async () => {
       const response = await Top5TemperatureUserRequest();
