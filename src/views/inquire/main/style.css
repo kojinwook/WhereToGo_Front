@@ -23,14 +23,15 @@
   margin-bottom: 20px;
 }
 
-.inquire-left, .inquire-right {
+.inquire-left,
+.inquire-right {
   border: 2px solid #ccc;
   border-radius: 5px;
   padding: 10px;
   width: 45%;
 }
 
-.inquire-left{
+.inquire-left {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,7 +44,7 @@
   gap: 20px;
 }
 
-.inquire-right > div {
+.inquire-right>div {
   flex: 1;
   gap: 10px
 }
@@ -53,48 +54,69 @@
   height: auto;
 }
 
-.list-left, .list-right {
-  flex: 1; /* 두 버튼의 폭을 동일하게 설정 */
+.list-left,
+.list-right {
+  flex: 1;
+  /* 두 버튼의 폭을 동일하게 설정 */
   display: flex;
-  justify-content: center; /* 버튼 중앙 정렬 */
+  justify-content: center;
+  /* 버튼 중앙 정렬 */
 }
 
 .inquire-divider {
-  width: 1px; /* 선의 두께 */
-  height: 60px; /* 선의 길이 */
-  background-color: #ccc; /* 선 색상 */
-  margin: 0 15px; /* 좌우 여백 */
+  width: 1px;
+  /* 선의 두께 */
+  height: 60px;
+  /* 선의 길이 */
+  background-color: #ccc;
+  /* 선 색상 */
+  margin: 0 15px;
+  /* 좌우 여백 */
 }
 
-.inquire-apply, .inquire-li{
-  max-width: 100px; /* 버튼의 최대 너비 설정 */
-  text-align: center;  /* 중앙 정렬 */
-  white-space: normal; /* 자동 줄 바꿈 */
+.inquire-apply,
+.inquire-li {
+  max-width: 100px;
+  /* 버튼의 최대 너비 설정 */
+  text-align: center;
+  /* 중앙 정렬 */
+  white-space: normal;
+  /* 자동 줄 바꿈 */
 }
 
-.inquire-apply, .inquire-li, .inquire-url {
+.inquire-apply,
+.inquire-li,
+.inquire-url {
   padding: 10px;
   font-size: 16px;
   cursor: pointer;
   border: none;
 }
+
 .inquire-url {
-  background-color: #797a79c0; /* Green background */
-  color: white; /* White text */
-  padding: 10px 20px; 
+  background-color: #797a79c0;
+  /* Green background */
+  color: white;
+  /* White text */
+  padding: 10px 20px;
   text-align: center;
   display: inline-block;
   font-size: 16px;
   cursor: pointer;
-  border-radius: 5px; 
+  border-radius: 5px;
 }
 
-.inquire-apply:hover, .inquire-li:hover, .inquire-url:hover {
+.inquire-apply:hover,
+.inquire-li:hover,
+.inquire-url:hover {
   background-color: transparent;
   color: #000;
 }
 
-.inquire-chat, .inquire-number, .inquire-time, .inquire-rest {
+.inquire-chat,
+.inquire-number,
+.inquire-time,
+.inquire-rest {
   font-size: 16px;
 }
 
@@ -139,20 +161,24 @@
   font-weight: bold;
   margin: 20px 0;
 }
-.inquire-header > div {
+
+.inquire-header>div {
   text-align: center;
 }
 
 .inquire-num {
-  width: 100px; /* NO 칸 너비 */
+  width: 100px;
+  /* NO 칸 너비 */
 }
 
 .inquire-title {
-  width: 300px; /* 제목 칸 너비, 늘려서 공간 확보 */
+  width: 300px;
+  /* 제목 칸 너비, 늘려서 공간 확보 */
 }
 
 .inquire-date {
-  width: 200px; /* 날짜 칸 너비, 늘려서 공간 확보 */
+  width: 200px;
+  /* 날짜 칸 너비, 늘려서 공간 확보 */
 }
 
 .inquire-sort {
@@ -169,20 +195,24 @@
   transition: transform 0.2s ease-in-out;
   cursor: pointer;
 }
-.inquire-sort > div {
+
+.inquire-sort>div {
   text-align: center;
 }
 
 .inquire-sort .inquire-num {
-  width: 100px; /* NO 칸 너비 */
+  width: 100px;
+  /* NO 칸 너비 */
 }
 
 .inquire-sort .inquire-title {
-  width: 300px; /* 제목 칸 너비 */
+  width: 300px;
+  /* 제목 칸 너비 */
 }
 
 .inquire-sort .inquire-date {
-  width: 200px; /* 날짜 칸 너비 */
+  width: 200px;
+  /* 날짜 칸 너비 */
 }
 
 .inquire-sort:hover {
@@ -190,8 +220,18 @@
 }
 
 .inquire-nothing {
-  text-align: center;
-  font-size: 16px;
+  width: 100%;
+  height: 76px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: rgba(0, 0, 0, 0.4);
+
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 140%;
 }
 
 .inquire-count {

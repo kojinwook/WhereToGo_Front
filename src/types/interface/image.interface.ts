@@ -1,5 +1,5 @@
 export default interface Images {
-    imageId: string | number;
+    imageId: number;
     userId: string;
     contentId: string;
     questionId: string;

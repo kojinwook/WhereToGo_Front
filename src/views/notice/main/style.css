@@ -114,12 +114,15 @@
 
 .notice-content-non {
     width: 100%;
-    padding: 20px 0;
-    text-align: center;
-    font-size: 1.2em;
-    color: #555;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
+    height: 76px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: rgba(0, 0, 0, 0.4);
+
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 140%;
 }

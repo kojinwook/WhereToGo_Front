@@ -59,8 +59,6 @@ export default function MeetingDetail() {
             try {
                 const response = await GetJoinMeetingMemberRequest(meeting.meetingId, cookies.accessToken);
                 if (!response) return;
-                console.log(response)
-                const members = response.meetingUsersList.map(member => member.userNickname);
                 setJoinMemberList(response.meetingUsersList);
                 setJoinMembers(response.meetingUsersList.length);
             } catch (error) {
@@ -94,27 +92,31 @@ export default function MeetingDetail() {
         const fetchBoardList = async () => {
             const response = await GetMeetingBoardListRequest(meetingId);
             if (response && response.code === 'SU') {
-                setBoardList(response.meetingBoardList);
+                const sortedBoardList = response.meetingBoardList.sort((a, b) => {
+                    return new Date(b.createDate).getTime() - new Date(a.createDate).getTime();
+                });
+                setBoardList(sortedBoardList);
             } else {
                 console.error('Failed to fetch board list:');
             }
-        }
+        };
         fetchBoardList();
-    }, [meetingId])
-
+    }, [meetingId]);
+    
     useEffect(() => {
         if (!meetingId) return;
         const fetchMeetingBoardImageList = async () => {
             const response = await GetMeetingBoardImageListRequest(meetingId);
-            console.log("response", response)
             if (response && response.code === 'SU') {
-                setBoardImageList(response.imageList);
+                const sortedImageList = response.imageList.sort((a, b) => b.imageId - a.imageId);
+                setBoardImageList(sortedImageList);
             } else {
                 console.error('Failed to fetch board list:');
             }
-        }
+        };
         fetchMeetingBoardImageList();
-    }, [meetingId])
+    }, [meetingId]);
+    
 
     const formatDate = (createDateTime: string) => {
         const isoDate = createDateTime;
@@ -286,7 +288,7 @@ export default function MeetingDetail() {
     }
 
     const handleBoardDetail = (meetingBoardId: string) => {
-        if (!joinMemberList.map(member => member.userNickname).includes(nickname)) {
+        if (!joinMemberList.map(member => member.userNickname).includes(nickname) && role !== "ROLE_ADMIN") {
             alert('모임에 가입해야 게시물을 볼 수 있습니다.');
             return;
         }
@@ -407,14 +409,33 @@ export default function MeetingDetail() {
                                     )}
                                 </div>
                                 <p>대표 닉네임</p>
-                                <div className="bordered-div">{creatorNickname}</div>
+                                {creatorNickname ? <div className="bordered-div">{creatorNickname}</div> : <div className="board-info-non-div">{''}</div>}
                                 <p>한 줄 소개</p>
-                                <div className="bordered-div">{meeting.introduction}</div>
+                                {meeting.introduction ? <div className="bordered-div">{meeting.introduction}</div> : <div className="board-info-non-div">{'한 줄 소개가 없습니다'}</div>}
                                 <p>개설 날짜</p>
-                                <div className="bordered-div">{formatDate(meeting.createDate)}</div>
+                                {formatDate(meeting.createDate) ? <div className="bordered-div">{formatDate(meeting.createDate)}</div> : <div className="board-info-non-div">{'개설 날짜가 없습니다'}</div>}
                                 <p>활동 지역</p>
-                                <div className="bordered-div">
-                                    {Array.isArray(meeting.locations) ? meeting.locations.join(', ') : meeting.locations}
+                                <div
+                                    className="bordered-div"
+                                    style={Array.isArray(meeting.locations) && meeting.locations.length > 0
+                                        ? {}
+                                        : typeof meeting.locations === 'string' && meeting.locations
+                                            ? {}
+                                            : {
+                                                color: 'rgba(0, 0, 0, 0.4)',
+                                                border: '1px solid #ccc',
+                                                padding: '10px',
+                                                borderRadius: '5px',
+                                                marginBottom: '10px'
+                                            }
+                                    }
+                                >
+                                    {Array.isArray(meeting.locations) && meeting.locations.length > 0
+                                        ? meeting.locations.join(', ')
+                                        : typeof meeting.locations === 'string' && meeting.locations
+                                            ? meeting.locations
+                                            : '활동 지역이 없습니다.'
+                                    }
                                 </div>
                                 <p className='meeting-member'>인원</p>
                                 <div>

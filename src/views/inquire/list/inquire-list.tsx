@@ -12,7 +12,7 @@ const InquireList: React.FC = () => {
   const { questionId } = useParams();
   const [posts, setPosts] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 2; // 페이지당 항목 수
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -35,11 +35,11 @@ const InquireList: React.FC = () => {
         }
         if (code !== 'SU') return;
 
-        const filteredQuestions = role === "ROLE_ADMIN" ? questions : questions.filter((question: Question) => 
+        const filteredQuestions = role === "ROLE_ADMIN" ? questions : questions.filter((question: Question) =>
           question.nickname === nickname
         );
 
-        const sortedQuestions = filteredQuestions.sort((a: Question, b: Question) => 
+        const sortedQuestions = filteredQuestions.sort((a: Question, b: Question) =>
           new Date(b.createDateTime).getTime() - new Date(a.createDateTime).getTime()
         );
 
@@ -108,7 +108,7 @@ const InquireList: React.FC = () => {
         <div>날짜</div>
         <div>답변 유/무</div>
       </div>
-      
+
       <div className="inquire-list-body">
         {posts.length === 0 ? (
           <p className="posts-zero">문의 목록이 없습니다.</p>

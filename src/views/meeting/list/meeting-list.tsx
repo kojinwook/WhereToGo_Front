@@ -71,7 +71,10 @@ export default function MeetingList() {
       try {
         const response = await GetMeetingListRequest();
         if (response && response.meetingList) {
-          setMeetingList(response.meetingList);
+          const sortedMeetingList = response.meetingList.sort((a: Meeting, b: Meeting) => {
+            return new Date(b.createDate).getTime() - new Date(a.createDate).getTime();
+          });
+          setMeetingList(sortedMeetingList);
         } else {
           setMeetingList([]);
         }
@@ -82,6 +85,7 @@ export default function MeetingList() {
     };
     getMeetingList();
   }, []);
+  
 
   useEffect(() => {
     const fetchJoinMembersForAllMeetings = async () => {
@@ -211,7 +215,6 @@ export default function MeetingList() {
     );
   };
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredMeetingList.length / itemsPerPage);
   const paginatedMeetings = filteredMeetingList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 

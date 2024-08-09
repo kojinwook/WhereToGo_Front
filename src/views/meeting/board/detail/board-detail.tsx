@@ -396,11 +396,11 @@ export default function BoardDetail() {
                     </div>
                     <div className='board-detail-info'>
                         <p>제목</p>
-                        <div className="board-info-div">{board?.title}</div>
+                        {board?.title ? <div className="board-info-div">{board.title}</div> : <div className="board-info-non-div">{'제목이 없습니다'}</div>}
                         <p>주소</p>
-                        <div className="board-info-div">{board?.address}</div>
+                        {board?.address ? <div className="board-info-div">{board.address}</div> : <div className="board-info-non-div">{'주소가 없습니다'}</div>}
                         <p>내용</p>
-                        <div className="board-info-div">{board?.content}</div>
+                        {board?.content ? <div className="board-info-div">{board.content}</div> : <div className="board-info-non-div">{'내용이 없습니다'}</div>}
                     </div>
                 </div>
             </div>
@@ -417,7 +417,6 @@ export default function BoardDetail() {
                                 <img className='answer-profile-img' src={profileImage ? profileImage : defaultProfileImage} alt='프로필 이미지' />
                                 <p className='answer-nickname'>{replyItem.userDto.nickname}</p>
                                 <div className='answer-date'>{formatDate(replyItem.createDate)}</div>
-
                                 <div className="answer-more-options">
                                     <img className="board-more-button" src={moreButton} alt="더보기" onClick={() => toggleAnswerOptions(replyItem.replyId)} />
                                     {showAnswerOptions[replyItem.replyId] && (

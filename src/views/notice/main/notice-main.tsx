@@ -42,14 +42,19 @@ const NoticeList: React.FC = () => {
           return;
         }
         if (code !== 'SU') return;
-        setPosts(notices);
+        const sortedNotices = notices.sort((a, b) => {
+          const dateA = new Date(a.createDateTime).getTime();
+          const dateB = new Date(b.createDateTime).getTime();
+          return dateB - dateA;
+        });
+        setPosts(sortedNotices);
       } catch (error) {
         console.log('공지사항을 불러오는데 실패했습니다.', error);
       }
     };
     fetchPosts();
   }, [noticeId]);
-
+  
   useEffect(() => {
     setFilteredPosts(posts);
   }, [posts]);

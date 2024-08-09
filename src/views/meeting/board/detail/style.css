@@ -137,7 +137,16 @@
     border: 1px solid #ccc;
     border-radius: 50%;
 }
+
 .board-info-div {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.board-info-non-div{
+    color: rgba(0, 0, 0, 0.4);
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;

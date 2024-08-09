@@ -15,11 +15,28 @@ interface ResponseData {
 }
 
 export default function ReviewList() {
-    const { loginUser } = useLoginUserStore();
     const { nickname } = useParams();
     const [reviewList, setReviewList] = useState<Review[]>([]);
     const [festivalList, setFestivalList] = useState<Festival[]>([]);
     const navigate = useNavigate()
+
+    const formatDate = (createDateTime: string, modifyDateTime?: string) => {
+        const isoDate = modifyDateTime ?? createDateTime;
+        const date = new Date(isoDate);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        let period = hours < 12 ? '오전' : '오후';
+        if (hours === 0) {
+            hours = 12;
+        } else if (hours > 12) {
+            hours -= 12;
+        }
+
+        return `${year}.${month}.${day} ${period} ${hours}:${minutes}`;
+    };
 
     useEffect(() => {
         if (!nickname) {
@@ -76,27 +93,21 @@ export default function ReviewList() {
                         <div key={review.reviewId} className="review-item">
                             {festival && (
                                 <div>
-                                    <h3>{festival.title}</h3>
-                                    {/* <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} /> */}
-                                    <button 
-                                        className="custom-button"
-                                        onClick={() => buttonClickHandler(festival.contentId)}>
-                                        {'축제 디테일'}
-                                    </button>
+                                    <h3 className='review-title' onClick={() => buttonClickHandler(festival.contentId)}>{festival.title}</h3>
+                                    <img src={festival.firstImage} alt={festival.title} style={{ maxWidth: '200px' }} />
                                 </div>
                             )}
-                            <p>{renderStars(review.rate)} {review.writeDatetime}</p>
-                            {/* <p><strong>작성자:</strong> {review.nickname}</p> */}
-                            {/* <div className="review-images">
-                                {review.images && review.images.length > 0 ? (
-                                    review.images.map((image, idx) => (
+                            <p>{renderStars(review.rate)} {formatDate(review.writeDatetime)}</p>
+                            <div className="review-images">
+                                {review.imageList && review.imageList.length > 0 ? (
+                                    review.imageList.map((image, idx) => (
                                         <img key={idx} src={image.image} alt={`리뷰 이미지 ${idx}`} className="review-image" />
                                     ))
                                 ) : (
-                                    <p><strong>사진:</strong> 없음</p>
+                                    <></>
                                 )}
-                            </div> */}
-                            <p><strong>Review:</strong> {review.review}</p>
+                            </div>
+                            <p>{review.review}</p>
                         </div>
                     );
                 })

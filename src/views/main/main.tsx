@@ -32,10 +32,14 @@ const Main: React.FC = () => {
     const fetchRecent5MeetingList = async () => {
       const response = await Get5RecentMeetingRequest();
       if (!response) return;
-      setRecent5MeetingList(response.meetingList);
+      const sortedMeetingList = response.meetingList.sort((a: Meeting, b: Meeting) => {
+        return new Date(b.createDate).getTime() - new Date(a.createDate).getTime();
+      });
+      setRecent5MeetingList(sortedMeetingList);
     };
     fetchRecent5MeetingList();
   }, []);
+  
 
   useEffect(() => {
     const fetchTop3TemperatureUserList = async () => {

@@ -2,45 +2,46 @@
     width: 80%;
     margin: 0 auto;
 }
+
 .pagination-wrapper {
     display: flex;
     justify-content: center;
     gap: 5px;
     margin: 20px 0;
-  }
-  
-  .pagination-wrapper button {
+}
+
+.pagination-wrapper button {
     padding: 10px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     cursor: pointer;
     border-radius: 5px;
-  }
-  
-  .pagination-wrapper button.active {
+}
+
+.pagination-wrapper button.active {
     background-color: #007bff;
     color: white;
-  }
-  
-  .pagination-wrapper button:disabled {
+}
+
+.pagination-wrapper button:disabled {
     cursor: not-allowed;
     background-color: #e9ecef;
-  }
-  
+}
+
 .meeting-list-container h1 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
 }
 
-.meeting-list-write-btn{
+.meeting-list-write-btn {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.meeting-list-write-btn img{
+.meeting-list-write-btn img {
     width: 1.25rem;
     height: auto;
     border: none;
@@ -65,7 +66,7 @@
 }
 
 /* 카테고리 */
-.meeting-list-categories{
+.meeting-list-categories {
     border: 2px solid #ccc;
     border-radius: 10px;
     padding: 10px 20px;
@@ -74,18 +75,23 @@
 .meeting-list-category {
     display: flex;
     margin-bottom: 20px;
-    flex-direction: column; /* 수직 정렬 */
+    flex-direction: column;
+    /* 수직 정렬 */
     align-items: flex-start;
 }
 
-.category-select, .location-select {
+.category-select,
+.location-select {
     display: flex;
-    flex-wrap: wrap; /* 여러 줄로 나열 */
+    flex-wrap: wrap;
+    /* 여러 줄로 나열 */
     gap: 10px;
-    margin-top: 10px; /* 제목과 약간의 간격 추가 */
+    margin-top: 10px;
+    /* 제목과 약간의 간격 추가 */
 }
 
-.category-option, .location-option {
+.category-option,
+.location-option {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 30px;
@@ -93,7 +99,7 @@
 }
 
 .meeting-list-category .category-select,
-.meeting-list-category .location-select{
+.meeting-list-category .location-select {
     padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
 }
@@ -124,12 +130,13 @@
     background-color: #000;
     color: white;
 }
+
 .category-option.selected:hover {
     background-color: #000;
     color: white;
 }
 
-.category-search-container{
+.category-search-container {
     display: flex;
     justify-content: flex-start;
     width: 100%;
@@ -137,7 +144,7 @@
     gap: 10px;
 }
 
-.category-search-input{
+.category-search-input {
     width: 230PX;
     padding: 10px;
     border-radius: 8px;
@@ -145,9 +152,12 @@
 
 .category-search-content {
     display: flex;
-    flex-wrap: nowrap; /* 아이템들을 한 줄로 나열 */
-    overflow-x: auto; /* 수평 스크롤 가능 */
-    gap: 10px; /* 아이템 사이의 간격 */
+    flex-wrap: nowrap;
+    /* 아이템들을 한 줄로 나열 */
+    overflow-x: auto;
+    /* 수평 스크롤 가능 */
+    gap: 10px;
+    /* 아이템 사이의 간격 */
 }
 
 .category-search-content div {
@@ -163,6 +173,7 @@
     cursor: pointer;
     margin-left: 5px;
 }
+
 /* 카테고리 끝 */
 
 .meeting-list-header {
@@ -176,7 +187,7 @@
     margin: 20px 0;
 }
 
-.meeting-list-header > div {
+.meeting-list-header>div {
     width: 150px;
     text-align: center;
 }
@@ -202,7 +213,7 @@ ul {
     justify-content: space-between;
 }
 
-.meeting-item > div {
+.meeting-item>div {
     width: 150px;
     text-align: center;
 }
@@ -258,4 +269,19 @@ ul {
         width: 100%;
         height: auto;
     }
+}
+
+.no-meetings-message{
+    width: 100%;
+    height: 76px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: rgba(0, 0, 0, 0.4);
+
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 140%;
 }
